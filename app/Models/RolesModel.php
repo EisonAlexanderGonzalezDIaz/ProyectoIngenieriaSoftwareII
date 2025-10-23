@@ -2,24 +2,23 @@
 
 namespace App\Models;
 
-//use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class RolesModel extends Model
 {
-    //use HasFactory; // Asegúrate de importar HasFactory si lo usas
-
     protected $table = 'roles';
+
     protected $fillable = ['nombre', 'descripcion', 'permisos'];
+
     protected $casts = [
         'permisos' => 'array',
     ];
+
     public $timestamps = true;
-    
 
     public function usuarios()
     {
-        return $this->hasMany(User::class);
+        return $this->hasMany(User::class, 'roles_id');
     }
 
     public function tienePermiso($permiso)
@@ -38,9 +37,7 @@ class RolesModel extends Model
             'Coodinador Disciplinario' => 'Coodinador Disciplinario',
             'Orientador' => 'Orientador',
             'Tesorero' => 'Tesorero',
-            'Administrador Sistema' => 'Administrador Sistema',            
-            
+            'Administrador Sistema' => 'Administrador Sistema',
         ];
     }
-
 }

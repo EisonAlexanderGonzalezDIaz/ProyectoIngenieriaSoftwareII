@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\RolesModel;
 
 class User extends Authenticatable
 {
@@ -45,5 +46,17 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    // Relación con RolesModel
+    public function role()
+    {
+        return $this->belongsTo(RolesModel::class, 'roles_id');
+    }
+
+    // Helper opcional
+    public function isAdminSistema(): bool
+    {
+        return $this->role && $this->role->nombre === 'Administrador Sistema';
     }
 }
