@@ -74,6 +74,24 @@
         <!-- Main Content -->
         <div class="col-md-9 col-lg-10">
             <div class="main-content p-4">
+                <!-- Alerts -->
+                @if(session('ok'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ session('ok') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $e)
+                                <li>{{ $e }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
                 <!-- Welcome Section -->
                 <div class="row mb-4 align-items-center">
                     <div class="col-12">
@@ -156,6 +174,65 @@
                                         </a>
                                     </div>
                                 </div>
+
+                                {{-- ✳️ Botón y Formulario para crear rol (solo AdministradorSistema) --}}
+                                @if(Auth::user()->role && Auth::user()->role->nombre === 'AdministradorSistema')
+                                    <hr class="my-4">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h6 class="mb-0">Gestión de Roles</h6>
+                                        <a class="btn btn-warning" data-bs-toggle="collapse" href="#collapseCrearRol" role="button" aria-expanded="false" aria-controls="collapseCrearRol">
+                                            <i class="fas fa-user-shield me-2"></i>Crear rol
+                                        </a>
+                                    </div>
+
+                                    <div class="collapse mt-3" id="collapseCrearRol">
+                                        <div class="card card-body border-0">
+                                            <form method="POST" action="{{ route('roles.quick-create') }}">
+                                                @csrf
+                                                <div class="row g-3">
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Nombre del rol *</label>
+                                                        <select name="nombre" class="form-select" required>
+                                                            <option value="">-- Selecciona un rol --</option>
+                                                            <option>Rector</option>
+                                                            <option>Acudiente</option>
+                                                            <option>Estudiante</option>
+                                                            <option>CoordinadorAcademico</option>
+                                                            <option>CoordinadorDisciplinario</option>
+                                                            <option>Orientador</option>
+                                                            <option>Docente</option>
+                                                            <option>Tesorero</option>
+                                                            <option>AdministradorSistema</option>
+                                                        </select>
+                                                        <div class="form-text">
+                                                            Debe ser único. Usa exactamente <code>AdministradorSistema</code> para el admin del sistema.
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Descripción (opcional)</label>
+                                                        <input type="text" name="descripcion" class="form-control" placeholder="Descripción corta">
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <label class="form-label">Permisos (opcional)</label>
+                                                        <textarea name="permisos" rows="3" class="form-control" placeholder="separa por comas, p. ej.: gestionar_usuarios, asignar_roles"></textarea>
+                                                        <div class="form-text">
+                                                            Se guardan como JSON; puedes dejarlos vacíos y definirlos luego.
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="mt-3 d-flex gap-2">
+                                                    <button type="submit" class="btn btn-primary">
+                                                        Guardar
+                                                    </button>
+                                                    <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCrearRol">
+                                                        Cancelar
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                @endif
+                                {{-- /Gestión de Roles --}}
                             </div>
                         </div>
                     </div>
@@ -180,6 +257,8 @@
                         </div>
                     </div>
                 </div>
+                <!-- /Recent Activity -->
+
             </div>
         </div>
     </div>

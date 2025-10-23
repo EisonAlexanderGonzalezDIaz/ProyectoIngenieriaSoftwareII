@@ -54,9 +54,9 @@ class User extends Authenticatable
         return $this->belongsTo(RolesModel::class, 'roles_id');
     }
 
-    // Helper opcional
+    // Helper opcional (ajustado a tu seeder)
     public function isAdminSistema(): bool
     {
-        return $this->role && $this->role->nombre === 'Administrador Sistema';
+        return $this->role && $this->role->nombre === 'AdministradorSistema';
     }
 }
