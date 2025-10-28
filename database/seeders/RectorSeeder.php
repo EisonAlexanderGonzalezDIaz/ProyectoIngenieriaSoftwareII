@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\RolesModel;
@@ -15,29 +14,58 @@ class RectorSeeder extends Seeder
      */
     public function run(): void
     {
-        // Buscar el rol de Rector
-        $rolRector = RolesModel::where('nombre', 'Rector')->first();
-        
-        if (!$rolRector) {
-            $this->command->error('El rol de Rector no existe. Ejecuta primero RolesSeeder.');
-            return;
-        }
+        // 🎯 Permisos específicos del rol Rector
+        $permisos = [
+            // Gestión institucional
+            'ver_dashboard_institucional',
+            'gestionar_usuarios',
+            'gestionar_roles_y_permisos',
+            'gestionar_cursos',
+            'ver_reportes_generales',
+            'aprobar_informes',
+            'ver_informes_financieros',
+            'ver_informes_disciplinarios',
+            'ver_informes_academicos',
+            'ver_informes_asistencia',
 
-        // Crear usuario rector
-        User::updateOrCreate(
+            // Comunicación institucional
+            'enviar_comunicados_generales',
+            'ver_mensajes_importantes',
+
+            // Perfil propio
+            'ver_perfil_propio',
+            'editar_perfil_propio',
+            'cambiar_contrasena',
+        ];
+
+        // 🧩 Crear o actualizar el rol Rector
+        $rol = RolesModel::firstOrCreate(
+            ['nombre' => 'Rector'],
+            [
+                'descripcion' => 'Rol directivo máximo de la institución educativa, responsable de la gestión administrativa, académica y disciplinaria.',
+                'permisos' => $permisos,
+            ]
+        );
+
+        // 🔄 Actualizar permisos si ya existía
+        $rol->permisos = $permisos;
+        $rol->save();
+
+        // 👨‍💼 Crear o actualizar usuario Rector
+        $user = User::updateOrCreate(
             ['email' => 'rector@colegio.edu.co'],
             [
                 'name' => 'Rector del Colegio',
-                'email' => 'rector@colegio.edu.co',
-                'password' => Hash::make('rector123'), // Cambiar por una contraseña segura
-                'roles_id' => $rolRector->id,
+                'password' => Hash::make('rector123'), // 🔒 Cambiar después del primer inicio de sesión
+                'roles_id' => $rol->id,
                 'email_verified_at' => now(),
             ]
         );
 
-        $this->command->info('Usuario Rector creado exitosamente.');
-        $this->command->info('Email: rector@colegio.edu.co');
-        $this->command->info('Contraseña: rector123');
-        $this->command->warn('¡IMPORTANTE! Cambia la contraseña después del primer login.');
+        // 🧾 Mensajes en consola
+        $this->command?->info('✅ Usuario Rector creado o actualizado correctamente.');
+        $this->command?->info('   Email: rector@colegio.edu.co');
+        $this->command?->info('   Contraseña: rector123');
+        $this->command?->warn('⚠️ Cambia la contraseña después del primer inicio de sesión.');
     }
 }

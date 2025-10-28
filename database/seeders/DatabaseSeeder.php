@@ -2,8 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -15,24 +13,20 @@ class DatabaseSeeder extends Seeder
     {
         // Ejecutar seeders en orden correcto
         $this->call([
-            RolesSeeder::class,      // Primero crear los roles
-            RectorSeeder::class,     // Luego crear el usuario rector
-            AdministradorSistemaSeeder::class, // Luego crear el usuario admin sistema
-            CoordinadorAcademicoSeeder::class, // Luego crear el usuario coordinador academico
-            CoordinadorDisciplinarioSeeder::class, // Luego crear el usuario coordinador disciplinario
-            AcudienteSeeder::class,  // Luego crear el usuario coordinador academico
-            EstudianteSeeder::class, // Luego crear el usuario estudiante
-            DocenteSeeder::class,    // Luego crear el usuario  docente
-            OrientadorSeeder::class,   // Luego crear el usuario orientador
-            TesoreroSeeder::class,   // fianlmente crear el usuario tesorero
-
-
+            RolesSeeder::class,                      // Primero crear los roles
+            CursosSeeder::class,                     // Cursos disponibles para matrícula
+            RectorSeeder::class,                     // Usuario rector
+            AdministradorSistemaSeeder::class,       // Usuario administrador del sistema
+            CoordinadorAcademicoSeeder::class,       // Usuario coordinador académico
+            CoordinadorDisciplinarioSeeder::class,   // Usuario coordinador disciplinario
+            AcudienteSeeder::class,                  // Usuario acudiente
+            EstudianteSeeder::class,                 // Usuario estudiante
+            DocenteSeeder::class,                    // Usuario docente
+            OrientadorSeeder::class,                 // Usuario orientador
+            TesoreroSeeder::class,                   // Usuario tesorero
         ]);
-        
-        // Comentado el usuario de prueba para evitar conflictos
-        // User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+
+        // Mensaje final informativo
+        $this->command->info('✓ Base de datos poblada exitosamente con todos los roles y usuarios.');
     }
 }

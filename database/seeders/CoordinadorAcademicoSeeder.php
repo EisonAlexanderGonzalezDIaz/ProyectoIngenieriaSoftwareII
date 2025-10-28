@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\RolesModel;
@@ -15,29 +14,67 @@ class CoordinadorAcademicoSeeder extends Seeder
      */
     public function run(): void
     {
-        // Buscar el rol de Coordinador Academico
-        $rolCoordinador = RolesModel::where('nombre', 'CoordinadorAcademico')->first();
+        // 📚 Permisos específicos para el rol Coordinador Académico
+        $permisos = [
+            // Estudiantes
+            'ver_estudiantes',
+            'asignar_grupos',
+            'editar_estudiantes',
+            'ver_historial_academico',
 
-        if (!$rolCoordinador) {
-            $this->command->error('El rol de Coordinador Academico no existe. Ejecuta primero RolesSeeder.');
-            return;
-        }
+            // Docentes y Asignaturas
+            'ver_docentes',
+            'asignar_asignaturas',
+            'ver_horarios',
+            'editar_horarios',
 
-        // Crear usuario coordinador
-        User::updateOrCreate(
+            // Académico
+            'gestionar_notas',
+            'ver_reportes_academicos',
+            'aprobar_promociones',
+
+            // Disciplina
+            'ver_reportes_disciplinarios',
+            'gestionar_inasistencias',
+
+            // Comunicación
+            'enviar_comunicados',
+            'ver_comunicados',
+
+            // Perfil propio
+            'ver_perfil_propio',
+            'editar_perfil_propio',
+            'cambiar_contrasena',
+        ];
+
+        // ⚙️ Asegurar que el rol Coordinador Académico exista
+        $rol = RolesModel::firstOrCreate(
+            ['nombre' => 'CoordinadorAcademico'],
+            [
+                'descripcion' => 'Responsable de la gestión académica y seguimiento docente del colegio.',
+                'permisos' => $permisos,
+            ]
+        );
+
+        // 🔄 Actualizar permisos si el rol ya existía
+        $rol->permisos = $permisos;
+        $rol->save();
+
+        // 👤 Crear o actualizar el usuario Coordinador Académico
+        $user = User::updateOrCreate(
             ['email' => 'coordinador@colegio.edu.co'],
             [
-                'name' => 'CoordinadorAcademico',
-                'email' => 'coordinador@colegio.edu.co',
-                'password' => Hash::make('cooracad123'), // Cambiar por una contraseña segura
-                'roles_id' => $rolCoordinador->id,
+                'name' => 'Coordinador Académico',
+                'password' => Hash::make('cooracad123'), // 🔒 Cambiar después del primer login
+                'roles_id' => $rol->id,
                 'email_verified_at' => now(),
             ]
         );
-        
-        $this->command->info('Usuario Coordinador Academico creado exitosamente.');
-        $this->command->info('Email: coordinador@colegio.edu.co');
-        $this->command->info('Contraseña: cooracad123');
-        $this->command->warn('¡IMPORTANTE! Cambia la contraseña después del primer login.');
+
+        // 🧾 Mensajes en consola
+        $this->command?->info('✅ Usuario Coordinador Académico creado o actualizado correctamente.');
+        $this->command?->info('   Email: coordinador@colegio.edu.co');
+        $this->command?->info('   Contraseña: cooracad123');
+        $this->command?->warn('⚠️ Cambia la contraseña después del primer inicio de sesión.');
     }
 }

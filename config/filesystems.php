@@ -15,6 +15,9 @@ return [
 
     'default' => env('FILESYSTEM_DISK', 'local'),
 
+    // Disk to use for user uploads (e.g., matrícula). Allows switching in .env
+    'upload_disk' => env('UPLOAD_DISK', 'ftp'),
+
     /*
     |--------------------------------------------------------------------------
     | Filesystem Disks

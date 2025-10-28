@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CrearUsuario;
+use App\Http\Controllers\RolController;
+use App\Http\Controllers\MatriculaAcudienteController;
 use App\Models\RolesModel;
 
 // Ruta raíz redirige al login

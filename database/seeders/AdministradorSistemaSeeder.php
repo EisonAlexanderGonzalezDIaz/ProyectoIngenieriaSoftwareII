@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\RolesModel;
@@ -15,29 +14,63 @@ class AdministradorSistemaSeeder extends Seeder
      */
     public function run(): void
     {
-        // Buscar el rol de Administrador Sistema
-        $rolAdmin = RolesModel::where('nombre', 'AdministradorSistema')->first();
+        // 🔐 Permisos específicos para el rol Administrador del Sistema
+        $permisos = [
+            // Gestión de Usuarios y Roles
+            'crear_usuarios',
+            'editar_usuarios',
+            'eliminar_usuarios',
+            'ver_usuarios',
+            'asignar_roles',
+            'ver_roles',
+            'editar_roles',
 
-        if (!$rolAdmin) {
-            $this->command->error('El rol de Administrador Sistema no existe. Ejecuta primero RolesSeeder.');
-            return;
-        }
+            // Configuración del sistema
+            'configurar_parametros',
+            'ver_configuracion_sistema',
 
-        // Crear usuario administrador
-        User::updateOrCreate(
+            // Seguridad
+            'ver_auditorias',
+            'restaurar_datos',
+            'realizar_copias_seguridad',
+
+            // Reportes
+            'ver_reportes_generales',
+            'exportar_reportes',
+
+            // Perfil propio
+            'ver_perfil_propio',
+            'editar_perfil_propio',
+            'cambiar_contrasena',
+        ];
+
+        // ⚙️ Asegurar que el rol AdministradorSistema exista
+        $rol = RolesModel::firstOrCreate(
+            ['nombre' => 'AdministradorSistema'],
+            [
+                'descripcion' => 'Usuario con acceso completo al sistema y gestión de roles, usuarios y configuración general.',
+                'permisos' => $permisos,
+            ]
+        );
+
+        // 🧩 Actualizar los permisos del rol si ya existía
+        $rol->permisos = $permisos;
+        $rol->save();
+
+        // 👤 Crear o actualizar el usuario administrador principal
+        $user = User::updateOrCreate(
             ['email' => 'admin@colegio.edu.co'],
             [
-                'name' => 'AdministradorSistema',
-                'email' => 'admin@colegio.edu.co',
-                'password' => Hash::make('admin123'), // Cambiar por una contraseña segura
-                'roles_id' => $rolAdmin->id,
+                'name' => 'Administrador del Sistema',
+                'password' => Hash::make('admin123'), // 🔒 Recomendado cambiar después del primer login
+                'roles_id' => $rol->id,
                 'email_verified_at' => now(),
             ]
         );
 
-        $this->command->info('Usuario Administrador creado exitosamente.');
-        $this->command->info('Email: admin@colegio.edu.co');
-        $this->command->info('Contraseña: admin123');
-        $this->command->warn('¡IMPORTANTE! Cambia la contraseña después del primer login.');
+        $this->command?->info('✅ Usuario Administrador del Sistema creado o actualizado correctamente.');
+        $this->command?->info('   Email: admin@colegio.edu.co');
+        $this->command?->info('   Contraseña: admin123');
+        $this->command?->warn('⚠️ Cambia la contraseña después del primer inicio de sesión.');
     }
 }

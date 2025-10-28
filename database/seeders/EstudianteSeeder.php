@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\RolesModel;
@@ -15,29 +14,61 @@ class EstudianteSeeder extends Seeder
      */
     public function run(): void
     {
-        // Buscar el rol de Estudiante
-        $rolEstudiante = RolesModel::where('nombre', 'Estudiante')->first();
+        // 🎓 Permisos específicos del rol Estudiante
+        $permisos = [
+            // Académico
+            'ver_notas',
+            'ver_horario_clases',
+            'ver_materias_asignadas',
+            'ver_calendario_academico',
 
-        if (!$rolEstudiante) {
-            $this->command->error('El rol de Estudiante no existe. Ejecuta primero RolesSeeder.');
-            return;
-        }
+            // Comunicación
+            'recibir_comunicados',
+            'ver_mensajes_docentes',
+            'responder_mensajes',
 
-        // Crear usuario estudiante
-        User::updateOrCreate(
+            // Asistencia y seguimiento
+            'ver_asistencia',
+            'ver_reporte_asistencia',
+
+            // Material de estudio
+            'descargar_material_clase',
+            'ver_tareas_asignadas',
+
+            // Perfil propio
+            'ver_perfil_propio',
+            'editar_perfil_propio',
+            'cambiar_contrasena',
+        ];
+
+        // 🧩 Asegurar que el rol Estudiante exista
+        $rol = RolesModel::firstOrCreate(
+            ['nombre' => 'Estudiante'],
+            [
+                'descripcion' => 'Rol asignado a los alumnos matriculados en el sistema académico del colegio.',
+                'permisos' => $permisos,
+            ]
+        );
+
+        // 🔄 Actualizar permisos si ya existía
+        $rol->permisos = $permisos;
+        $rol->save();
+
+        // 👩‍🎓 Crear o actualizar usuario Estudiante
+        $user = User::updateOrCreate(
             ['email' => 'estudiante@colegio.edu.co'],
             [
                 'name' => 'Estudiante',
-                'email' => 'estudiante@colegio.edu.co',
-                'password' => Hash::make('est123'), // Cambiar por una contraseña segura
-                'roles_id' => $rolEstudiante->id,
+                'password' => Hash::make('est123'), // 🔒 Cambiar después del primer inicio de sesión
+                'roles_id' => $rol->id,
                 'email_verified_at' => now(),
             ]
         );
 
-        $this->command->info('Usuario Estudiante creado exitosamente.');
-        $this->command->info('Email: estudiante@colegio.edu.co');
-        $this->command->info('Contraseña: est123');
-        $this->command->warn('¡IMPORTANTE! Cambia la contraseña después del primer login.');
+        // 🧾 Mensajes en consola
+        $this->command?->info('✅ Usuario Estudiante creado o actualizado correctamente.');
+        $this->command?->info('   Email: estudiante@colegio.edu.co');
+        $this->command?->info('   Contraseña: est123');
+        $this->command?->warn('⚠️ Cambia la contraseña después del primer inicio de sesión.');
     }
 }
