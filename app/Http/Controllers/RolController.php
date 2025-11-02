@@ -315,7 +315,9 @@ class RolController extends Controller
             'CoordinadorAcademico',
             'Acudiente',
             'Estudiante',
-            'Profesor'
+            'Docente',
+            'Orientador',
+            'Tesoreria',
         ];
 
         return in_array($nombreRol, $rolesSistema);
@@ -345,20 +347,25 @@ class RolController extends Controller
                 'asignar_materias' => 'Asignar materias a docentes',
             ],
             'Académico' => [
-                'registrar_notas' => 'Registrar y modificar calificaciones',
-                'ver_notas' => 'Ver calificaciones de estudiantes',
-                'aprobar_notas' => 'Aprobar calificaciones finales',
-                'crear_actividades' => 'Crear actividades y tareas',
+                'ver_estudiantes' => 'Ver información de estudiantes',
+                'ver_docentes' => 'Ver información de docentes',
                 'gestionar_horarios' => 'Crear y modificar horarios',
-                'gestionar_periodos' => 'Configurar periodos académicos',
                 'gestionar_materias' => 'Crear y modificar materias',
-                'gestionar_cursos' => 'Crear y modificar cursos',
+                'aprobar_cambios_notas' => 'Aprobar solicitudes de cambio de notas',
+                'gestionar_docentes' => 'Asignar docentes a materias',
+                'gestionar_recuperaciones' => 'Gestionar exámenes de recuperación',
+                'citar_acudientes' => 'Citar a los acudientes de los estudiantes',
+                'generar_reportes_academicos', 'Generar reportes académicos',
             ],
             'Disciplina' => [
-                'gestionar_disciplina' => 'Registrar y gestionar incidencias',
-                'ver_reportes_disciplinarios' => 'Ver reportes disciplinarios',
-                'aprobar_sanciones' => 'Aprobar sanciones disciplinarias',
-                'justificar_inasistencias' => 'Justificar ausencias de estudiantes',
+                'ver_estudiantes' => 'Ver información de estudiantes',
+                'recibir_casos_disciplinarios'=>'recibir los casos disciplinarios de los estudiantes',
+                'reportar_casos_disciplinarios'=> 'reportar los casos disciplinarios',
+                'revisar_casos_graves'=>'revisar los casos graves',
+                'asignar_sanciones'=>'asignar sanciones',
+                'citar_acudientes'=>'citar acudientes',
+                'generar_reportes_disciplinarios' =>'generar reportes de disciplina',
+
             ],
             'Comunicación' => [
                 'enviar_comunicados' => 'Enviar comunicados generales',
@@ -395,6 +402,13 @@ class RolController extends Controller
                 'editar_perfil_propio' => 'Editar su propio perfil',
                 'cambiar_contrasena' => 'Cambiar su propia contraseña',
                 'ver_notificaciones' => 'Ver notificaciones personales',
+            ],
+            'Orientador' => [
+                'ver_estudiantes' => 'Ver información de estudiantes',
+                'gestionar_orientaciones' => 'Gestionar sesiones de orientación',
+                'revisar_casos_graves' => 'Revisar casos graves de estudiantes',
+                'realizar_seguimiento' => 'Realizar seguimiento a estudiantes',
+                'atender_sesiones_orientacion' => 'Atender sesiones de orientación',
             ],
             'Otros' => [
                 'aprobar_permisos' => 'Aprobar solicitudes de permisos',

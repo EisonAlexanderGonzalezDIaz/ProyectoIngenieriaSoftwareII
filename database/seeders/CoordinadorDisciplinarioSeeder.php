@@ -16,25 +16,40 @@ class CoordinadorDisciplinarioSeeder extends Seeder
     {
         // ⚖️ Permisos específicos del rol Coordinador Disciplinario
         $permisos = [
-            // Estudiantes
+// Estudiantes
             'ver_estudiantes',
-            'registrar_reportes_disciplinarios',
-            'editar_reportes_disciplinarios',
-            'ver_historial_disciplinario',
-            'gestionar_inasistencias',
+            'asignar_grupos',
+            'editar_estudiantes',
+            'ver_historial_academico',
+
+            // Docentes y Asignaturas
+            'ver_docentes',
+            'asignar_asignaturas',
+            'ver_horarios',
+            'editar_horarios',
+
+            // Académico
+            'ver_estudiantes',
+            'gestionar_docentes',
+            'gestionar_horarios',
+            'gestionar_materias',
+            'aprobar_cambios_notas',
+            'gestionar_recuperaciones',
+            'citar_acudientes',
+            'generar_reportes_academicos',
+
+            // Disciplina
+            'ver_estudiantes',
+            'recibir_casos_disciplinarios',
+            'reportar_casos_disciplinarios',
+            'revisar_casos_graves',
+            'asignar_sanciones',
+            'citar_acudientes',
+            'generar_reportes_disciplinarios',
 
             // Comunicación
             'enviar_comunicados',
             'ver_comunicados',
-            'comunicarse_acudientes',
-
-            // Académico
-            'ver_notas',
-            'ver_historial_academico',
-
-            // Gestión
-            'generar_informes_disciplina',
-            'aprobar_justificaciones_inasistencias',
 
             // Perfil propio
             'ver_perfil_propio',

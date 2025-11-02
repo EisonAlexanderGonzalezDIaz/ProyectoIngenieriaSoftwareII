@@ -3,6 +3,8 @@
 @section('title', 'Panel Principal - Colegio')
 
 @section('content')
+
+
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
     <div class="container-fluid">
@@ -49,24 +51,98 @@
                     <a class="nav-link active fw-semibold text-primary" href="{{ route('dashboard') }}">
                         <i class="fas fa-home me-2"></i>Inicio
                     </a>
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Rector', 'CoordinadorAcademico', 'CoordinadorDisciplinario','Orientador']))
                     <a class="nav-link text-dark" href="#">
-                        <i class="fas fa-user-tie me-2"></i>Docentes
+                        <i class="fas fa-user-graduate me-2"></i>Ver Estudiantes
                     </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Rector', 'CoordinadorAcademico']))
                     <a class="nav-link text-dark" href="#">
-                        <i class="fas fa-user-graduate me-2"></i>Estudiantes
+                        <i class="fas fa-chalkboard-teacher"></i>Gestionar Docentes
                     </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['CoordinadorAcademico']))
                     <a class="nav-link text-dark" href="#">
-                        <i class="fas fa-users me-2"></i>Acudientes
+                        <i class="fas fa-book-open me-2"></i>Gestionar Materias
                     </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['CoordinadorAcademico']))
                     <a class="nav-link text-dark" href="#">
-                        <i class="fas fa-book-open me-2"></i>Materias
+                        <i class="fas fa-calendar-alt me-2"></i>Gestionar Horarios
                     </a>
+                    @endif
+                     @if(in_array(Auth::user()->rol->nombre ?? '', ['Docente']))
                     <a class="nav-link text-dark" href="#">
-                        <i class="fas fa-calendar-alt me-2"></i>Horarios
+                        <i class="fas fa-star me-2"></i>Calificaciones
                     </a>
+                    @endif
+                     @if(in_array(Auth::user()->rol->nombre ?? '', ['CoordinadorAcademico']))
                     <a class="nav-link text-dark" href="#">
-                        <i class="fas fa-chart-line me-2"></i>Reportes Académicos
+                        <i class="fas fa-book-open me-2"></i>Aprobar Cambios de Notas
                     </a>
+                    @endif
+                     @if(in_array(Auth::user()->rol->nombre ?? '', ['CoordinadorAcademico']))
+                    <a class="nav-link text-dark" href="#">
+                        <i class="fas fa-arrow-trend-up me-2"></i>Gestionar Recuperaciones
+                    </a>
+                    @endif
+                     @if(in_array(Auth::user()->rol->nombre ?? '', ['CoordinadorAcademico', 'CoordinadorDisciplinario', 'Docente']))
+                    <a class="nav-link text-dark" href="#">
+                        <i class="fas fa-envelope-open-text me-2"></i>Citar Acudientes
+                    </a>
+                    @endif
+                     @if(in_array(Auth::user()->rol->nombre ?? '', ['CoordinadorAcademico']))
+                    <a class="nav-link text-dark" href="#">
+                        <i class="fas fa-chart-line"></i>Generar Reportes Academicos
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['CoordinadorDisciplinario']))
+                    <a class="nav-link text-dark" href="#">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Recibir casos disciplinarios
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['CoordinadorDisciplinario']))
+                    <a class="nav-link text-dark" href="#">
+                        <i class="fas fa-flag me-2"></i>Reportar casos disciplinarios
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['CoordinadorDisciplinario']))
+                    <a class="nav-link text-dark" href="#">
+                        <i class="fas fa-balance-scale me-2"></i>Revisar casos graves
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['CoordinadorDisciplinario']))
+                    <a class="nav-link text-dark" href="#">
+                        <i class="fas fa-gavel me-2"></i>Asignar sanciones
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['CoordinadorDisciplinario']))
+                    <a class="nav-link text-dark" href="#">
+                        <i class="fas fa-clipboard-list me-2"></i>Generar reportes disciplinarios
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Orientador']))
+                    <a class="nav-link text-dark" href="#">
+                         <i class="fas fa-book-reader me-2"></i>Gestionar Orientaciones
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Orientador']))
+                    <a class="nav-link text-dark" href="#">
+                         <i class="fas fa-exclamation-triangle me-2"></i>Revisar Casos Graves
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Orientador']))
+                    <a class="nav-link text-dark" href="#">
+                         <i class="fas fa-eye me-2"></i>Realizar Seguimiento
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Orientador']))
+                    <a class="nav-link text-dark" href="#">
+                         <i class="fas fa-user-clock me-2"></i>Atender Sesiones
+                    </a>
+                    @endif
+                    
+                    
                 </nav>
             </div>
         </div>

@@ -59,17 +59,14 @@ class RolesSeeder extends Seeder
                 'nombre' => 'CoordinadorAcademico',
                 'descripcion' => 'Encargado de coordinar actividades académicas y pedagógicas.',
                 'permisos' => [
-                    'ver_estudiantes',
-                    'ver_docentes',
-                    'gestionar_materias',
-                    'gestionar_horarios',
-                    'gestionar_periodos',
-                    'aprobar_notas',
-                    'ver_notas',
-                    'ver_historial_academico',
-                    'ver_reportes_academicos',
-                    'generar_reportes',
-                    'comunicarse_con_acudientes'
+                'ver_estudiantes',
+                'gestionar_docentes',
+                'gestionar_horarios',
+                'gestionar_materias',
+                'aprobar_cambios_notas',
+                'gestionar_recuperaciones',
+                'citar_acudientes',
+                'generar_reportes_academicos',
                 ]
             ],
 
@@ -78,15 +75,13 @@ class RolesSeeder extends Seeder
                 'nombre' => 'CoordinadorDisciplinario',
                 'descripcion' => 'Encargado de coordinar actividades disciplinarias y de convivencia escolar.',
                 'permisos' => [
-                    'ver_estudiantes',
-                    'gestionar_disciplina',
-                    'ver_reportes_disciplinarios',
-                    'asignar_sanciones',
-                    'revisar_casos_graves',
-                    'gestionar_asistencia',
-                    'enviar_comunicados',
-                    'comunicarse_con_acudientes',
-                    'ver_reportes_academicos'
+                'ver_estudiantes',
+                'recibir_casos_disciplinarios',
+                'reportar_casos_disciplinarios',
+                'revisar_casos_graves',
+                'asignar_sanciones',
+                'citar_acudientes',
+                'generar_reportes_disciplinarios',
                 ]
             ],
 
@@ -153,12 +148,11 @@ class RolesSeeder extends Seeder
                 'nombre' => 'Orientador',
                 'descripcion' => 'Profesional encargado de la orientación y apoyo psicológico de los estudiantes.',
                 'permisos' => [
-                    'gestionar_citas',
-                    'asesorar_estudiantes',
-                    'asesorar_docentes_y_acudientes',
-                    'registrar_informes_psicologicos',
-                    'gestionar_programas_orientacion',
-                    'gestionar_casos_graves'
+                'ver_estudiantes',
+                'gestionar_orientaciones',
+                'revisar_casos_graves',
+                'realizar_seguimiento',
+                'atender_sesiones'
                 ]
             ],
 
