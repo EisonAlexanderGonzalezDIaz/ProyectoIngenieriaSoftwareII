@@ -14,7 +14,7 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     /**
-     * The attributes that are mass assignable.
+     * Atributos que se pueden asignar en masa.
      *
      * @var list<string>
      */
@@ -26,7 +26,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
+     * Atributos que deben ocultarse al serializar.
      *
      * @var list<string>
      */
@@ -36,7 +36,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * Atributos que deben ser casteados.
      *
      * @return array<string, string>
      */
@@ -48,15 +48,56 @@ class User extends Authenticatable
         ];
     }
 
-    // Relación con RolesModel
-    public function role()
+    /**
+     * Relación con el modelo RolesModel
+     * (cada usuario pertenece a un rol)
+     */
+    public function rol()
     {
         return $this->belongsTo(RolesModel::class, 'roles_id');
     }
 
-    // Helper opcional (ajustado a tu seeder)
+    /**
+     * Métodos auxiliares para verificar el rol del usuario
+     */
+
     public function isAdminSistema(): bool
     {
-        return $this->role && $this->role->nombre === 'AdministradorSistema';
+        return $this->rol && $this->rol->nombre === 'AdministradorSistema';
+    }
+
+    public function isRector(): bool
+    {
+        return $this->rol && $this->rol->nombre === 'Rector';
+    }
+
+    public function isCoordinadorAcademico(): bool
+    {
+        return $this->rol && $this->rol->nombre === 'CoordinadorAcademico';
+    }
+
+    public function isDocente(): bool
+    {
+        return $this->rol && $this->rol->nombre === 'Docente';
+    }
+
+    public function isCoordinadorDisciplinario(): bool
+    {
+        return $this->rol && $this->rol->nombre === 'CoordinadorDisciplinario';
+    }
+
+    public function isOrientador(): bool
+    {
+        return $this->rol && $this->rol->nombre === 'Orientador';
+    }
+
+    public function isTesoreria(): bool
+    {
+        return $this->rol && $this->rol->nombre === 'Tesoreria';
+    }
+
+    public function isEstudiante(): bool
+    {
+        return $this->rol && $this->rol->nombre === 'Estudiante';
     }
 }

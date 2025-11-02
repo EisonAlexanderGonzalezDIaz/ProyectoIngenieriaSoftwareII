@@ -17,12 +17,11 @@ class OrientadorSeeder extends Seeder
         // 🎯 Permisos específicos del rol Orientador
         $permisos = [
             // Orientación y bienestar estudiantil
-            'ver_listado_estudiantes',
-            'ver_informes_conducta',
-            'registrar_citaciones',
-            'ver_historial_citaciones',
-            'registrar_informes_psicologicos',
-            'editar_informes_psicologicos',
+            'ver_estudiantes',
+            'gestionar_orientaciones',
+            'revisar_casos_graves',
+            'realizar_seguimiento',
+            'atender_sesiones',
 
             // Comunicación con acudientes y docentes
             'enviar_comunicados',

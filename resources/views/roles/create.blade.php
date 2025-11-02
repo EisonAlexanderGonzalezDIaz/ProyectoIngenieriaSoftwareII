@@ -131,17 +131,15 @@
                   <div class="p-3">
                     @php
                       $academico = [
-                        'ver_estudiantes_asignados',
-                        'ver_matriculas',
-                        'registrar_notas',
-                        'editar_notas',
-                        'gestionar_materias',
-                        'gestionar_cursos_y_materias',
-                        'gestionar_boletines',
-                        'crear_horarios',
-                        'generar_reportes_academicos',
-                        'aprobar_cambios_de_notas',
-                      ];
+                    'ver_estudiantes',
+                    'gestionar_docentes',
+                    'gestionar_horarios',
+                    'gestionar_materias',
+                    'aprobar_cambios_notas',
+                    'gestionar_recuperaciones',
+                    'citar_acudientes',
+                    'generar_reportes_academicos',
+                                          ];
                     @endphp
                     @foreach($academico as $p)
                       <div class="form-check">
@@ -166,11 +164,13 @@
                   <div class="p-3">
                     @php
                       $disciplina = [
-                        'registrar_reporte_disciplinario',
-                        'ver_reportes_disciplinarios',
-                        'asignar_sanciones',
-                        'revisar_casos_graves',
-                        'generar_informes_de_disciplina',
+                      'ver_estudiantes',
+                      'recibir_casos_disciplinarios',
+                      'reportar_casos_disciplinarios',
+                      'revisar_casos_graves',
+                      'asignar_sanciones',
+                      'citar_acudientes',
+                      'generar_reportes_disciplinarios',
                       ];
                     @endphp
                     @foreach($disciplina as $p)

@@ -29,9 +29,14 @@ class CoordinadorAcademicoSeeder extends Seeder
             'editar_horarios',
 
             // Académico
-            'gestionar_notas',
-            'ver_reportes_academicos',
-            'aprobar_promociones',
+            'ver_estudiantes',
+            'gestionar_docentes',
+            'gestionar_horarios',
+            'gestionar_materias',
+            'aprobar_cambios_notas',
+            'gestionar_recuperaciones',
+            'citar_acudientes',
+            'generar_reportes_academicos',
 
             // Disciplina
             'ver_reportes_disciplinarios',
