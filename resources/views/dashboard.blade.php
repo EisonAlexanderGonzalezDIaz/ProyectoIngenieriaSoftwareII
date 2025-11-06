@@ -141,8 +141,66 @@
                          <i class="fas fa-user-clock me-2"></i>Atender Sesiones
                     </a>
                     @endif
-                    
-                    
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['AdministradorSistema']))
+                    <a class="nav-link text-dark" href="#">
+                         <i class="fas fa-cog me-2"></i>Asignar Permisos y Roles
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['AdministradorSistema']))
+                    <a class="nav-link text-dark" href="#">
+                         <i class="fas fa-user-cog me-2"></i> Gestionar perfiles de usuario
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['AdministradorSistema']))
+                    <a class="nav-link text-dark" href="#">
+                         <i class="fas fa-clipboard-list me-2"></i></i> Registrar información institucional
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Estudiante']))
+                    <a class="nav-link text-dark" href="#">
+                         <i class="fas fa-clipboard-list me-2"></i></i> Consultar Informacion colegio
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Estudiante']))
+                    <a class="nav-link text-dark" href="#">
+                         <i class="fas fa-clipboard-list me-2"></i></i> Solicitar Citas Orientación
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Estudiante']))
+                    <a class="nav-link text-dark" href="#">
+                         <i class="fas fa-clipboard-list me-2"></i></i> Consultar Horario
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Estudiante']))
+                    <a class="nav-link text-dark" href="#">
+                         <i class="fas fa-clipboard-list me-2"></i></i> Descargar Horario
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Estudiante']))
+                    <a class="nav-link text-dark" href="#">
+                         <i class="fas fa-clipboard-list me-2"></i></i> Consultar Notas
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Estudiante']))
+                    <a class="nav-link text-dark" href="#">
+                         <i class="fas fa-clipboard-list me-2"></i></i> Consultar Horario
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Estudiante']))
+                    <a class="nav-link text-dark" href="#">
+                         <i class="fas fa-clipboard-list me-2"></i></i> Consultar Plan Estudio
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Estudiante']))
+                    <a class="nav-link text-dark" href="#">
+                         <i class="fas fa-clipboard-list me-2"></i></i> Descargar Material Academico
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Estudiante']))
+                    <a class="nav-link text-dark" href="#">
+                         <i class="fas fa-clipboard-list me-2"></i></i> Descargar Certificados
+                    </a>
+                    @endif
                 </nav>
             </div>
         </div>
