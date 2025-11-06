@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CrearUsuario;
 use App\Http\Controllers\RolController;
 use App\Http\Controllers\MatriculaAcudienteController;
+use App\Http\Controllers\CoordinadorAcademicoController;
 use App\Models\RolesModel;
 
 // Ruta raíz redirige al login
@@ -25,6 +26,24 @@ Route::post('/register', [CrearUsuario::class, 'register']);
 // Rutas protegidas por autenticación
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
+
+    // Rutas para el coordinador académico
+    Route::prefix('coordinador-academico')->name('coordinador.')->group(function () {
+        // Dashboard del coordinador académico
+        Route::get('/', [CoordinadorAcademicoController::class, 'dashboard'])->name('dashboard');
+        
+        // Gestión de docentes
+        Route::get('/gestion-docentes', [CoordinadorAcademicoController::class, 'gestionDocentes'])->name('gestion-docentes');
+        
+        // Rutas adicionales para AJAX
+        Route::get('/docentes/{id}', [CoordinadorAcademicoController::class, 'getTeacherData']);
+        Route::put('/docentes/{id}', [CoordinadorAcademicoController::class, 'updateTeacher']);
+        Route::post('/docentes/{id}/subjects', [CoordinadorAcademicoController::class, 'assignSubjects']);
+        Route::post('/docentes/{id}/evaluations', [CoordinadorAcademicoController::class, 'addPerformanceEvaluation']);
+    });
+
+    // Ruta para obtener todas las materias (para el modal de asignación)
+    Route::get('/api/subjects', [CoordinadorAcademicoController::class, 'getAllSubjects']);
 
     // Página de creación de rol (sin controlador)
     Route::get('/roles/create', function () {
