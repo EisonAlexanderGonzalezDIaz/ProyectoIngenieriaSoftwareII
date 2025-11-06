@@ -69,4 +69,18 @@ Route::middleware(['auth'])->group(function () {
 
         return redirect()->route('roles.create')->with('ok', 'Rol creado: ' . $data['nombre']);
     })->name('roles.quick-create');
+
+    // Rutas de tesorería / Tesorero
+    Route::prefix('tesoreria')->name('tesoreria.')->group(function () {
+        Route::get('/paz-y-salvo/{acudiente}', [\App\Http\Controllers\TesoreroController::class, 'generarPazYSalvo'])->name('pazysalvo');
+        Route::post('/factura/matricula', [\App\Http\Controllers\TesoreroController::class, 'generarFacturaMatricula'])->name('factura.matricula');
+        Route::post('/pago/registrar', [\App\Http\Controllers\TesoreroController::class, 'registrarPagoAcudiente'])->name('pago.registrar');
+        Route::post('/devolucion', [\App\Http\Controllers\TesoreroController::class, 'gestionarDevolucion'])->name('devolucion');
+        Route::get('/cartera', [\App\Http\Controllers\TesoreroController::class, 'gestionarCartera'])->name('cartera');
+        Route::get('/reportes', [\App\Http\Controllers\TesoreroController::class, 'entregarReportes'])->name('reportes');
+        Route::get('/estado-cuenta/{acudiente}', [\App\Http\Controllers\TesoreroController::class, 'consultarEstadoCuenta'])->name('estado.cuenta');
+        Route::post('/beca', [\App\Http\Controllers\TesoreroController::class, 'registrarBecaDescuento'])->name('beca.registrar');
+        Route::get('/reporte-financiero', [\App\Http\Controllers\TesoreroController::class, 'generarReporteFinanciero'])->name('reporte.financiero');
+        Route::get('/info-colegio', [\App\Http\Controllers\TesoreroController::class, 'consultarInformacionColegio'])->name('info.colegio');
+    });
 });
