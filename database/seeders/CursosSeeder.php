@@ -29,4 +29,3 @@ class CursosSeeder extends Seeder
         }
     }
 }
-

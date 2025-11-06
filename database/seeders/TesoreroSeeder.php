@@ -15,13 +15,13 @@ class TesoreroSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->command->info('⏳ Iniciando creación del usuario Tesorero...');
+        $this->command->info(' Iniciando creación del usuario Tesorero...');
 
         // Buscar el rol de Tesorero
         $rolTesorero = RolesModel::where('nombre', 'Tesorero')->first();
 
         if (!$rolTesorero) {
-            $this->command->error('❌ El rol de Tesorero no existe. Ejecuta primero RolesSeeder.');
+            $this->command->error(' El rol de Tesorero no existe. Ejecuta primero RolesSeeder.');
             return;
         }
 
@@ -54,9 +54,9 @@ class TesoreroSeeder extends Seeder
             $rolTesorero->update(['permisos' => $permisosTesorero]);
         }
 
-        $this->command->info('✅ Usuario Tesorero creado o actualizado exitosamente.');
-        $this->command->info('📧 Email: tesorero@colegio.edu.co');
-        $this->command->info('🔑 Contraseña: tesorero123');
-        $this->command->warn('⚠️ ¡IMPORTANTE! Cambia la contraseña después del primer login.');
+        $this->command->info(' Usuario Tesorero creado o actualizado exitosamente.');
+        $this->command->info(' Email: tesorero@colegio.edu.co');
+        $this->command->info(' Contraseña: tesorero123');
+        $this->command->warn(' ¡IMPORTANTE! Cambia la contraseña después del primer login.');
     }
 }
