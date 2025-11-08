@@ -52,7 +52,7 @@
                         <i class="fas fa-home me-2"></i>Inicio
                     </a>
                     @if(in_array(Auth::user()->rol->nombre ?? '', ['Rector', 'CoordinadorAcademico', 'CoordinadorDisciplinario','Orientador']))
-                    <a class="nav-link text-dark" href="#">
+                    <a class="nav-link text-dark" href="{{ route('estudiantes.gestion') }}">
                         <i class="fas fa-user-graduate me-2"></i>Ver Estudiantes
                     </a>
                     @endif
