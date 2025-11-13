@@ -136,7 +136,7 @@
                         <i class="fas fa-check-circle me-2"></i>Calificar
                     </a>
                     @endif
-                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Docente', 'Estudiante', 'Acudiente']))
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Docente', 'Estudiante', 'Acudiente', Rector]))
                     <a class="nav-link text-dark" href="#">
                         <i class="fas fa-newspaper me-2"></i>Consultar boletines
                     </a>
@@ -146,7 +146,7 @@
                         <i class="fas fa-envelope-open-text me-2"></i>Citar acudientes
                     </a>
                     @endif
-                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Estudiante']))
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Estudiante', 'Rector', 'CoordinadorAcademico', 'CoordinadorDisciplinario', 'Orientador', 'AdministradorSistema']))
                     <a class="nav-link text-dark" href="#">
                         <i class="fas fa-graduation-cap me-2"></i>Consultar plan de estudio
                     </a>
@@ -171,7 +171,7 @@
                         <i class="fas fa-exclamation-circle me-2"></i>Consultar reportes disciplinarios
                     </a>
                     @endif
-                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Estudiante', 'Acudiente'. 'Docente', 'CoordinadorAcademico', 'CoordinadorDisciplinario', 'Orientador', 'Rector', 'Tesorero']))
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Estudiante', 'Acudiente'. 'Docente', 'CoordinadorAcademico', 'CoordinadorDisciplinario', 'Orientador', 'Rector', 'Tesorero', 'AdministradorSistema']))
                     <a class="nav-link text-dark" href="#">
                         <i class="fas fa-info-circle me-2"></i>Consultar información de colegio
                     </a>
@@ -276,7 +276,7 @@
                         <i class="fas fa-wallet me-2"></i>Consultar estado de cuenta
                     </a>
                     @endif
-                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Tesorero']))
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Rector]))
                     <a class="nav-link text-dark" href="#">
                         <i class="fas fa-percent me-2"></i>Registrar becas y descuentos
                     </a>
