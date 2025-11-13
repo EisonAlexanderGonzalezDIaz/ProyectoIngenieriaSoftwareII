@@ -221,4 +221,55 @@ class TesoreroController extends Controller
         return response()->json(['colegio' => $info], 200);
     }
 
+    // Vistas (métodos que muestran páginas para cada función)
+    public function viewPazYSalvo()
+    {
+        return view('tesoreria.pazysalvo');
+    }
+
+    public function viewGenerarFactura()
+    {
+        return view('tesoreria.factura');
+    }
+
+    public function viewRegistrarPago()
+    {
+        return view('tesoreria.registrar_pago');
+    }
+
+    public function viewDevolucion()
+    {
+        return view('tesoreria.devolucion');
+    }
+
+    public function viewCartera()
+    {
+        return view('tesoreria.cartera');
+    }
+
+    public function viewReportes()
+    {
+        return view('tesoreria.reportes');
+    }
+
+    public function viewEstadoCuenta()
+    {
+        return view('tesoreria.estado_cuenta');
+    }
+
+    public function viewBeca()
+    {
+        return view('tesoreria.beca');
+    }
+
+    public function viewReporteFinanciero()
+    {
+        return view('tesoreria.reporte_financiero');
+    }
+
+    public function viewInfoColegio()
+    {
+        return view('tesoreria.info_colegio');
+    }
+
 }

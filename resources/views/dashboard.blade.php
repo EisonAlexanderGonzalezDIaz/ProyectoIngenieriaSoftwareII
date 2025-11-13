@@ -141,8 +141,61 @@
                          <i class="fas fa-user-clock me-2"></i>Atender Sesiones
                     </a>
                     @endif
+<<<<<<< Updated upstream
                     
                     
+=======
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Tesorero']))
+                    <a class="nav-link text-dark" href="{{ route('tesoreria.view.pazysalvo') }}">
+                        <i class="fas fa-file-invoice me-2"></i>Generar paz y salvo
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Tesorero']))
+                    <a class="nav-link text-dark" href="{{ route('tesoreria.view.factura.matricula') }}">
+                        <i class="fas fa-receipt me-2"></i>Generar recibos de matricula
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Tesorero']))
+                    <a class="nav-link text-dark" href="{{ route('tesoreria.view.pago.registrar') }}">
+                        <i class="fas fa-credit-card me-2"></i>Registrar pagos estudiantes
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Tesorero']))
+                    <a class="nav-link text-dark" href="{{ route('tesoreria.view.devolucion') }}">
+                        <i class="fas fa-undo-alt me-2"></i>Gestionar devoluciones
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Tesorero']))
+                    <a class="nav-link text-dark" href="{{ route('tesoreria.view.cartera') }}">
+                        <i class="fas fa-wallet me-2"></i>Gestionar carteras
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Tesorero']))
+                    <a class="nav-link text-dark" href="{{ route('tesoreria.view.reportes') }}">
+                        <i class="fas fa-paper-plane me-2"></i>Enviar reportes
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Tesorero']))
+                    <a class="nav-link text-dark" href="{{ route('tesoreria.view.estado.cuenta') }}">
+                        <i class="fas fa-wallet me-2"></i>Consultar estado de cuenta
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Tesorero']))
+                    <a class="nav-link text-dark" href="{{ route('tesoreria.view.beca') }}">
+                        <i class="fas fa-percent me-2"></i>Registrar becas y descuentos
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Tesorero']))
+                    <a class="nav-link text-dark" href="{{ route('tesoreria.view.reporte.financiero') }}">
+                        <i class="fas fa-chart-pie me-2"></i>Generar reportes financieros
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Tesorero']))
+                    <a class="nav-link text-dark" href="#">
+                        <i class="fas fa-check-circle me-2"></i>Aprobar becas o descuentos
+                    </a>
+                    @endif
+>>>>>>> Stashed changes
                 </nav>
             </div>
         </div>
@@ -265,4 +318,122 @@
 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
     @csrf
 </form>
+
+<script>
+    (function(){
+        const tokenMeta = document.querySelector('meta[name="csrf-token"]');
+        const csrf = tokenMeta ? tokenMeta.getAttribute('content') : '{{ csrf_token() }}';
+
+        function jsonAlert(title, obj){
+            try { window.alert(title + '\n' + JSON.stringify(obj, null, 2)); }
+            catch(e){ window.alert(title + '\n' + String(obj)); }
+        }
+
+        async function postJson(url, data){
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrf,
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(data || {})
+            });
+            return res.json();
+        }
+
+        async function getJson(url){
+            const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+            return res.json();
+        }
+
+        document.querySelectorAll('[data-action]').forEach(function(el){
+            el.addEventListener('click', async function(e){
+                e.preventDefault();
+                const action = el.getAttribute('data-action');
+                try {
+                    switch(action){
+                        case 'generarPazYSalvo': {
+                            const id = prompt('Ingrese ID del acudiente para generar paz y salvo:');
+                            if (!id) return;
+                            const res = await getJson('/tesoreria/paz-y-salvo/' + encodeURIComponent(id));
+                            jsonAlert('Paz y Salvo', res);
+                            break;
+                        }
+                        case 'generarFacturaMatricula': {
+                            const acudiente_id = prompt('ID del acudiente:'); if (!acudiente_id) return;
+                            const matricula_id = prompt('ID de la matrícula (opcional):');
+                            const monto = prompt('Monto de la factura:'); if (!monto) return;
+                            const descripcion = prompt('Descripción (opcional):') || '';
+                            const res = await postJson('/tesoreria/factura/matricula', {acudiente_id, matricula_id, monto, descripcion});
+                            jsonAlert('Factura creada', res);
+                            break;
+                        }
+                        case 'registrarPago': {
+                            const acudiente_id = prompt('ID del acudiente que paga:'); if (!acudiente_id) return;
+                            const monto = prompt('Monto pagado:'); if (!monto) return;
+                            const metodo = prompt('Método de pago (opcional):') || '';
+                            const descripcion = prompt('Descripción (opcional):') || '';
+                            const res = await postJson('/tesoreria/pago/registrar', {acudiente_id, monto, metodo, descripcion});
+                            jsonAlert('Pago registrado', res);
+                            break;
+                        }
+                        case 'gestionarDevolucion': {
+                            const pago_id = prompt('ID del pago a devolver:'); if (!pago_id) return;
+                            const motivo = prompt('Motivo de la devolución (opcional):') || '';
+                            const res = await postJson('/tesoreria/devolucion', {pago_id, motivo});
+                            jsonAlert('Devolución procesada', res);
+                            break;
+                        }
+                        case 'gestionarCartera': {
+                            const res = await getJson('/tesoreria/api/cartera');
+                            jsonAlert('Cartera (pendientes)', res);
+                            break;
+                        }
+                        case 'entregarReportes': {
+                            const desde = prompt('Fecha desde (YYYY-MM-DD) opcional:');
+                            const hasta = prompt('Fecha hasta (YYYY-MM-DD) opcional:');
+                            const q = new URLSearchParams(); if (desde) q.set('desde', desde); if (hasta) q.set('hasta', hasta);
+                            const res = await getJson('/tesoreria/api/reportes' + (q.toString() ? ('?' + q.toString()) : ''));
+                            jsonAlert('Reportes', res);
+                            break;
+                        }
+                        case 'consultarEstadoCuenta': {
+                            const id = prompt('Ingrese ID del acudiente para consultar estado de cuenta:'); if (!id) return;
+                            const res = await getJson('/tesoreria/api/estado-cuenta/' + encodeURIComponent(id));
+                            jsonAlert('Estado de cuenta', res);
+                            break;
+                        }
+                        case 'registrarBecaDescuento': {
+                            const acudiente_id = prompt('ID del acudiente:'); if (!acudiente_id) return;
+                            const monto = prompt('Monto de la beca/descuento (valor positivo):'); if (!monto) return;
+                            const matricula_id = prompt('ID matrícula (opcional):');
+                            const descripcion = prompt('Descripción (opcional):') || '';
+                            const res = await postJson('/tesoreria/api/beca', {acudiente_id, monto, matricula_id, descripcion});
+                            jsonAlert('Beca/Descuento registrado', res);
+                            break;
+                        }
+                        case 'generarReporteFinanciero': {
+                            const desde = prompt('Fecha desde (YYYY-MM-DD) opcional:');
+                            const hasta = prompt('Fecha hasta (YYYY-MM-DD) opcional:');
+                            const q = new URLSearchParams(); if (desde) q.set('desde', desde); if (hasta) q.set('hasta', hasta);
+                            const res = await getJson('/tesoreria/api/reporte-financiero' + (q.toString() ? ('?' + q.toString()) : ''));
+                            jsonAlert('Reporte financiero', res);
+                            break;
+                        }
+                        case 'aprobarBecas': {
+                            alert('Función de aprobación no implementada en el backend aún.');
+                            break;
+                        }
+                        default:
+                            console.warn('Acción no manejada:', action);
+                    }
+                } catch(err){
+                    console.error(err);
+                    alert('Error al ejecutar la acción: ' + (err.message || err));
+                }
+            });
+        });
+    })();
+</script>
 @endsection
