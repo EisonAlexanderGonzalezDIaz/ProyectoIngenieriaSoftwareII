@@ -51,14 +51,29 @@
                     <a class="nav-link active fw-semibold text-primary" href="{{ route('dashboard') }}">
                         <i class="fas fa-home me-2"></i>Inicio
                     </a>
-                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Rector', 'CoordinadorAcademico', 'CoordinadorDisciplinario','Orientador']))
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Rector', 'CoordinadorAcademico', 'CoordinadorDisciplinario', 'Orientador', 'Tesorero', 'Docente', 'AdministradorSistema']))
                     <a class="nav-link text-dark" href="{{ route('estudiantes.gestion') }}">
                         <i class="fas fa-user-graduate me-2"></i>Ver Estudiantes
                     </a>
                     @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['AdministradorSistema', 'Rector']))
+                    <a class="nav-link text-dark" href="#">
+                        <i class="fas fa-building me-2"></i>Registrar informacion institucional
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['AdministradorSistema', 'Rector']))
+                    <a class="nav-link text-dark" href="#">
+                        <i class="fas fa-user-shield me-2"></i>Asignar permisos y roles
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['AdministradorSistema', 'Rector']))
+                    <a class="nav-link text-dark" href="#">
+                        <i class="fas fa-users-cog me-2"></i>Gestionar perfiles de usuario
+                    </a>
+                    @endif
                     @if(in_array(Auth::user()->rol->nombre ?? '', ['Rector', 'CoordinadorAcademico']))
                     <a class="nav-link text-dark" href="#">
-                        <i class="fas fa-chalkboard-teacher"></i>Gestionar Docentes
+                        <i class="fas fa-chalkboard-teacher me-2"></i>Gestionar Docentes
                     </a>
                     @endif
                     @if(in_array(Auth::user()->rol->nombre ?? '', ['CoordinadorAcademico']))
@@ -71,29 +86,114 @@
                         <i class="fas fa-calendar-alt me-2"></i>Gestionar Horarios
                     </a>
                     @endif
-                     @if(in_array(Auth::user()->rol->nombre ?? '', ['Docente']))
+                     @if(in_array(Auth::user()->rol->nombre ?? '', ['Docente', 'Estudiante', 'Acudiente']))
                     <a class="nav-link text-dark" href="#">
-                        <i class="fas fa-star me-2"></i>Calificaciones
+                        <i class="fas fa-calendar-plus me-2"></i>Solicitar citas orientacion
                     </a>
                     @endif
-                     @if(in_array(Auth::user()->rol->nombre ?? '', ['CoordinadorAcademico']))
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Docente', 'Estudiante']))
                     <a class="nav-link text-dark" href="#">
-                        <i class="fas fa-book-open me-2"></i>Aprobar Cambios de Notas
+                        <i class="fas fa-clock me-2"></i>Consultar horario
                     </a>
                     @endif
-                     @if(in_array(Auth::user()->rol->nombre ?? '', ['CoordinadorAcademico']))
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Docente', 'Estudiante']))
                     <a class="nav-link text-dark" href="#">
-                        <i class="fas fa-arrow-trend-up me-2"></i>Gestionar Recuperaciones
+                        <i class="fas fa-download me-2"></i>Descargar horario
                     </a>
                     @endif
-                     @if(in_array(Auth::user()->rol->nombre ?? '', ['CoordinadorAcademico', 'CoordinadorDisciplinario', 'Docente']))
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Docente', 'Estudiante', 'Acudiente']))
+                    <a class="nav-link text-dark" href="#">
+                        <i class="fas fa-clipboard-list me-2"></i>Consultar notas
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Docente', 'Estudiante']))
+                    <a class="nav-link text-dark" href="#">
+                        <i class="fas fa-book me-2"></i>Consultar materia
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Docente']))
+                    <a class="nav-link text-dark" href="#">
+                        <i class="fas fa-pen me-2"></i>Registrar notas
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Docente']))
+                    <a class="nav-link text-dark" href="#">
+                        <i class="fas fa-user-check me-2"></i>Consultar asistencia
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Docente', 'Estudiante']))
+                    <a class="nav-link text-dark" href="#">
+                        <i class="fas fa-upload me-2"></i>Subir material academico
+                    </a>
+                    @endif  
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Docente']))
+                    <a class="nav-link text-dark" href="#">
+                        <i class="fas fa-file-alt me-2"></i>Generar informes curso
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Docente']))
+                    <a class="nav-link text-dark" href="#">
+                        <i class="fas fa-check-circle me-2"></i>Calificar
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Docente', 'Estudiante', 'Acudiente']))
+                    <a class="nav-link text-dark" href="#">
+                        <i class="fas fa-newspaper me-2"></i>Consultar boletines
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Docente']))
+                    <a class="nav-link text-dark" href="#">
+                        <i class="fas fa-envelope-open-text me-2"></i>Citar acudientes
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Estudiante']))
+                    <a class="nav-link text-dark" href="#">
+                        <i class="fas fa-graduation-cap me-2"></i>Consultar plan de estudio
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Estudiante']))
+                    <a class="nav-link text-dark" href="#">
+                        <i class="fas fa-download me-2"></i>Descargar material academico
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Estudiante', 'Acudiente']))
+                    <a class="nav-link text-dark" href="#">
+                        <i class="fas fa-certificate me-2"></i>Solicitar certificaciones
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Estudiante']))
+                    <a class="nav-link text-dark" href="#">
+                        <i class="fas fa-download me-2"></i>Descargar certificaciones
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Estudiante', 'Acudiente']))
+                    <a class="nav-link text-dark" href="#">
+                        <i class="fas fa-exclamation-circle me-2"></i>Consultar reportes disciplinarios
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Estudiante', 'Acudiente'. 'Docente', 'CoordinadorAcademico', 'CoordinadorDisciplinario', 'Orientador', 'Rector', 'Tesorero']))
+                    <a class="nav-link text-dark" href="#">
+                        <i class="fas fa-info-circle me-2"></i>Consultar información de colegio
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['CoordinadorAcademico']))
+                    <a class="nav-link text-dark" href="#">
+                        <i class="fas fa-check me-2"></i>Aprobar Cambios de Notas
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['CoordinadorAcademico']))
+                    <a class="nav-link text-dark" href="#">
+                        <i class="fas fa-undo-alt me-2"></i>Gestionar Recuperaciones
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['CoordinadorAcademico', 'CoordinadorDisciplinario', 'Docente']))
                     <a class="nav-link text-dark" href="#">
                         <i class="fas fa-envelope-open-text me-2"></i>Citar Acudientes
                     </a>
                     @endif
-                     @if(in_array(Auth::user()->rol->nombre ?? '', ['CoordinadorAcademico']))
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['CoordinadorAcademico']))
                     <a class="nav-link text-dark" href="#">
-                        <i class="fas fa-chart-line"></i>Generar Reportes Academicos
+                        <i class="fas fa-chart-line me-2"></i>Generar Reportes Academicos
                     </a>
                     @endif
                     @if(in_array(Auth::user()->rol->nombre ?? '', ['CoordinadorDisciplinario']))
@@ -116,7 +216,7 @@
                         <i class="fas fa-gavel me-2"></i>Asignar sanciones
                     </a>
                     @endif
-                    @if(in_array(Auth::user()->rol->nombre ?? '', ['CoordinadorDisciplinario']))
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['CoordinadorDisciplinario', 'Docente']))
                     <a class="nav-link text-dark" href="#">
                         <i class="fas fa-clipboard-list me-2"></i>Generar reportes disciplinarios
                     </a>
@@ -141,8 +241,56 @@
                          <i class="fas fa-user-clock me-2"></i>Atender Sesiones
                     </a>
                     @endif
-                    
-                    
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Tesorero']))
+                    <a class="nav-link text-dark" href="#">
+                        <i class="fas fa-file-invoice me-2"></i>Generar paz y salvo
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Tesorero']))
+                    <a class="nav-link text-dark" href="#">
+                        <i class="fas fa-receipt me-2"></i>Generar recibos de matricula
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Tesorero']))
+                    <a class="nav-link text-dark" href="#">
+                        <i class="fas fa-credit-card me-2"></i>Registrar pagos estudiantes
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Tesorero']))
+                    <a class="nav-link text-dark" href="#">
+                        <i class="fas fa-undo-alt me-2"></i>Gestionar devoluciones
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Tesorero']))
+                    <a class="nav-link text-dark" href="#">
+                        <i class="fas fa-wallet me-2"></i>Gestionar carteras
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Tesorero']))
+                    <a class="nav-link text-dark" href="#">
+                        <i class="fas fa-paper-plane me-2"></i>Enviar reportes
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Tesorero']))
+                    <a class="nav-link text-dark" href="#">
+                        <i class="fas fa-wallet me-2"></i>Consultar estado de cuenta
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Tesorero']))
+                    <a class="nav-link text-dark" href="#">
+                        <i class="fas fa-percent me-2"></i>Registrar becas y descuentos
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Tesorero']))
+                    <a class="nav-link text-dark" href="#">
+                        <i class="fas fa-chart-pie me-2"></i>Generar reportes financieros
+                    </a>
+                    @endif
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Tesorero']))
+                    <a class="nav-link text-dark" href="#">
+                        <i class="fas fa-check-circle me-2"></i>Aprobar becas o descuentos
+                    </a>
+                    @endif
                 </nav>
             </div>
         </div>
