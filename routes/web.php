@@ -73,6 +73,7 @@ Route::middleware(['auth'])->group(function () {
     // Rutas de tesorería / Tesorero
     Route::prefix('tesoreria')->name('tesoreria.')->group(function () {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         Route::get('/paz-y-salvo/{acudiente}', [\App\Http\Controllers\TesoreroController::class, 'generarPazYSalvo'])->name('pazysalvo');
         Route::post('/factura/matricula', [\App\Http\Controllers\TesoreroController::class, 'generarFacturaMatricula'])->name('factura.matricula');
         Route::post('/pago/registrar', [\App\Http\Controllers\TesoreroController::class, 'registrarPagoAcudiente'])->name('pago.registrar');
@@ -84,6 +85,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/reporte-financiero', [\App\Http\Controllers\TesoreroController::class, 'generarReporteFinanciero'])->name('reporte.financiero');
         Route::get('/info-colegio', [\App\Http\Controllers\TesoreroController::class, 'consultarInformacionColegio'])->name('info.colegio');
 =======
+=======
+>>>>>>> Stashed changes
         // Vistas (páginas) para tesorería
         Route::get('/paz-y-salvo', [TesoreroController::class, 'viewPazYSalvo'])->name('view.pazysalvo');
         Route::get('/factura/matricula', [TesoreroController::class, 'viewGenerarFactura'])->name('view.factura.matricula');
@@ -109,6 +112,9 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/reporte-financiero', [TesoreroController::class, 'generarReporteFinanciero'])->name('api.reporte.financiero');
             Route::get('/info-colegio', [TesoreroController::class, 'consultarInformacionColegio'])->name('api.info.colegio');
         });
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     });
 });
