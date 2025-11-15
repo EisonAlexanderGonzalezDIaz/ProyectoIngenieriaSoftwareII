@@ -146,7 +146,7 @@
                         <i class="fas fa-envelope-open-text me-2"></i>Citar acudientes
                     </a>
                     @endif
-                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Estudiante', 'Rector', 'CoordinadorAcademico', 'CoordinadorDisciplinario', 'Orientador', 'AdministradorSistema']))
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Estudiante', 'Rector', 'Orientador', 'AdministradorSistema']))
                     <a class="nav-link text-dark" href="#">
                         <i class="fas fa-graduation-cap me-2"></i>Consultar plan de estudio
                     </a>
@@ -171,7 +171,7 @@
                         <i class="fas fa-exclamation-circle me-2"></i>Consultar reportes disciplinarios
                     </a>
                     @endif
-                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Estudiante', 'Acudiente', 'Docente', 'CoordinadorAcademico', 'CoordinadorDisciplinario', 'Orientador', 'Rector', 'Tesorero', 'AdministradorSistema']))
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Estudiante', 'Acudiente', 'Docente','Orientador', 'Rector', 'Tesorero', 'AdministradorSistema']))
                     <a class="nav-link text-dark" href="#">
                         <i class="fas fa-info-circle me-2"></i>Consultar información de colegio
                     </a>
