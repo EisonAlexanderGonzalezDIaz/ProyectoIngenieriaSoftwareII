@@ -77,12 +77,12 @@
                     </a>
                     @endif
                     @if(in_array(Auth::user()->rol->nombre ?? '', ['CoordinadorAcademico']))
-                    <a class="nav-link text-dark" href="#">
+                    <a class="nav-link text-dark" href="{{ route('materias.gestion') }}">
                         <i class="fas fa-book-open me-2"></i>Gestionar Materias
                     </a>
                     @endif
                     @if(in_array(Auth::user()->rol->nombre ?? '', ['CoordinadorAcademico']))
-                    <a class="nav-link text-dark" href="#">
+                    <a class="nav-link text-dark" href="{{ route('horarios.gestion') }}">
                         <i class="fas fa-calendar-alt me-2"></i>Gestionar Horarios
                     </a>
                     @endif
@@ -91,6 +91,7 @@
                         <i class="fas fa-calendar-plus me-2"></i>Solicitar citas orientacion
                     </a>
                     @endif
+<<<<<<< Updated upstream
                     @if(in_array(Auth::user()->rol->nombre ?? '', ['Docente', 'Estudiante']))
                     <a class="nav-link text-dark" href="#">
                         <i class="fas fa-clock me-2"></i>Consultar horario
@@ -99,6 +100,16 @@
                     @if(in_array(Auth::user()->rol->nombre ?? '', ['Docente', 'Estudiante']))
                     <a class="nav-link text-dark" href="#">
                         <i class="fas fa-download me-2"></i>Descargar horario
+=======
+                     @if(in_array(Auth::user()->rol->nombre ?? '', ['CoordinadorAcademico']))
+                    <a class="nav-link text-dark" href="{{ route('cambios-notas.gestion') }}">
+                        <i class="fas fa-book-open me-2"></i>Aprobar Cambios de Notas
+                    </a>
+                    @endif
+                     @if(in_array(Auth::user()->rol->nombre ?? '', ['CoordinadorAcademico']))
+                    <a class="nav-link text-dark" href="{{ route('recuperaciones.gestion') }}">
+                        <i class="fas fa-arrow-trend-up me-2"></i>Gestionar Recuperaciones
+>>>>>>> Stashed changes
                     </a>
                     @endif
                     @if(in_array(Auth::user()->rol->nombre ?? '', ['Docente', 'Estudiante', 'Acudiente']))
@@ -191,9 +202,15 @@
                         <i class="fas fa-envelope-open-text me-2"></i>Citar Acudientes
                     </a>
                     @endif
+<<<<<<< Updated upstream
                     @if(in_array(Auth::user()->rol->nombre ?? '', ['CoordinadorAcademico']))
                     <a class="nav-link text-dark" href="#">
                         <i class="fas fa-chart-line me-2"></i>Generar Reportes Academicos
+=======
+                     @if(in_array(Auth::user()->rol->nombre ?? '', ['CoordinadorAcademico']))
+                    <a class="nav-link text-dark" href="{{ route('reportes-academicos.gestion') }}">
+                        <i class="fas fa-chart-line"></i>Generar Reportes Academicos
+>>>>>>> Stashed changes
                     </a>
                     @endif
                     @if(in_array(Auth::user()->rol->nombre ?? '', ['CoordinadorDisciplinario']))
