@@ -171,7 +171,7 @@
                         <i class="fas fa-exclamation-circle me-2"></i>Consultar reportes disciplinarios
                     </a>
                     @endif
-                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Estudiante', 'Acudiente'. 'Docente', 'CoordinadorAcademico', 'CoordinadorDisciplinario', 'Orientador', 'Rector', 'Tesorero', 'AdministradorSistema']))
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Estudiante', 'Acudiente', 'Docente', 'CoordinadorAcademico', 'CoordinadorDisciplinario', 'Orientador', 'Rector', 'Tesorero', 'AdministradorSistema']))
                     <a class="nav-link text-dark" href="#">
                         <i class="fas fa-info-circle me-2"></i>Consultar información de colegio
                     </a>
@@ -276,7 +276,7 @@
                         <i class="fas fa-wallet me-2"></i>Consultar estado de cuenta
                     </a>
                     @endif
-                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Rector]))
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Rector']))
                     <a class="nav-link text-dark" href="#">
                         <i class="fas fa-percent me-2"></i>Registrar becas y descuentos
                     </a>
