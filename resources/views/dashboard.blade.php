@@ -58,11 +58,6 @@
                     @endif
                     @if(in_array(Auth::user()->rol->nombre ?? '', ['AdministradorSistema', 'Rector']))
                     <a class="nav-link text-dark" href="#">
-                        <i class="fas fa-building me-2"></i>Registrar informacion institucional
-                    </a>
-                    @endif
-                    @if(in_array(Auth::user()->rol->nombre ?? '', ['AdministradorSistema', 'Rector']))
-                    <a class="nav-link text-dark" href="#">
                         <i class="fas fa-user-shield me-2"></i>Asignar permisos y roles
                     </a>
                     @endif
@@ -146,10 +141,10 @@
                         <i class="fas fa-envelope-open-text me-2"></i>Citar acudientes
                     </a>
                     @endif
-                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Estudiante', 'Rector', 'CoordinadorAcademico', 'AdministradorSistema']))
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Estudiante', 'Rector', 'CoordinadorAcademico']))
                     <a class="nav-link text-dark" href="#">
                         <i class="fas fa-graduation-cap me-2"></i>Consultar plan Academico Anual
-                    </a>
+                    </a>        
                     @endif
                     @if(in_array(Auth::user()->rol->nombre ?? '', ['Estudiante']))
                     <a class="nav-link text-dark" href="#">
@@ -171,7 +166,7 @@
                         <i class="fas fa-exclamation-circle me-2"></i>Consultar reportes disciplinarios
                     </a>
                     @endif
-                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Estudiante', 'Acudiente', 'Docente','Orientador', 'Rector', 'Tesorero', 'AdministradorSistema']))
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Estudiante', 'Acudiente', 'Docente','Orientador', 'Rector', 'Tesorero']))
                     <a class="nav-link text-dark" href="{{ route('informacion.gestion') }}">
                         <i class="fas fa-info-circle me-2"></i>Consultar información de colegio
                     </a>
