@@ -12,19 +12,27 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->unsignedBigInteger('roles_id')->nullable()->after('email');
-            $table->foreign('roles_id')->references('id')->on('roles')->onDelete('set null');
+            // Solo crear la columna si NO existe
+            if (!Schema::hasColumn('users', 'roles_id')) {
+                $table->unsignedBigInteger('roles_id')->nullable()->after('email');
+                $table->foreign('roles_id')
+                      ->references('id')
+                      ->on('roles')
+                      ->onDelete('set null');
+            }
         });
     }
-
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-        $table->dropForeign(['roles_id']);
-        $table->dropColumn('roles_id');
+            // Solo borrar si la columna existe
+            if (Schema::hasColumn('users', 'roles_id')) {
+                $table->dropForeign(['roles_id']);
+                $table->dropColumn('roles_id');
+            }
         });
     }
 };

@@ -11,6 +11,10 @@
         <div class="card-header bg-info text-white d-flex justify-content-between align-items-center rounded-top">
             <h4 class="mb-0"><i class="fas fa-book me-2"></i>Gestión de Materias</h4>
             <div>
+                 {{-- Botón para volver al panel de inicio --}}
+        <a href="{{ route('dashboard') }}" class="btn btn-outline-light btn-sm me-2">
+            <i class="fas fa-home"></i> Panel de inicio
+        </a>    
                 <button class="btn btn-light btn-sm me-2" onclick="toggleAddMateriaForm()">
                     <i class="fas fa-plus"></i> Agregar Materia
                 </button>
@@ -32,6 +36,9 @@
                 <div class="col-md-6">
                     <select class="form-select form-select-sm" id="filterGrado">
                         <option value="">Filtrar por Grado...</option>
+                        <option value="6">6°</option>
+                        <option value="7">7°</option>
+                        <option value="8">8°</option>
                         <option value="9">9°</option>
                         <option value="10">10°</option>
                         <option value="11">11°</option>
@@ -216,6 +223,9 @@
                                 <label class="form-label">Grado <span class="text-danger">*</span></label>
                                 <select class="form-select" required>
                                     <option value="">Seleccionar...</option>
+                                    <option value="9">6°</option>
+                                    <option value="10">7°</option>
+                                    <option value="11">8°</option>
                                     <option value="9">9°</option>
                                     <option value="10">10°</option>
                                     <option value="11">11°</option>
@@ -232,6 +242,20 @@
                                 <option value="3">Prof. Martínez</option>
                                 <option value="4">Prof. Rodríguez</option>
                                 <option value="5">Prof. Pérez</option>
+                                <option value="6">Prof. Suárez</option>
+                                <option value="7">Prof. Castillo</option>
+                                <option value="8">Prof. Torres</option>
+                                <option value="9">Prof. Herrera</option>
+                                <option value="10">Prof. Rojas</option>
+                                <option value="11">Prof. Medina</option>
+                                <option value="12">Prof. Vargas</option>
+                                <option value="13">Prof. Jiménez</option>
+                                <option value="14">Prof. Rivera</option>
+                                <option value="15">Prof. Delgado</option>
+                                <option value="16">Prof. Castaño</option>
+                                <option value="17">Prof. León</option>
+                                <option value="18">Prof. Rubio</option>
+                                <option value="19">Prof. Gonzalez</option>
                             </select>
                         </div>
 
