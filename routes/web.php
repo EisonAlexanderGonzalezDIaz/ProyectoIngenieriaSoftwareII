@@ -22,6 +22,7 @@ use App\Http\Controllers\CitarAcudienteController;
 use App\Http\Controllers\CasosDisciplinariosController;
 use App\Http\Controllers\ReportesDisciplinariosController;
 use App\Http\Controllers\AprobacionesNotasController;
+use App\Http\Controllers\PlanAcademicoController;
 use App\Models\RolesModel;
 
 /*
@@ -255,9 +256,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/reportes/gestion', [ReportesDisciplinariosController::class, 'gestion'])
     ->name('reportes.gestion');
 
-    // Gestión de Docentes (coordinador Administrativo)
+    // Gestión de Docentes 
     Route::get('/gestiondocentes/gestion', [App\Http\Controllers\GestionDocentesController::class, 'gestion'])
     ->name('gestiondocentes.gestion');
+
+    // Plan Academico 
+    Route::get('/planacademico/gestion', [PlanAcademicoController::class, 'gestion'])
+    ->name('planacademico.gestion');
 
 
 

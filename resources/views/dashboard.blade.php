@@ -147,7 +147,7 @@
                     </a>
                     @endif
                     @if(in_array(Auth::user()->rol->nombre ?? '', ['Estudiante', 'Rector', 'CoordinadorAcademico', 'AdministradorSistema']))
-                    <a class="nav-link text-dark" href="#">
+                    <a class="nav-link text-dark" href="{{ route('planacademico.gestion') }}">
                         <i class="fas fa-graduation-cap me-2"></i>Consultar plan Academico Anual
                     </a>
                     @endif
