@@ -72,7 +72,7 @@
                     </a>
                     @endif
                     @if(in_array(Auth::user()->rol->nombre ?? '', ['Rector', 'CoordinadorAcademico']))
-                    <a class="nav-link text-dark" href="#">
+                    <a class="nav-link text-dark" href="{{ route('gestiondocentes.gestion') }}">
                         <i class="fas fa-chalkboard-teacher me-2"></i>Gestionar Docentes
                     </a>
                     @endif
@@ -177,29 +177,29 @@
                     </a>
                     @endif
                     @if(in_array(Auth::user()->rol->nombre ?? '', ['CoordinadorAcademico']))
-                    <a class="nav-link text-dark" href="#">
+                    <a class="nav-link text-dark" href="{{ route('cambios-notas.gestion') }}">
                         <i class="fas fa-check me-2"></i>Aprobar Cambios de Notas
                     </a>
                     @endif
 
                     @if(in_array(Auth::user()->rol->nombre ?? '', ['CoordinadorAcademico', 'CoordinadorDisciplinario', 'Docente']))
-                    <a class="nav-link text-dark" href="#">
+                    <a class="nav-link text-dark" href="{{ route('citas.gestion') }}">
                         <i class="fas fa-envelope-open-text me-2"></i>Citar Acudientes
                     </a>
                     @endif
                     @if(in_array(Auth::user()->rol->nombre ?? '', ['CoordinadorAcademico']))
-                    <a class="nav-link text-dark" href="#">
+                    <a class="nav-link text-dark" href="{{ route('reportes-academicos.gestion') }}">
                         <i class="fas fa-chart-line me-2"></i>Generar Reportes Academicos
                     </a>
                     @endif
                     @if(in_array(Auth::user()->rol->nombre ?? '', ['CoordinadorDisciplinario']))
-                    <a class="nav-link text-dark" href="#">
+                    <a class="nav-link text-dark" href="{{ route('casos.gestion') }}">
                         <i class="fas fa-exclamation-triangle me-2"></i>Casos disciplinarios
                     </a>
                     @endif
 
                     @if(in_array(Auth::user()->rol->nombre ?? '', ['CoordinadorDisciplinario', 'Docente']))
-                    <a class="nav-link text-dark" href="#">
+                    <a class="nav-link text-dark" href="{{ route('reportes.gestion') }}">
                         <i class="fas fa-clipboard-list me-2"></i>Generar reportes disciplinarios
                     </a>
                     @endif

@@ -9,8 +9,16 @@
     ========================== --}}
     <div class="card shadow-sm mb-5 border-0">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center rounded-top">
-            <h4 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Generar Reportes Académicos</h4>
+            <h4 class="mb-0">
+                <i class="fas fa-chart-bar me-2"></i>
+                Generar Reportes Académicos
+            </h4>
             <div>
+                {{-- Botón para volver al panel de inicio --}}
+                <a href="{{ route('dashboard') }}" class="btn btn-outline-light btn-sm me-2">
+                    <i class="fas fa-home"></i> Panel de inicio
+                </a>
+                
                 <button class="btn btn-light btn-sm me-2" onclick="toggleGenerarReporteForm()">
                     <i class="fas fa-plus"></i> Nuevo Reporte
                 </button>
@@ -19,39 +27,49 @@
                 </button>
             </div>
         </div>
+        
+        <div>
 
         <div class="card-body bg-light">
             {{-- Estadísticas --}}
             <div class="row mb-4">
                 <div class="col-md-3">
-                    <div class="card border-0 shadow-sm bg-info text-white">
+                    <div class="card border-0 shadow-sm bg-primary text-white">
                         <div class="card-body text-center">
-                            <h5 class="card-title"><i class="fas fa-file me-2"></i>Generados</h5>
-                            <h3 class="mb-0">24</h3>
+                            <h5 class="card-title small text-uppercase mb-1">
+                                <i class="fas fa-file me-2"></i>Generados
+                            </h5>
+                            <h3 class="mb-0 fw-bold">24</h3>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="card border-0 shadow-sm bg-success text-white">
                         <div class="card-body text-center">
-                            <h5 class="card-title"><i class="fas fa-download me-2"></i>Descargados</h5>
-                            <h3 class="mb-0">18</h3>
+                            <h5 class="card-title small text-uppercase mb-1">
+                                <i class="fas fa-download me-2"></i>Descargados
+                            </h5>
+                            <h3 class="mb-0 fw-bold">18</h3>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <div class="card border-0 shadow-sm bg-warning text-white">
+                    <div class="card border-0 shadow-sm bg-warning text-dark">
                         <div class="card-body text-center">
-                            <h5 class="card-title"><i class="fas fa-envelope me-2"></i>Enviados</h5>
-                            <h3 class="mb-0">12</h3>
+                            <h5 class="card-title small text-uppercase mb-1">
+                                <i class="fas fa-envelope me-2"></i>Enviados
+                            </h5>
+                            <h3 class="mb-0 fw-bold">12</h3>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="card border-0 shadow-sm bg-secondary text-white">
                         <div class="card-body text-center">
-                            <h5 class="card-title"><i class="fas fa-list me-2"></i>Total</h5>
-                            <h3 class="mb-0">24</h3>
+                            <h5 class="card-title small text-uppercase mb-1">
+                                <i class="fas fa-list me-2"></i>Total
+                            </h5>
+                            <h3 class="mb-0 fw-bold">24</h3>
                         </div>
                     </div>
                 </div>
@@ -59,7 +77,9 @@
 
             {{-- Barra de búsqueda --}}
             <div class="input-group mb-3">
-                <span class="input-group-text bg-white"><i class="fas fa-search text-muted"></i></span>
+                <span class="input-group-text bg-white">
+                    <i class="fas fa-search text-muted"></i>
+                </span>
                 <input type="text" id="searchReportes" class="form-control" placeholder="Buscar por tipo, grado o período...">
             </div>
 
@@ -106,7 +126,7 @@
                             <th>Fecha Generación</th>
                             <th>Creado Por</th>
                             <th>Estado</th>
-                            <th>Acciones</th>
+                            <th class="text-center">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -119,7 +139,7 @@
                             <td>2025-11-12</td>
                             <td>Prof. García</td>
                             <td><span class="badge bg-success">Generado</span></td>
-                            <td>
+                            <td class="text-center">
                                 <button class="btn btn-outline-primary btn-sm me-1" onclick="descargarReporte('REP001')" title="Descargar">
                                     <i class="fas fa-download"></i>
                                 </button>
@@ -142,8 +162,8 @@
                             <td>Excel</td>
                             <td>2025-11-11</td>
                             <td>Prof. López</td>
-                            <td><span class="badge bg-info">Enviado</span></td>
-                            <td>
+                            <td><span class="badge bg-info text-dark">Enviado</span></td>
+                            <td class="text-center">
                                 <button class="btn btn-outline-primary btn-sm me-1" onclick="descargarReporte('REP002')" title="Descargar">
                                     <i class="fas fa-download"></i>
                                 </button>
@@ -167,7 +187,7 @@
                             <td>2025-11-10</td>
                             <td>Prof. Martínez</td>
                             <td><span class="badge bg-warning text-dark">Generado</span></td>
-                            <td>
+                            <td class="text-center">
                                 <button class="btn btn-outline-primary btn-sm me-1" onclick="descargarReporte('REP003')" title="Descargar">
                                     <i class="fas fa-download"></i>
                                 </button>
@@ -190,8 +210,8 @@
                             <td>PDF</td>
                             <td>2025-11-09</td>
                             <td>Prof. Rodríguez</td>
-                            <td><span class="badge bg-success">Descargado</span></td>
-                            <td>
+                            <td><span class="badge bg-secondary">Descargado</span></td>
+                            <td class="text-center">
                                 <button class="btn btn-outline-primary btn-sm me-1" onclick="descargarReporte('REP004')" title="Descargar">
                                     <i class="fas fa-download"></i>
                                 </button>
@@ -214,8 +234,8 @@
                             <td>Excel</td>
                             <td>2025-11-08</td>
                             <td>Prof. Pérez</td>
-                            <td><span class="badge bg-info">Enviado</span></td>
-                            <td>
+                            <td><span class="badge bg-info text-dark">Enviado</span></td>
+                            <td class="text-center">
                                 <button class="btn btn-outline-primary btn-sm me-1" onclick="descargarReporte('REP005')" title="Descargar">
                                     <i class="fas fa-download"></i>
                                 </button>
@@ -249,15 +269,18 @@
                  FORMULARIO PARA GENERAR NUEVO REPORTE
             ============================================ --}}
             <div id="generarReporteForm" class="card shadow-sm border-0 mt-5" style="display: none;">
-                <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0"><i class="fas fa-plus text-primary me-2"></i>Generar Nuevo Reporte</h5>
-                    <button type="button" class="btn-close" onclick="toggleGenerarReporteForm()"></button>
+                <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-file-export me-2"></i>
+                        Generar Nuevo Reporte
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" onclick="toggleGenerarReporteForm()"></button>
                 </div>
-                <div class="card-body">
+                <div class="card-body bg-white">
                     <form id="reporteForm">
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label class="form-label">Tipo de Reporte <span class="text-danger">*</span></label>
+                                <label class="form-label text-secondary small">Tipo de Reporte <span class="text-danger">*</span></label>
                                 <select class="form-select" id="tipoReporte" required onchange="actualizarOpcionesGrado()">
                                     <option value="">Seleccionar...</option>
                                     <option value="Notas">Reporte de Notas</option>
@@ -268,7 +291,7 @@
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Grado <span class="text-danger">*</span></label>
+                                <label class="form-label text-secondary small">Grado <span class="text-danger">*</span></label>
                                 <select class="form-select" id="gradoReporte" required>
                                     <option value="">Seleccionar...</option>
                                     <option value="9">9°</option>
@@ -281,7 +304,7 @@
 
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label class="form-label">Período <span class="text-danger">*</span></label>
+                                <label class="form-label text-secondary small">Período <span class="text-danger">*</span></label>
                                 <select class="form-select" id="periodoReporte" required>
                                     <option value="">Seleccionar...</option>
                                     <option value="Período 1">Período 1</option>
@@ -292,7 +315,7 @@
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Formato <span class="text-danger">*</span></label>
+                                <label class="form-label text-secondary small">Formato <span class="text-danger">*</span></label>
                                 <select class="form-select" id="formatoReporte" required>
                                     <option value="">Seleccionar...</option>
                                     <option value="PDF">PDF</option>
@@ -304,7 +327,7 @@
 
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label class="form-label">Incluir Estudiantes</label>
+                                <label class="form-label text-secondary small">Incluir Estudiantes</label>
                                 <select class="form-select" id="estudiantesReporte" multiple>
                                     <option value="Todos" selected>Todos los estudiantes</option>
                                     <option value="Juan Pérez">Juan Pérez</option>
@@ -315,7 +338,7 @@
                                 <small class="text-muted">Mantén presionado Ctrl para seleccionar varios</small>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Incluir Secciones</label>
+                                <label class="form-label text-secondary small">Incluir Secciones</label>
                                 <select class="form-select" id="seccionesReporte" multiple>
                                     <option value="A" selected>Sección A</option>
                                     <option value="B">Sección B</option>
@@ -326,25 +349,25 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">
+                            <label class="form-label text-secondary small">
                                 <input type="checkbox" id="incluirGraficos" checked> Incluir Gráficos
                             </label>
                             <br>
-                            <label class="form-label">
+                            <label class="form-label text-secondary small">
                                 <input type="checkbox" id="incluirAnalisis"> Incluir Análisis Detallado
                             </label>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Observaciones</label>
+                            <label class="form-label text-secondary small">Observaciones</label>
                             <textarea class="form-control" id="observacionesReporte" rows="2" placeholder="Notas adicionales sobre el reporte..."></textarea>
                         </div>
 
                         <div class="text-end">
-                            <button type="button" class="btn btn-primary" onclick="generarReporte()">
+                            <button type="button" class="btn btn-primary btn-sm" onclick="generarReporte()">
                                 <i class="fas fa-file-export me-2"></i>Generar Reporte
                             </button>
-                            <button type="button" class="btn btn-secondary" onclick="toggleGenerarReporteForm()">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="toggleGenerarReporteForm()">
                                 <i class="fas fa-times me-2"></i>Cancelar
                             </button>
                         </div>
@@ -361,14 +384,16 @@
 <div class="modal fade" id="modalEnviar" tabindex="-1" aria-labelledby="modalEnviarLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header bg-info text-white">
-                <h5 class="modal-title" id="modalEnviarLabel"><i class="fas fa-envelope me-2"></i>Enviar Reporte</h5>
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="modalEnviarLabel">
+                    <i class="fas fa-envelope me-2"></i>Enviar Reporte
+                </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body bg-light">
                 <form id="formEnviar">
                     <div class="mb-3">
-                        <label class="form-label">Destinatarios <span class="text-danger">*</span></label>
+                        <label class="form-label text-secondary small">Destinatarios <span class="text-danger">*</span></label>
                         <select class="form-select" id="destinatarios" required multiple>
                             <option value="docentes">Docentes</option>
                             <option value="acudientes">Acudientes</option>
@@ -378,19 +403,19 @@
                         <small class="text-muted">Mantén presionado Ctrl para seleccionar varios</small>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">O ingresar emails personalizados</label>
+                        <label class="form-label text-secondary small">O ingresar emails personalizados</label>
                         <textarea class="form-control" id="emailsPersonalizados" rows="3" placeholder="correo1@example.com&#10;correo2@example.com&#10;..."></textarea>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Mensaje Personalizado</label>
+                        <label class="form-label text-secondary small">Mensaje Personalizado</label>
                         <textarea class="form-control" id="mensajeEnvio" rows="3" placeholder="Escribe un mensaje personalizado (opcional)..."></textarea>
                     </div>
                     <input type="hidden" id="idReporteEnviar">
                 </form>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-info" onclick="confirmarEnvio()">
+            <div class="modal-footer bg-white">
+                <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary btn-sm" onclick="confirmarEnvio()">
                     <i class="fas fa-paper-plane me-2"></i>Enviar
                 </button>
             </div>
@@ -405,59 +430,61 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="modalDetallesLabel"><i class="fas fa-info-circle me-2"></i>Detalles del Reporte</h5>
+                <h5 class="modal-title" id="modalDetallesLabel">
+                    <i class="fas fa-info-circle me-2"></i>Detalles del Reporte
+                </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body bg-light">
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <strong>ID Reporte:</strong> <span id="detalleId"></span>
+                        <strong class="text-secondary small">ID Reporte:</strong> <span id="detalleId"></span>
                     </div>
                     <div class="col-md-6">
-                        <strong>Estado:</strong> <span id="detalleEstado"></span>
+                        <strong class="text-secondary small">Estado:</strong> <span id="detalleEstado"></span>
                     </div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <strong>Tipo:</strong> <span id="detalleTipo"></span>
+                        <strong class="text-secondary small">Tipo:</strong> <span id="detalleTipo"></span>
                     </div>
                     <div class="col-md-6">
-                        <strong>Grado:</strong> <span id="detalleGrado"></span>
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <strong>Período:</strong> <span id="detallePeriodo"></span>
-                    </div>
-                    <div class="col-md-6">
-                        <strong>Formato:</strong> <span id="detalleFormato"></span>
+                        <strong class="text-secondary small">Grado:</strong> <span id="detalleGrado"></span>
                     </div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <strong>Creado Por:</strong> <span id="detalleCreador"></span>
+                        <strong class="text-secondary small">Período:</strong> <span id="detallePeriodo"></span>
                     </div>
                     <div class="col-md-6">
-                        <strong>Fecha Generación:</strong> <span id="detalleFecha"></span>
+                        <strong class="text-secondary small">Formato:</strong> <span id="detalleFormato"></span>
                     </div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <strong>Última Descarga:</strong> <span id="detalleUltimaDescarga"></span>
+                        <strong class="text-secondary small">Creado Por:</strong> <span id="detalleCreador"></span>
                     </div>
                     <div class="col-md-6">
-                        <strong>Veces Enviado:</strong> <span id="detalleVecesEnviado"></span>
+                        <strong class="text-secondary small">Fecha Generación:</strong> <span id="detalleFecha"></span>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong class="text-secondary small">Última Descarga:</strong> <span id="detalleUltimaDescarga"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <strong class="text-secondary small">Veces Enviado:</strong> <span id="detalleVecesEnviado"></span>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <strong>Observaciones:</strong>
-                        <p id="detalleObservaciones" class="bg-light p-2 rounded"></p>
+                        <strong class="text-secondary small d-block mb-1">Observaciones:</strong>
+                        <p id="detalleObservaciones" class="bg-white p-2 rounded border small mb-0"></p>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            <div class="modal-footer bg-white">
+                <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
@@ -554,7 +581,6 @@
     // Actualizar opciones de grado según tipo de reporte
     function actualizarOpcionesGrado() {
         const tipoReporte = document.getElementById('tipoReporte').value;
-        // Aquí podrías cambiar las opciones disponibles según el tipo
         console.log('Tipo de reporte seleccionado: ' + tipoReporte);
     }
 

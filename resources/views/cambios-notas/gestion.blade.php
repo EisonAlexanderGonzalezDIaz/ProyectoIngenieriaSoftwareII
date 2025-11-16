@@ -2,19 +2,61 @@
 @extends('layouts.app')
 
 @section('content')
+<style>
+    .page-header {
+        background: linear-gradient(90deg, #0d6efd 0%, #0b5ed7 100%);
+        color: #fff;
+    }
+
+    .stat-card {
+        border: 0;
+        box-shadow: 0 .125rem .25rem rgba(0,0,0,.075);
+    }
+
+    .stat-title {
+        font-size: .95rem;
+        font-weight: 600;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(13,110,253,0.04);
+    }
+
+    .badge-pendiente {
+        background-color: #0dcaf0;
+        color: #212529;
+    }
+
+    .badge-aprobado {
+        background-color: #198754;
+        color: #fff;
+    }
+
+    .badge-rechazado {
+        background-color: #dc3545;
+        color: #fff;
+    }
+</style>
+
 <div class="container py-4">
 
     {{-- =========================
          GESTIÓN DE CAMBIOS DE NOTAS
     ========================== --}}
     <div class="card shadow-sm mb-5 border-0">
-        <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center rounded-top">
-            <h4 class="mb-0"><i class="fas fa-edit me-2"></i>Aprobar Cambios de Notas</h4>
+        <div class="card-header page-header rounded-top d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">
+                <i class="fas fa-edit me-2"></i>Aprobar Cambios de Notas
+            </h4>
             <div>
-                <button class="btn btn-dark btn-sm me-2" onclick="refreshTable()">
+                {{-- Botón para volver al panel de inicio --}}
+                <a href="{{ route('dashboard') }}" class="btn btn-outline-light btn-sm me-2">
+                    <i class="fas fa-home me-1"></i> Panel de inicio
+                </a>
+                <button class="btn btn-light btn-sm me-2" onclick="refreshTable()">
                     <i class="fas fa-sync-alt"></i> Actualizar
                 </button>
-                <button class="btn btn-outline-dark btn-sm" onclick="exportCambios()">
+                <button class="btn btn-outline-light btn-sm" onclick="exportCambios()">
                     <i class="fas fa-file-export"></i> Exportar
                 </button>
             </div>
@@ -24,33 +66,41 @@
             {{-- Estadísticas --}}
             <div class="row mb-4">
                 <div class="col-md-3">
-                    <div class="card border-0 shadow-sm bg-info text-white">
+                    <div class="card stat-card bg-info text-white">
                         <div class="card-body text-center">
-                            <h5 class="card-title"><i class="fas fa-hourglass-half me-2"></i>Pendientes</h5>
+                            <h5 class="card-title stat-title">
+                                <i class="fas fa-hourglass-half me-2"></i>Pendientes
+                            </h5>
                             <h3 class="mb-0">5</h3>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <div class="card border-0 shadow-sm bg-success text-white">
+                    <div class="card stat-card bg-success text-white">
                         <div class="card-body text-center">
-                            <h5 class="card-title"><i class="fas fa-check me-2"></i>Aprobados</h5>
+                            <h5 class="card-title stat-title">
+                                <i class="fas fa-check me-2"></i>Aprobados
+                            </h5>
                             <h3 class="mb-0">12</h3>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <div class="card border-0 shadow-sm bg-danger text-white">
+                    <div class="card stat-card bg-danger text-white">
                         <div class="card-body text-center">
-                            <h5 class="card-title"><i class="fas fa-times me-2"></i>Rechazados</h5>
+                            <h5 class="card-title stat-title">
+                                <i class="fas fa-times me-2"></i>Rechazados
+                            </h5>
                             <h3 class="mb-0">3</h3>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <div class="card border-0 shadow-sm bg-secondary text-white">
+                    <div class="card stat-card bg-secondary text-white">
                         <div class="card-body text-center">
-                            <h5 class="card-title"><i class="fas fa-list me-2"></i>Total</h5>
+                            <h5 class="card-title stat-title">
+                                <i class="fas fa-list me-2"></i>Total
+                            </h5>
                             <h3 class="mb-0">20</h3>
                         </div>
                     </div>
@@ -59,8 +109,14 @@
 
             {{-- Barra de búsqueda --}}
             <div class="input-group mb-3">
-                <span class="input-group-text bg-white"><i class="fas fa-search text-muted"></i></span>
-                <input type="text" id="searchCambios" class="form-control" placeholder="Buscar por estudiante, materia o docente...">
+                <span class="input-group-text bg-white">
+                    <i class="fas fa-search text-muted"></i>
+                </span>
+                <input
+                    type="text"
+                    id="searchCambios"
+                    class="form-control"
+                    placeholder="Buscar por estudiante, materia o docente...">
             </div>
 
             {{-- Filtros --}}
@@ -89,7 +145,7 @@
             {{-- Tabla de cambios de notas --}}
             <div class="table-responsive">
                 <table class="table table-hover align-middle bg-white shadow-sm rounded">
-                    <thead class="table-warning">
+                    <thead class="table-primary">
                         <tr>
                             <th>ID</th>
                             <th>Estudiante</th>
@@ -113,7 +169,7 @@
                             <td>Prof. García</td>
                             <td>Corrección de calificación</td>
                             <td>2025-11-10</td>
-                            <td><span class="badge bg-info">Pendiente</span></td>
+                            <td><span class="badge badge-pendiente">Pendiente</span></td>
                             <td>
                                 <button class="btn btn-outline-success btn-sm me-1" onclick="abrirModalAprobar('CAMBIO001')" title="Aprobar">
                                     <i class="fas fa-check"></i>
@@ -135,7 +191,7 @@
                             <td>Prof. López</td>
                             <td>Recalificación por revisión</td>
                             <td>2025-11-09</td>
-                            <td><span class="badge bg-info">Pendiente</span></td>
+                            <td><span class="badge badge-pendiente">Pendiente</span></td>
                             <td>
                                 <button class="btn btn-outline-success btn-sm me-1" onclick="abrirModalAprobar('CAMBIO002')" title="Aprobar">
                                     <i class="fas fa-check"></i>
@@ -157,7 +213,7 @@
                             <td>Prof. Martínez</td>
                             <td>Mejora académica</td>
                             <td>2025-11-08</td>
-                            <td><span class="badge bg-success">Aprobado</span></td>
+                            <td><span class="badge badge-aprobado">Aprobado</span></td>
                             <td>
                                 <button class="btn btn-outline-primary btn-sm" onclick="viewDetalles('CAMBIO003')" title="Ver detalles">
                                     <i class="fas fa-eye"></i>
@@ -173,7 +229,7 @@
                             <td>Prof. Rodríguez</td>
                             <td>Corrección de error administrativo</td>
                             <td>2025-11-07</td>
-                            <td><span class="badge bg-info">Pendiente</span></td>
+                            <td><span class="badge badge-pendiente">Pendiente</span></td>
                             <td>
                                 <button class="btn btn-outline-success btn-sm me-1" onclick="abrirModalAprobar('CAMBIO004')" title="Aprobar">
                                     <i class="fas fa-check"></i>
@@ -195,7 +251,7 @@
                             <td>Prof. Pérez</td>
                             <td>Revisión de evaluación</td>
                             <td>2025-11-06</td>
-                            <td><span class="badge bg-danger">Rechazado</span></td>
+                            <td><span class="badge badge-rechazado">Rechazado</span></td>
                             <td>
                                 <button class="btn btn-outline-primary btn-sm" onclick="viewDetalles('CAMBIO005')" title="Ver detalles">
                                     <i class="fas fa-eye"></i>
@@ -227,7 +283,9 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-success text-white">
-                <h5 class="modal-title" id="modalAprobarLabel"><i class="fas fa-check me-2"></i>Aprobar Cambio de Nota</h5>
+                <h5 class="modal-title" id="modalAprobarLabel">
+                    <i class="fas fa-check me-2"></i>Aprobar Cambio de Nota
+                </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -260,7 +318,9 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title" id="modalRechazarLabel"><i class="fas fa-times me-2"></i>Rechazar Cambio de Nota</h5>
+                <h5 class="modal-title" id="modalRechazarLabel">
+                    <i class="fas fa-times me-2"></i>Rechazar Cambio de Nota
+                </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -293,7 +353,9 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="modalDetallesLabel"><i class="fas fa-info-circle me-2"></i>Detalles del Cambio de Nota</h5>
+                <h5 class="modal-title" id="modalDetallesLabel">
+                    <i class="fas fa-info-circle me-2"></i>Detalles del Cambio de Nota
+                </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -401,7 +463,7 @@
     function viewDetalles(id) {
         // Datos simulados - En producción vendrían del servidor
         document.getElementById('detalleCambioId').textContent = id;
-        document.getElementById('detalleEstado').innerHTML = '<span class="badge bg-info">Pendiente</span>';
+        document.getElementById('detalleEstado').innerHTML = '<span class="badge badge-pendiente">Pendiente</span>';
         document.getElementById('detalleEstudiante').textContent = 'Juan Pérez';
         document.getElementById('detalleMateria').textContent = 'Matemáticas';
         document.getElementById('detalleNotaAnterior').textContent = '3.2';
@@ -415,7 +477,7 @@
 
     // Actualizar tabla
     function refreshTable() {
-        alert('📊 Tabla actualizada');
+        alert('🔄 Tabla actualizada (simulación).');
     }
 
     // Exportar
@@ -435,17 +497,9 @@
     });
 
     // Filtros
-    document.getElementById('filterEstado').addEventListener('change', function() {
-        filterTable();
-    });
-
-    document.getElementById('filterGrado').addEventListener('change', function() {
-        filterTable();
-    });
-
-    document.getElementById('filterFecha').addEventListener('change', function() {
-        filterTable();
-    });
+    document.getElementById('filterEstado').addEventListener('change', filterTable);
+    document.getElementById('filterGrado').addEventListener('change', filterTable);
+    document.getElementById('filterFecha').addEventListener('change', filterTable);
 
     function filterTable() {
         const estado = document.getElementById('filterEstado').value;
@@ -456,10 +510,11 @@
         tableRows.forEach(row => {
             const rowEstado = row.cells[8].textContent.trim().toLowerCase();
             const rowFecha = row.cells[7].textContent.trim();
+            const rowGrado = ''; // aquí aún no hay grado en tabla, se podría añadir si lo incluyes
 
             const estadoMatch = !estado || rowEstado.includes(estado.toLowerCase());
             const fechaMatch = !fecha || rowFecha === fecha;
-
+            // por ahora solo estado y fecha
             row.style.display = (estadoMatch && fechaMatch) ? '' : 'none';
         });
     }

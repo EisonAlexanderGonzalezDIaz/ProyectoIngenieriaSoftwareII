@@ -18,6 +18,10 @@ use App\Http\Controllers\RecuperacionesController;
 use App\Http\Controllers\ReportesAcademicosController;
 use App\Http\Controllers\OrientadorController;
 use App\Http\Controllers\InformacionColegioController;
+use App\Http\Controllers\CitarAcudienteController;
+use App\Http\Controllers\CasosDisciplinariosController;
+use App\Http\Controllers\ReportesDisciplinariosController;
+use App\Http\Controllers\AprobacionesNotasController;
 use App\Models\RolesModel;
 
 /*
@@ -224,6 +228,37 @@ Route::middleware(['auth'])->group(function () {
     */    
     Route::get('/informacion/gestion', function () {
     return view('informacion.gestion');
-})->name('informacion.gestion');
+    })->name('informacion.gestion');
+
+        /*
+    |--------------------------------------------------------------------------
+    | Citas - Citar Acudientes
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/citas/gestion', function () {
+        return view('citas.gestion');
+    })->name('citas.gestion');
+
+    /*
+    |--------------------------------------------------------------------------  
+    | Casos disciplinarios
+    |--------------------------------------------------------------------------  
+    */
+    Route::get('/casos/gestion', [CasosDisciplinariosController::class, 'gestion'])
+        ->name('casos.gestion');
+
+    /*
+    |--------------------------------------------------------------------------  
+    | Reportes disciplinarios
+    |--------------------------------------------------------------------------  
+    */
+    Route::get('/reportes/gestion', [ReportesDisciplinariosController::class, 'gestion'])
+    ->name('reportes.gestion');
+
+    // Gestión de Docentes (coordinador Administrativo)
+    Route::get('/gestiondocentes/gestion', [App\Http\Controllers\GestionDocentesController::class, 'gestion'])
+    ->name('gestiondocentes.gestion');
+
+
 
 });
