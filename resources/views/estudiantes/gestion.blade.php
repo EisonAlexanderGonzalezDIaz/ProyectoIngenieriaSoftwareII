@@ -10,6 +10,11 @@
         <div class="card-header bg-success text-white d-flex justify-content-between align-items-center rounded-top">
             <h4 class="mb-0"><i class="fas fa-user-graduate me-2"></i>Gestión de Estudiantes</h4>
             <div>
+                        {{-- Botón para volver al panel de inicio --}}
+        <a href="{{ route('dashboard') }}" class="btn btn-outline-light btn-sm me-2">
+            <i class="fas fa-home"></i> Panel de inicio
+        </a>    
+
                 <button class="btn btn-light btn-sm me-2" onclick="toggleAddStudentForm()">
                     <i class="fas fa-plus"></i> Agregar Estudiante
                 </button>
@@ -18,6 +23,8 @@
                 </button>
             </div>
         </div>
+
+        
 
         <div class="card-body bg-light">
             {{-- Barra de búsqueda mejorada --}}
