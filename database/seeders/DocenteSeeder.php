@@ -71,7 +71,7 @@ class DocenteSeeder extends Seeder
         // 🧾 Mensajes informativos en consola
         $this->command?->info('✅ Usuario Docente creado o actualizado correctamente.');
         $this->command?->info('   Email: docente@colegio.edu.co');
-        $this->command?->info('   Contraseña: doc123');
+        $this->command?->info('   Contraseña: docente123');
         $this->command?->warn('⚠️ Cambia la contraseña después del primer inicio de sesión.');
 
         // ===============================

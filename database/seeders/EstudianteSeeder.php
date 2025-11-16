@@ -68,7 +68,7 @@ class EstudianteSeeder extends Seeder
         // 🧾 Mensajes en consola
         $this->command?->info('✅ Usuario Estudiante creado o actualizado correctamente.');
         $this->command?->info('   Email: estudiante@colegio.edu.co');
-        $this->command?->info('   Contraseña: est123');
+        $this->command?->info('   Contraseña: estudiante123');
         $this->command?->warn('⚠️ Cambia la contraseña después del primer inicio de sesión.');
     }
 }
