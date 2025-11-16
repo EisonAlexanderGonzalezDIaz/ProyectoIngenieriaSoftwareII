@@ -1,4 +1,4 @@
-{{-- resources/views/materias/gestion.blade.php --}}
+{{-- resources/views/materias/gestion.blade.php --}} 
 @extends('layouts.app')
 
 @section('content')
@@ -8,13 +8,13 @@
          GESTIÓN DE MATERIAS
     ========================== --}}
     <div class="card shadow-sm mb-5 border-0">
-        <div class="card-header bg-info text-white d-flex justify-content-between align-items-center rounded-top">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center rounded-top">
             <h4 class="mb-0"><i class="fas fa-book me-2"></i>Gestión de Materias</h4>
             <div>
-                 {{-- Botón para volver al panel de inicio --}}
-        <a href="{{ route('dashboard') }}" class="btn btn-outline-light btn-sm me-2">
-            <i class="fas fa-home"></i> Panel de inicio
-        </a>    
+                {{-- Botón para volver al panel de inicio --}}
+                <a href="{{ route('dashboard') }}" class="btn btn-outline-light btn-sm me-2">
+                    <i class="fas fa-home"></i> Panel de inicio
+                </a>    
                 <button class="btn btn-light btn-sm me-2" onclick="toggleAddMateriaForm()">
                     <i class="fas fa-plus"></i> Agregar Materia
                 </button>
@@ -56,7 +56,7 @@
             {{-- Tabla de materias --}}
             <div class="table-responsive">
                 <table class="table table-hover align-middle text-center bg-white shadow-sm rounded">
-                    <thead class="table-info">
+                    <thead class="table-primary">
                         <tr>
                             <th>Código</th>
                             <th>Nombre</th>
@@ -188,44 +188,44 @@
                  FORMULARIO PARA AGREGAR NUEVA MATERIA
             ============================================ --}}
             <div id="addMateriaForm" class="card shadow-sm border-0 mt-5" style="display: none;">
-                <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0"><i class="fas fa-plus text-info me-2"></i>Agregar Nueva Materia</h5>
-                    <button type="button" class="btn-close" onclick="toggleAddMateriaForm()"></button>
+                <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-plus me-2"></i>Agregar Nueva Materia</h5>
+                    <button type="button" class="btn-close btn-close-white" onclick="toggleAddMateriaForm()"></button>
                 </div>
-                <div class="card-body">
+                <div class="card-body bg-light">
                     <form id="materiaForm">
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label class="form-label">Código <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" placeholder="Ej: MAT001" required>
+                                <label class="form-label text-secondary">Código <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control border-secondary" placeholder="Ej: MAT001" required>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Nombre <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" placeholder="Nombre de la materia" required>
+                                <label class="form-label text-secondary">Nombre <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control border-secondary" placeholder="Nombre de la materia" required>
                             </div>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Descripción</label>
-                            <textarea class="form-control" rows="2" placeholder="Descripción de la materia..."></textarea>
+                            <label class="form-label text-secondary">Descripción</label>
+                            <textarea class="form-control border-secondary" rows="2" placeholder="Descripción de la materia..."></textarea>
                         </div>
 
                         <div class="row mb-3">
                             <div class="col-md-4">
-                                <label class="form-label">Créditos <span class="text-danger">*</span></label>
-                                <input type="number" class="form-control" min="1" placeholder="Ej: 3" required>
+                                <label class="form-label text-secondary">Créditos <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control border-secondary" min="1" placeholder="Ej: 3" required>
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label">Horas Semanales <span class="text-danger">*</span></label>
-                                <input type="number" class="form-control" min="1" placeholder="Ej: 3" required>
+                                <label class="form-label text-secondary">Horas Semanales <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control border-secondary" min="1" placeholder="Ej: 3" required>
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label">Grado <span class="text-danger">*</span></label>
-                                <select class="form-select" required>
+                                <label class="form-label text-secondary">Grado <span class="text-danger">*</span></label>
+                                <select class="form-select border-secondary" required>
                                     <option value="">Seleccionar...</option>
-                                    <option value="9">6°</option>
-                                    <option value="10">7°</option>
-                                    <option value="11">8°</option>
+                                    <option value="6">6°</option>
+                                    <option value="7">7°</option>
+                                    <option value="8">8°</option>
                                     <option value="9">9°</option>
                                     <option value="10">10°</option>
                                     <option value="11">11°</option>
@@ -234,8 +234,8 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Docente <span class="text-danger">*</span></label>
-                            <select class="form-select" required>
+                            <label class="form-label text-secondary">Docente <span class="text-danger">*</span></label>
+                            <select class="form-select border-secondary" required>
                                 <option value="">Seleccionar...</option>
                                 <option value="1">Prof. García</option>
                                 <option value="2">Prof. López</option>
@@ -260,15 +260,15 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Estado</label>
-                            <select class="form-select">
+                            <label class="form-label text-secondary">Estado</label>
+                            <select class="form-select border-secondary">
                                 <option value="Activo" selected>Activo</option>
                                 <option value="Inactivo">Inactivo</option>
                             </select>
                         </div>
 
                         <div class="text-end">
-                            <button type="button" class="btn btn-info" onclick="saveMateria()">
+                            <button type="button" class="btn btn-primary" onclick="saveMateria()">
                                 <i class="fas fa-save me-2"></i>Guardar Materia
                             </button>
                             <button type="button" class="btn btn-secondary" onclick="toggleAddMateriaForm()">

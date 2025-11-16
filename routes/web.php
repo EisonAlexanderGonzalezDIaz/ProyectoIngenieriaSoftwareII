@@ -12,10 +12,12 @@ use App\Http\Controllers\CoordinadorAcademicoController;
 use App\Http\Controllers\TesoreroController;
 use App\Http\Controllers\EstudianteController;
 use App\Http\Controllers\HorariosController;
-use App\Http\Controllers\MateriasController; 
+use App\Http\Controllers\MateriasController;
 use App\Http\Controllers\CambiosNotasController;
-use App\Http\Controllers\RecuperacionesController; 
-use App\Http\Controllers\ReportesAcademicosController; 
+use App\Http\Controllers\RecuperacionesController;
+use App\Http\Controllers\ReportesAcademicosController;
+use App\Http\Controllers\OrientadorController;
+use App\Http\Controllers\InformacionColegioController;
 use App\Models\RolesModel;
 
 /*
@@ -44,7 +46,9 @@ Route::post('/register', [CrearUsuario::class, 'register']);
 // Grupo de rutas protegidas por autenticación
 Route::middleware(['auth'])->group(function () {
 
-    // Dashboard general
+    // ==========================
+    // DASHBOARD GENERAL
+    // ==========================
     Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
 
     /*
@@ -152,10 +156,6 @@ Route::middleware(['auth'])->group(function () {
         })->name('gestion');
     });
 
-
-    Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
-
     /*
     |--------------------------------------------------------------------------
     | Horarios
@@ -165,11 +165,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/horarios/store', [HorariosController::class, 'store'])->name('horarios.store');
     Route::put('/horarios/{id}', [HorariosController::class, 'update'])->name('horarios.update');
     Route::delete('/horarios/{id}', [HorariosController::class, 'destroy'])->name('horarios.destroy');
-
-    });
-
-    Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
 
     /*
     |--------------------------------------------------------------------------
@@ -181,11 +176,6 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/materias/{id}', [MateriasController::class, 'update'])->name('materias.update');
     Route::delete('/materias/{id}', [MateriasController::class, 'destroy'])->name('materias.destroy');
 
-    });
-
-    Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
-
     /*
     |--------------------------------------------------------------------------
     | Cambios de Notas
@@ -195,12 +185,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/cambios-notas/{id}/aprobar', [CambiosNotasController::class, 'aprobar'])->name('cambios-notas.aprobar');
     Route::post('/cambios-notas/{id}/rechazar', [CambiosNotasController::class, 'rechazar'])->name('cambios-notas.rechazar');
     Route::get('/cambios-notas/{id}', [CambiosNotasController::class, 'ver'])->name('cambios-notas.ver');
-
- 
-    });
-
-    Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
 
     /*
     |--------------------------------------------------------------------------
@@ -214,11 +198,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/recuperaciones/{id}/rechazar', [RecuperacionesController::class, 'rechazar'])->name('recuperaciones.rechazar');
     Route::get('/recuperaciones/{id}', [RecuperacionesController::class, 'ver'])->name('recuperaciones.ver');
 
-    });
-
-    Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
-        /*
+    /*
     |--------------------------------------------------------------------------
     | Reportes Académicos
     |--------------------------------------------------------------------------
@@ -230,10 +210,20 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/reportes-academicos/{id}', [ReportesAcademicosController::class, 'eliminar'])->name('reportes-academicos.eliminar');
     Route::get('/reportes-academicos/{id}', [ReportesAcademicosController::class, 'ver'])->name('reportes-academicos.ver');
 
-    });
-
-   
-
-
+    /*
+    |--------------------------------------------------------------------------
+    | Orientador
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/orientador/gestion', [OrientadorController::class, 'dashboard'])
+        ->name('orientacion.gestion');
+    /*
+    |--------------------------------------------------------------------------
+    | informacion
+    |--------------------------------------------------------------------------
+    */    
+    Route::get('/informacion/gestion', function () {
+    return view('informacion.gestion');
+})->name('informacion.gestion');
 
 });
