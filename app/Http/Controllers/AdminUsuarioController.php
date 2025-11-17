@@ -90,8 +90,6 @@ class AdminUsuarioController extends Controller
 
         // Guardar curso solo si existe la columna 'curso_id'
         if (Schema::hasColumn('users', 'curso_id')) {
-            // En tu interfaz solo vas a mostrar el select de curso
-            // para usuarios con rol Estudiante, pero aquí es opcional:
             $user->curso_id = $request->curso_id ?: null;
         }
 

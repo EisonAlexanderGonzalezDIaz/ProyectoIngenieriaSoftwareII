@@ -26,6 +26,8 @@ use App\Http\Controllers\PlanAcademicoController;
 use App\Http\Controllers\AdminEstudiantesController;
 use App\Http\Controllers\AdminUsuarioController;
 use App\Models\RolesModel;
+use App\Http\Controllers\AcudienteEstudianteController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -53,7 +55,6 @@ Route::post('/register', [CrearUsuario::class, 'register']);
 // Grupo de rutas protegidas por autenticación
 Route::middleware(['auth'])->group(function () {
     
-
     // ==========================
     // DASHBOARD GENERAL
     // ==========================
@@ -206,7 +207,7 @@ Route::middleware(['auth'])->group(function () {
     | Estudiantes / Acudientes (Legacy)
     |--------------------------------------------------------------------------
     */
-    Route::prefix('estudiantes')->name('estudiantes.')->group(function () {
+        Route::prefix('estudiantes')->name('estudiantes.')->group(function () {
         // Página principal de gestión de estudiantes
         Route::get('/', [EstudianteController::class, 'index'])->name('index');
 
@@ -216,31 +217,52 @@ Route::middleware(['auth'])->group(function () {
         })->name('gestion');
     });
 
+        // ==========================
+    // Admin: Vincular acudientes ↔ estudiantes
+    // ==========================
+        Route::get('/admin/estudiantes/{estudiante}/acudientes', [AcudienteEstudianteController::class, 'index'])
+        ->name('admin.estudiantes.acudientes.index');
+
+        Route::post('/admin/estudiantes/{estudiante}/acudientes', [AcudienteEstudianteController::class, 'vincular'])
+        ->name('admin.estudiantes.acudientes.vincular');
+
+        Route::delete(
+        '/admin/estudiantes/{estudiante}/acudientes/{acudiente}',
+        [AcudienteEstudianteController::class, 'desvincular']
+    )->name('admin.estudiantes.acudientes.desvincular');
+
+
     /*
     |--------------------------------------------------------------------------
     | Admin Sistema - Consultar Estudiantes y Perfiles de Usuario
     |--------------------------------------------------------------------------
     */
     // Menú de "Consultar Estudiantes" solo para AdministradorSistema (ruta usada en el sidebar)
-    Route::get('/admin/estudiantes/menu', [AdminEstudiantesController::class, 'menu'])
+        Route::get('/admin/estudiantes/menu', [AdminEstudiantesController::class, 'menu'])
         ->name('admin.estudiantes.menu');
 
     // Ver estudiantes por curso (filtro desde el menú)
-    Route::get('/admin/estudiantes/por-curso', [AdminEstudiantesController::class, 'porCurso'])
+        Route::get('/admin/estudiantes/por-curso', [AdminEstudiantesController::class, 'porCurso'])
         ->name('admin.estudiantes.porCurso');
 
     // Gestionar perfiles de usuario
-    Route::get('/admin/usuarios/perfiles', [AdminUsuarioController::class, 'index'])
-    ->name('admin.usuarios.perfiles');
+        Route::get('/admin/usuarios/perfiles', [AdminUsuarioController::class, 'index'])
+        ->name('admin.usuarios.perfiles');
 
-    // Actualizar perfil de un usuario (rol y estado)
-    Route::put('/admin/usuarios/{id}/perfil', [AdminUsuarioController::class, 'updatePerfil'])
-    ->name('admin.usuarios.perfil.update');
+    // Actualizar perfil de un usuario (rol, estado, curso)
+        Route::put('/admin/usuarios/{id}/perfil', [AdminUsuarioController::class, 'updatePerfil'])
+        ->name('admin.usuarios.perfil.update');
 
-    // 🔹 NUEVA: Actualizar datos básicos (nombre y email)
-    Route::put('/admin/usuarios/{id}/basicos', [AdminUsuarioController::class, 'updateBasicos'])
-    ->name('admin.usuarios.basicos.update');
+    // Actualizar datos básicos (nombre y email)
+        Route::put('/admin/usuarios/{id}/basicos', [AdminUsuarioController::class, 'updateBasicos'])
+        ->name('admin.usuarios.basicos.update');
 
+    // 🔹 NUEVAS: Gestionar acudientes de un estudiante
+        Route::get('/admin/usuarios/{user}/acudientes', [AdminUsuarioController::class, 'editarAcudientes'])
+        ->name('admin.usuarios.acudientes.edit');
+
+        Route::post('/admin/usuarios/{user}/acudientes', [AdminUsuarioController::class, 'guardarAcudientes'])
+        ->name('admin.usuarios.acudientes.store');
 
     /*
     |--------------------------------------------------------------------------

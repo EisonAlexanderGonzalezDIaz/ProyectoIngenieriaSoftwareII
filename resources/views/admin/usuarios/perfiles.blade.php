@@ -164,24 +164,31 @@
                                     </td>
 
                                     {{-- Botones de acción --}}
-                                    <td class="text-center">
+                                        <td class="text-center">
                                         <div class="d-flex flex-column gap-1">
-                                            {{-- Guardar rol/estado/curso --}}
-                                            <button type="submit" class="btn btn-sm btn-primary w-100">
-                                                Guardar
-                                            </button>
-
-                                            {{-- Abrir modal para editar datos básicos --}}
-                                            <button type="button"
-                                                    class="btn btn-sm btn-outline-secondary w-100"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#editUserModal_{{ $user->id }}">
-                                                <i class="fas fa-pen me-1"></i> Editar datos
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </form>
+                                        {{-- Guardar rol/estado/curso --}}
+                                        <button type="submit" class="btn btn-sm btn-primary w-100">
+                                        Guardar
+                                        </button>
+                                        {{-- Abrir modal para editar datos básicos --}}
+                                        <button type="button"
+                                        class="btn btn-sm btn-outline-secondary w-100"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#editUserModal_{{ $user->id }}">
+                                        <i class="fas fa-pen me-1"></i> Editar datos
+                                        </button>
+                                        {{-- Gestionar acudientes (solo estudiantes) --}}
+                                        @if(optional($user->rol)->nombre === 'Estudiante')
+                                        <a href="{{ route('admin.estudiantes.acudientes.index', $user->id) }}"
+                                        class="btn btn-sm btn-outline-info w-100">
+                                        <i class="fas fa-users me-1"></i> Acudientes
+                                        </a>
+                                    @endif
+                                </div>
+                            </td>
+                        </td>
+                    </tr>
+                </form>
                         @empty
                             <tr>
                                 <td colspan="7" class="text-center text-muted py-3">

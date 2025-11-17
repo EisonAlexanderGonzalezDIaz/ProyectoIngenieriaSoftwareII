@@ -3,14 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Estudiante; // Ajusta al nombre real de tu modelo
-use App\Models\Curso;      // Ajusta al nombre real de tu modelo
+use App\Models\Curso;
+use App\Models\Estudiante;
 
 class AdminEstudiantesController extends Controller
 {
     /**
-     * Menú de opciones al hacer clic en "Consultar Estudiantes"
-     * (solo para AdministradorSistema).
+     * Menú principal de "Consultar Estudiantes"
      */
     public function menu()
     {
@@ -22,14 +21,38 @@ class AdminEstudiantesController extends Controller
      */
     public function porCurso(Request $request)
     {
-        $cursos = Curso::all();
+        // 🔹 Traer todos los cursos ordenados de forma lógica:
+        // primero 1A, 1B, luego 2A, 2B, ..., hasta 11A, 11B
+        $cursos = Curso::orderByRaw("
+                CAST(SUBSTRING(nombre, 1, LENGTH(nombre) - 1) AS UNSIGNED),
+                RIGHT(nombre, 1)
+            ")
+            ->get();
 
         $cursoSeleccionado = null;
         $estudiantes = collect();
 
         if ($request->filled('curso_id')) {
+            // 1. Buscar el curso seleccionado
             $cursoSeleccionado = Curso::findOrFail($request->curso_id);
-            $estudiantes = Estudiante::where('curso_id', $cursoSeleccionado->id)->get();
+
+            // 2. Base de consulta para estudiantes de ese curso
+            $query = Estudiante::where('curso_id', $cursoSeleccionado->id);
+
+            // 🔎 (Opcional) filtro de búsqueda por nombre o identificación
+            if ($request->filled('buscar')) {
+                $buscar = trim($request->buscar);
+
+                $query->where(function ($q) use ($buscar) {
+                    $q->where('nombre', 'LIKE', "%{$buscar}%")
+                      ->orWhere('identificacion', 'LIKE', "%{$buscar}%");
+                });
+            }
+
+            // 3. Obtener estudiantes ordenados por nombre
+            $estudiantes = $query
+                ->orderBy('nombre', 'asc')
+                ->get();
         }
 
         return view('admin.estudiantes.por_curso', compact(

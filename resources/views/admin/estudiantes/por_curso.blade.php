@@ -11,14 +11,16 @@
     {{-- Filtro por curso --}}
     <form method="GET" action="{{ route('admin.estudiantes.porCurso') }}" class="row g-2 mb-4">
         <div class="col-md-8">
-            <select name="curso_id" class="form-select" required>
-                <option value="">-- Selecciona un curso --</option>
-                @foreach($cursos as $curso)
-                    <option value="{{ $curso->id }}" {{ request('curso_id') == $curso->id ? 'selected' : '' }}>
-                        {{ $curso->nombre ?? 'Curso '.$curso->id }}
-                    </option>
-                @endforeach
-            </select>
+            <select name="curso_id" class="form-select">
+    <option value="">Seleccione un curso</option>
+    @foreach($cursos as $curso)
+        <option value="{{ $curso->id }}"
+            {{ optional($cursoSeleccionado)->id == $curso->id ? 'selected' : '' }}>
+            {{ $curso->nombre }}
+        </option>
+    @endforeach
+</select>
+
         </div>
         <div class="col-md-4">
             <button class="btn btn-primary w-100" type="submit">
