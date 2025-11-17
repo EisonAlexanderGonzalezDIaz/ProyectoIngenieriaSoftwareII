@@ -57,6 +57,29 @@ class User extends Authenticatable
         return $this->belongsTo(RolesModel::class, 'roles_id');
     }
 
+    // Estudiante → sus acudientes
+    public function acudientes()
+    {
+    return $this->belongsToMany(
+        self::class,
+        'acudiente_estudiante',
+        'estudiante_id',
+        'acudiente_id'
+    );
+    }
+
+    // Acudiente → estudiantes a cargo
+    public function estudiantesACargo()
+    {
+    return $this->belongsToMany(
+        self::class,
+        'acudiente_estudiante',
+        'acudiente_id',
+        'estudiante_id'
+    );
+    }
+
+
     /**
      * Métodos auxiliares para verificar el rol del usuario
      */
@@ -100,4 +123,16 @@ class User extends Authenticatable
     {
         return $this->rol && $this->rol->nombre === 'Estudiante';
     }
+
+    public function curso()
+    {
+    // FK 'curso_id' en la tabla 'users' → tabla 'cursos'
+    return $this->belongsTo(\App\Models\Curso::class, 'curso_id');
+    }
+
+    protected $casts = [
+    // ...
+    'activo' => 'boolean',
+]   ;
+
 }

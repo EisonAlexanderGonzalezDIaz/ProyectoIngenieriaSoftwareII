@@ -35,6 +35,33 @@ class AuthController extends Controller
         ])->onlyInput('email');
     }
 
+    use Illuminate\Support\Facades\Auth;
+
+public function login(Request $request)
+{
+    $credentials = $request->only('email', 'password');
+
+    if (Auth::attempt($credentials)) {
+        $user = Auth::user();
+
+        // Si está inactivo, no lo dejamos entrar
+        if ($user->activo === 0) {
+            Auth::logout();
+
+            return back()->withErrors([
+                'email' => 'Tu usuario está inactivo. Contacta al Administrador del Sistema.',
+            ])->withInput($request->only('email'));
+        }
+
+        return redirect()->intended('/dashboard');
+        }
+
+        return back()->withErrors([
+        'email' => 'Credenciales incorrectas.',
+        ])->withInput($request->only('email'));
+    }
+
+
     // Mostrar dashboard/menú principal
     public function dashboard()
     {

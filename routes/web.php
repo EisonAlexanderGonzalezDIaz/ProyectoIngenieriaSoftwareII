@@ -23,6 +23,8 @@ use App\Http\Controllers\CasosDisciplinariosController;
 use App\Http\Controllers\ReportesDisciplinariosController;
 use App\Http\Controllers\AprobacionesNotasController;
 use App\Http\Controllers\PlanAcademicoController;
+use App\Http\Controllers\AdminEstudiantesController;
+use App\Http\Controllers\AdminUsuarioController;
 use App\Models\RolesModel;
 
 /*
@@ -50,6 +52,7 @@ Route::post('/register', [CrearUsuario::class, 'register']);
 
 // Grupo de rutas protegidas por autenticación
 Route::middleware(['auth'])->group(function () {
+    
 
     // ==========================
     // DASHBOARD GENERAL
@@ -163,6 +166,32 @@ Route::middleware(['auth'])->group(function () {
 
     /*
     |--------------------------------------------------------------------------
+    | Admin Sistema - Consultar Estudiantes y Perfiles de Usuario
+    |--------------------------------------------------------------------------
+    */
+    // Menú de "Consultar Estudiantes" solo para AdministradorSistema (ruta usada en el sidebar)
+    Route::get('/admin/estudiantes/menu', [AdminEstudiantesController::class, 'menu'])
+        ->name('admin.estudiantes.menu');
+
+    // Ver estudiantes por curso (filtro desde el menú)
+    Route::get('/admin/estudiantes/por-curso', [AdminEstudiantesController::class, 'porCurso'])
+        ->name('admin.estudiantes.porCurso');
+
+    // Gestionar perfiles de usuario
+    Route::get('/admin/usuarios/perfiles', [AdminUsuarioController::class, 'index'])
+    ->name('admin.usuarios.perfiles');
+
+    // Actualizar perfil de un usuario (rol y estado)
+    Route::put('/admin/usuarios/{id}/perfil', [AdminUsuarioController::class, 'updatePerfil'])
+    ->name('admin.usuarios.perfil.update');
+
+    // 🔹 NUEVA: Actualizar datos básicos (nombre y email)
+    Route::put('/admin/usuarios/{id}/basicos', [AdminUsuarioController::class, 'updateBasicos'])
+    ->name('admin.usuarios.basicos.update');
+
+
+    /*
+    |--------------------------------------------------------------------------
     | Horarios
     |--------------------------------------------------------------------------
     */
@@ -222,16 +251,17 @@ Route::middleware(['auth'])->group(function () {
     */
     Route::get('/orientador/gestion', [OrientadorController::class, 'dashboard'])
         ->name('orientacion.gestion');
+
     /*
     |--------------------------------------------------------------------------
-    | informacion
+    | Información del colegio
     |--------------------------------------------------------------------------
     */    
     Route::get('/informacion/gestion', function () {
-    return view('informacion.gestion');
+        return view('informacion.gestion');
     })->name('informacion.gestion');
 
-        /*
+    /*
     |--------------------------------------------------------------------------
     | Citas - Citar Acudientes
     |--------------------------------------------------------------------------
@@ -241,29 +271,26 @@ Route::middleware(['auth'])->group(function () {
     })->name('citas.gestion');
 
     /*
-    |--------------------------------------------------------------------------  
+    |--------------------------------------------------------------------------
     | Casos disciplinarios
-    |--------------------------------------------------------------------------  
+    |--------------------------------------------------------------------------
     */
     Route::get('/casos/gestion', [CasosDisciplinariosController::class, 'gestion'])
         ->name('casos.gestion');
 
     /*
-    |--------------------------------------------------------------------------  
+    |--------------------------------------------------------------------------
     | Reportes disciplinarios
-    |--------------------------------------------------------------------------  
+    |--------------------------------------------------------------------------
     */
     Route::get('/reportes/gestion', [ReportesDisciplinariosController::class, 'gestion'])
-    ->name('reportes.gestion');
+        ->name('reportes.gestion');
 
     // Gestión de Docentes 
     Route::get('/gestiondocentes/gestion', [App\Http\Controllers\GestionDocentesController::class, 'gestion'])
-    ->name('gestiondocentes.gestion');
+        ->name('gestiondocentes.gestion');
 
-    // Plan Academico 
+    // Plan Académico 
     Route::get('/planacademico/gestion', [PlanAcademicoController::class, 'gestion'])
-    ->name('planacademico.gestion');
-
-
-
+        ->name('planacademico.gestion');
 });
