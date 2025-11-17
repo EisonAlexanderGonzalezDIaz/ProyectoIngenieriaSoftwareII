@@ -59,7 +59,7 @@ public function login(Request $request)
         return back()->withErrors([
         'email' => 'Credenciales incorrectas.',
         ])->withInput($request->only('email'));
-    }
+}
 
 
     // Mostrar dashboard/menú principal
