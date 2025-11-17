@@ -151,7 +151,59 @@ Route::middleware(['auth'])->group(function () {
 
     /*
     |--------------------------------------------------------------------------
-    | Estudiantes / Acudientes
+    | Estudiantes - Portal Académico
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('estudiante')->name('estudiante.')->group(function () {
+        // Dashboard principal del estudiante
+        Route::get('/dashboard', [EstudianteController::class, 'index'])->name('dashboard');
+
+        // Citas de Orientación
+        Route::get('/citas', [EstudianteController::class, 'viewSolicitarCita'])->name('solicitar_cita');
+        Route::post('/citas', [EstudianteController::class, 'crearCita'])->name('crear_cita');
+
+        // Horarios
+        Route::get('/horario', [EstudianteController::class, 'viewConsultarHorario'])->name('consultar_horario');
+        Route::get('/api/horarios', [EstudianteController::class, 'obtenerHorarios'])->name('obtener_horarios');
+        Route::get('/horario/descargar', [EstudianteController::class, 'descargarHorario'])->name('descargar_horario');
+
+        // Notas
+        Route::get('/notas', [EstudianteController::class, 'viewConsultarNotas'])->name('consultar_notas');
+        Route::get('/api/notas', [EstudianteController::class, 'obtenerNotasPorMateria'])->name('obtener_notas');
+
+        // Tareas y Entregas
+        Route::get('/tareas', [EstudianteController::class, 'viewTareas'])->name('tareas');
+        Route::get('/api/tareas', [EstudianteController::class, 'obtenerTareas'])->name('obtener_tareas');
+        Route::post('/tareas/entregar', [EstudianteController::class, 'entregarTarea'])->name('entregar_tarea');
+
+        // Boletines
+        Route::get('/boletines', [EstudianteController::class, 'viewConsultarBoletines'])->name('consultar_boletines');
+        Route::get('/api/boletines', [EstudianteController::class, 'obtenerBoletines'])->name('obtener_boletines');
+        Route::get('/boletines/{id}/descargar', [EstudianteController::class, 'descargarBoletin'])->name('descargar_boletin');
+
+        // Plan de Estudio
+        Route::get('/plan-estudio', [EstudianteController::class, 'viewPlanEstudio'])->name('plan_estudio');
+        Route::get('/api/plan-estudio', [EstudianteController::class, 'obtenerPlanEstudio'])->name('obtener_plan_estudio');
+
+        // Certificaciones
+        Route::get('/certificaciones', [EstudianteController::class, 'viewSolicitarCertificacion'])->name('solicitar_certificacion');
+        Route::post('/certificaciones', [EstudianteController::class, 'crearCertificacion'])->name('crear_certificacion');
+        Route::get('/api/certificaciones', [EstudianteController::class, 'obtenerCertificaciones'])->name('obtener_certificaciones');
+        Route::get('/certificaciones/{id}/descargar', [EstudianteController::class, 'descargarCertificacion'])->name('descargar_certificacion');
+
+        // Reportes Disciplinarios
+        Route::get('/reportes-disciplinarios', [EstudianteController::class, 'viewReportesDisciplinarios'])->name('reportes_disciplinarios');
+        Route::get('/api/reportes-disciplinarios', [EstudianteController::class, 'obtenerReportesDisciplinarios'])->name('obtener_reportes_disciplinarios');
+
+        // Notificaciones
+        Route::get('/notificaciones', [EstudianteController::class, 'viewNotificaciones'])->name('notificaciones');
+        Route::get('/api/notificaciones', [EstudianteController::class, 'obtenerNotificaciones'])->name('obtener_notificaciones');
+        Route::post('/notificaciones/{id}/leer', [EstudianteController::class, 'marcarNotificacionLeida'])->name('marcar_notificacion_leida');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Estudiantes / Acudientes (Legacy)
     |--------------------------------------------------------------------------
     */
     Route::prefix('estudiantes')->name('estudiantes.')->group(function () {

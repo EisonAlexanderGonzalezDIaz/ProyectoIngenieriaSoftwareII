@@ -101,25 +101,25 @@
                     @endif
 
                     @if(in_array($rolNombre, ['Docente', 'Estudiante', 'Acudiente']))
-                        <a class="nav-link text-dark" href="#">
+                        <a class="nav-link text-dark" href="{{ $rolNombre === 'Estudiante' ? route('estudiante.solicitar_cita') : '#' }}">
                             <i class="fas fa-calendar-plus me-2"></i>Solicitar citas orientacion
                         </a>
                     @endif
 
                     @if(in_array($rolNombre, ['Docente', 'Estudiante']))
-                        <a class="nav-link text-dark" href="#">
+                        <a class="nav-link text-dark" href="{{ $rolNombre === 'Estudiante' ? route('estudiante.consultar_horario') : '#' }}">
                             <i class="fas fa-clock me-2"></i>Consultar horario
                         </a>
                     @endif
 
                     @if(in_array($rolNombre, ['Docente', 'Estudiante']))
-                        <a class="nav-link text-dark" href="#">
+                        <a class="nav-link text-dark" href="{{ $rolNombre === 'Estudiante' ? route('estudiante.descargar_horario') : '#' }}">
                             <i class="fas fa-download me-2"></i>Descargar horario
                         </a>
                     @endif
 
                     @if(in_array($rolNombre, ['Docente', 'Estudiante', 'Acudiente']))
-                        <a class="nav-link text-dark" href="#">
+                        <a class="nav-link text-dark" href="{{ $rolNombre === 'Estudiante' ? route('estudiante.consultar_notas') : '#' }}">
                             <i class="fas fa-clipboard-list me-2"></i>Consultar notas
                         </a>
                     @endif
@@ -215,32 +215,38 @@
                     @endif
 
                     @if(in_array($rolNombre, ['Estudiante', 'Rector', 'CoordinadorAcademico']))
-                        <a class="nav-link text-dark" href="#">
+                        <a class="nav-link text-dark" href="{{ $rolNombre === 'Estudiante' ? route('estudiante.plan_estudio') : '#' }}">
                             <i class="fas fa-graduation-cap me-2"></i>Consultar plan Academico Anual
                         </a>        
                     @endif
 
                     @if(in_array($rolNombre, ['Estudiante']))
-                        <a class="nav-link text-dark" href="#">
+                        <a class="nav-link text-dark" href="{{ route('estudiante.tareas') }}">
                             <i class="fas fa-download me-2"></i>Descargar material academico
                         </a>
                     @endif
 
                     @if(in_array($rolNombre, ['Estudiante', 'Acudiente']))
-                        <a class="nav-link text-dark" href="#">
+                        <a class="nav-link text-dark" href="{{ $rolNombre === 'Estudiante' ? route('estudiante.solicitar_certificacion') : '#' }}">
                             <i class="fas fa-certificate me-2"></i>Solicitar certificaciones
                         </a>
                     @endif
 
                     @if(in_array($rolNombre, ['Estudiante']))
-                        <a class="nav-link text-dark" href="#">
+                        <a class="nav-link text-dark" href="{{ route('estudiante.solicitar_certificacion') }}">
                             <i class="fas fa-download me-2"></i>Descargar certificaciones
                         </a>
                     @endif
 
                     @if(in_array($rolNombre, ['Estudiante', 'Acudiente']))
-                        <a class="nav-link text-dark" href="#">
+                        <a class="nav-link text-dark" href="{{ $rolNombre === 'Estudiante' ? route('estudiante.reportes_disciplinarios') : '#' }}">
                             <i class="fas fa-exclamation-circle me-2"></i>Consultar reportes disciplinarios
+                        </a>
+                    @endif
+
+                    @if(in_array($rolNombre, ['Estudiante', 'Acudiente', 'Docente']))
+                        <a class="nav-link text-dark" href="{{ $rolNombre === 'Estudiante' ? route('estudiante.notificaciones') : '#' }}">
+                            <i class="fas fa-bell me-2"></i>Centro de Notificaciones
                         </a>
                     @endif
 
