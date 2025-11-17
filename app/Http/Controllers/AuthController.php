@@ -15,52 +15,44 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-    // Procesar el login
+    // Procesar el login (con verificación de activo)
     public function login(Request $request)
     {
+        // Validar datos de entrada
         $request->validate([
-            'email' => 'required|email',
+            'email'    => 'required|email',
             'password' => 'required',
         ]);
 
         $credentials = $request->only('email', 'password');
 
+        // Intentar autenticación
         if (Auth::attempt($credentials)) {
+            // Regenerar la sesión por seguridad
             $request->session()->regenerate();
+
+            $user = Auth::user();
+
+            // Si el usuario tiene columna 'activo' y está en 0, no lo dejamos entrar
+            if (isset($user->activo) && $user->activo === 0) {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                return back()->withErrors([
+                    'email' => 'Tu usuario está inactivo. Contacta al Administrador del Sistema.',
+                ])->onlyInput('email');
+            }
+
+            // Si todo está bien, lo enviamos al dashboard
             return redirect()->intended('dashboard');
         }
 
+        // Credenciales incorrectas
         return back()->withErrors([
             'email' => 'Las credenciales proporcionadas no coinciden con nuestros registros.',
         ])->onlyInput('email');
     }
-
-    use Illuminate\Support\Facades\Auth;
-
-public function login(Request $request)
-{
-    $credentials = $request->only('email', 'password');
-
-    if (Auth::attempt($credentials)) {
-        $user = Auth::user();
-
-        // Si está inactivo, no lo dejamos entrar
-        if ($user->activo === 0) {
-            Auth::logout();
-
-            return back()->withErrors([
-                'email' => 'Tu usuario está inactivo. Contacta al Administrador del Sistema.',
-            ])->withInput($request->only('email'));
-        }
-
-        return redirect()->intended('/dashboard');
-        }
-
-        return back()->withErrors([
-        'email' => 'Credenciales incorrectas.',
-        ])->withInput($request->only('email'));
-}
-
 
     // Mostrar dashboard/menú principal
     public function dashboard()
