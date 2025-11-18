@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\Teacher;
 use App\Models\Subject;
 use App\Models\PerformanceEvaluation;
+use App\Models\RolesModel;
 
 class CoordinadorAcademicoController extends Controller
 {
@@ -24,9 +24,22 @@ class CoordinadorAcademicoController extends Controller
     public function gestionDocentes()
     {
         // Obtener datos necesarios para la vista
-        $teachers = Teacher::with(['user', 'subjects'])->get();
+        // Si existe modelo Teacher se usa; si no, recuperamos usuarios con rol Docente
         $subjects = Subject::all();
-        
+
+        if (class_exists(\App\Models\Teacher::class)) {
+            $teacherClass = \App\Models\Teacher::class;
+            $teachers = $teacherClass::with(['user', 'subjects'])->get();
+        } else {
+            // Obtener usuarios cuyo rol sea 'Docente'
+            $rol = RolesModel::where('nombre', 'Docente')->first();
+            if ($rol) {
+                $teachers = User::where('roles_id', $rol->id)->get();
+            } else {
+                $teachers = User::where('roles_id', null)->where('email', 'like', '%@example.com')->limit(0)->get();
+            }
+        }
+
         return view('coordinador_academico.gestion_docentes', compact('teachers', 'subjects'));
     }
     

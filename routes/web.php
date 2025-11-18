@@ -330,6 +330,10 @@ Route::middleware(['auth'])->group(function () {
     */
     Route::get('/orientador/gestion', [OrientadorController::class, 'dashboard'])
         ->name('orientacion.gestion');
+    // API endpoints para Orientador
+    Route::get('/api/orientador/casos', [OrientadorController::class, 'apiCasos'])->name('orientador.api.casos');
+    Route::post('/api/orientador/agendar', [OrientadorController::class, 'apiAgendarSesion'])->name('orientador.api.agendar');
+    Route::get('/api/orientador/agenda', [OrientadorController::class, 'apiAgenda'])->name('orientador.api.agenda');
 
     /*
     |--------------------------------------------------------------------------
@@ -356,6 +360,10 @@ Route::middleware(['auth'])->group(function () {
     */
     Route::get('/casos/gestion', [CasosDisciplinariosController::class, 'gestion'])
         ->name('casos.gestion');
+    // API para casos disciplinarios
+    Route::get('/api/casos', [CasosDisciplinariosController::class, 'apiList'])->name('api.casos.list');
+    Route::post('/api/casos', [CasosDisciplinariosController::class, 'apiCreate'])->name('api.casos.create');
+    Route::post('/api/casos/{id}/seguimiento', [CasosDisciplinariosController::class, 'apiSeguimiento'])->name('api.casos.seguimiento');
 
     /*
     |--------------------------------------------------------------------------
