@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Acudientes del estudiante')
+@section('title', 'Gestionar acudientes')
 
 @section('content')
 @include('partials.navbar')
@@ -9,105 +9,64 @@
 
     {{-- Encabezado --}}
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1 class="h4 text-primary mb-0">
-            Acudientes de {{ $estudiante->name }}
-        </h1>
+        <div>
+            <h1 class="h4 mb-1 text-primary">
+                Acudientes de: {{ $estudiante->name }}
+            </h1>
+            <div class="text-muted small">
+                Rol: {{ optional($estudiante->rol)->nombre ?? 'Sin rol' }} ·
+                Curso: {{ optional($estudiante->curso)->nombre ?? 'Sin curso asignado' }} ·
+                Email: {{ $estudiante->email }}
+            </div>
+        </div>
 
         <a href="{{ route('admin.usuarios.perfiles') }}" class="btn btn-outline-secondary btn-sm">
-            <i class="fas fa-arrow-left me-1"></i> Volver a gestión de perfiles
+            <i class="fas fa-arrow-left me-1"></i> Volver a perfiles
         </a>
     </div>
 
     {{-- Mensajes --}}
     @if(session('ok'))
-        <div class="alert alert-success">
-            {{ session('ok') }}
-        </div>
+        <div class="alert alert-success">{{ session('ok') }}</div>
     @endif
 
-    @if($errors->any())
+    @if ($errors->any())
         <div class="alert alert-danger">
             <strong>Hay errores:</strong>
             <ul class="mb-0">
-                @foreach($errors->all() as $error)
+                @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
             </ul>
         </div>
     @endif
 
-    {{-- Formulario para agregar acudiente --}}
+    {{-- Acudientes actuales --}}
     <div class="card mb-4">
         <div class="card-header">
-            <strong>Agregar acudiente por correo electrónico</strong>
+            <strong>Acudientes vinculados actualmente</strong>
         </div>
-        <div class="card-body">
-            <form method="POST"
-                  action="{{ route('admin.estudiantes.acudientes.vincular', $estudiante->id) }}"
-                  class="row g-2 align-items-end">
-                @csrf
-
-                <div class="col-md-6">
-                    <label class="form-label mb-1">Correo del acudiente</label>
-                    <input type="email"
-                           name="email_acudiente"
-                           class="form-control"
-                           value="{{ old('email_acudiente') }}"
-                           placeholder="acudiente@correo.com"
-                           required>
-                </div>
-
-                <div class="col-md-3">
-                    <button type="submit" class="btn btn-primary w-100">
-                        <i class="fas fa-user-plus me-1"></i> Vincular
-                    </button>
-                </div>
-            </form>
-
-            <p class="text-muted small mt-2 mb-0">
-                El usuario debe existir y tener rol <strong>Acudiente</strong>.
-            </p>
-        </div>
-    </div>
-
-    {{-- Tabla de acudientes vinculados --}}
-    <div class="card">
-        <div class="card-header">
-            <strong>Acudientes vinculados</strong>
-        </div>
-        <div class="card-body">
-            @if($acudientes->isEmpty())
-                <p class="text-muted mb-0">
-                    Este estudiante aún no tiene acudientes vinculados.
+        <div class="card-body p-0">
+            @if($estudiante->acudientes->isEmpty())
+                <p class="p-3 mb-0 text-muted">
+                    Este estudiante aún no tiene acudientes asignados.
                 </p>
             @else
                 <div class="table-responsive">
-                    <table class="table table-striped align-middle">
+                    <table class="table table-striped mb-0 align-middle">
                         <thead class="table-light">
                             <tr>
+                                <th>#</th>
                                 <th>Nombre</th>
                                 <th>Email</th>
-                                <th>Rol</th>
-                                <th class="text-center" style="width: 140px;">Acción</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($acudientes as $acudiente)
+                            @foreach($estudiante->acudientes as $idx => $acu)
                                 <tr>
-                                    <td>{{ $acudiente->name }}</td>
-                                    <td>{{ $acudiente->email }}</td>
-                                    <td>{{ optional($acudiente->rol)->nombre ?? 'Acudiente' }}</td>
-                                    <td class="text-center">
-                                        <form method="POST"
-                                              action="{{ route('admin.estudiantes.acudientes.desvincular', [$estudiante->id, $acudiente->id]) }}"
-                                              onsubmit="return confirm('¿Quitar este acudiente del estudiante?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-outline-danger">
-                                                <i class="fas fa-user-minus me-1"></i> Quitar
-                                            </button>
-                                        </form>
-                                    </td>
+                                    <td>{{ $idx + 1 }}</td>
+                                    <td>{{ $acu->name }}</td>
+                                    <td>{{ $acu->email }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -117,5 +76,51 @@
         </div>
     </div>
 
+    {{-- Formulario para asignar acudientes --}}
+    <form method="POST"
+          action="{{ route('admin.usuarios.acudientes.update', $estudiante->id) }}">
+        @csrf
+
+        <div class="card mb-3">
+            <div class="card-header">
+                <strong>Asignar / actualizar acudientes</strong>
+                <span class="text-muted d-block small">
+                    Marca los acudientes que estarán vinculados a este estudiante.
+                </span>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    @forelse($acudientesDisponibles as $acu)
+                        <label class="list-group-item d-flex align-items-center">
+                            <input
+                                type="checkbox"
+                                name="acudientes[]"
+                                value="{{ $acu->id }}"
+                                class="form-check-input me-2"
+                                @checked($estudiante->acudientes->contains('id', $acu->id))
+                            >
+                            <div>
+                                <div>{{ $acu->name }}</div>
+                                <small class="text-muted">{{ $acu->email }}</small>
+                            </div>
+                        </label>
+                    @empty
+                        <div class="p-3 text-muted">
+                            No hay usuarios con rol "Acudiente" registrados.
+                        </div>
+                    @endforelse
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">
+                Guardar acudientes
+            </button>
+            <a href="{{ route('admin.usuarios.perfiles') }}" class="btn btn-outline-secondary">
+                Volver a perfiles
+            </a>
+        </div>
+    </form>
 </div>
 @endsection

@@ -4,21 +4,25 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 use App\Models\User;
 
 class AuthController extends Controller
 {
+    // ==========================
     // Mostrar formulario de login
+    // ==========================
     public function showLoginForm()
     {
         return view('auth.login');
     }
 
-    // Procesar el login (con verificación de activo)
+    // ==========================
+    // Procesar login
+    // ==========================
     public function login(Request $request)
     {
-        // Validar datos de entrada
         $request->validate([
             'email'    => 'required|email',
             'password' => 'required',
@@ -26,47 +30,76 @@ class AuthController extends Controller
 
         $credentials = $request->only('email', 'password');
 
-        // Intentar autenticación
         if (Auth::attempt($credentials)) {
-            // Regenerar la sesión por seguridad
+
             $request->session()->regenerate();
 
+            /** @var \App\Models\User $user */
             $user = Auth::user();
 
-            // Si el usuario tiene columna 'activo' y está en 0, no lo dejamos entrar
-            if (isset($user->activo) && $user->activo === 0) {
+            // Si el usuario está marcado como inactivo, no lo dejamos entrar
+            if (Schema::hasColumn('users', 'activo') && $user->activo === 0) {
                 Auth::logout();
-                $request->session()->invalidate();
-                $request->session()->regenerateToken();
 
                 return back()->withErrors([
                     'email' => 'Tu usuario está inactivo. Contacta al Administrador del Sistema.',
-                ])->onlyInput('email');
+                ])->withInput($request->only('email'));
             }
 
-            // Si todo está bien, lo enviamos al dashboard
-            return redirect()->intended('dashboard');
+            return redirect()->intended('/dashboard');
         }
 
-        // Credenciales incorrectas
         return back()->withErrors([
-            'email' => 'Las credenciales proporcionadas no coinciden con nuestros registros.',
-        ])->onlyInput('email');
+            'email' => 'Credenciales incorrectas.',
+        ])->withInput($request->only('email'));
     }
 
-    // Mostrar dashboard/menú principal
+    // ==========================
+    // Dashboard / Menú principal
+    // ==========================
     public function dashboard()
     {
-        return view('dashboard');
+        $usuario = Auth::user();
+
+        // Total de estudiantes (rol = Estudiante)
+        $totalEstudiantes = User::whereHas('rol', function ($q) {
+            $q->where('nombre', 'Estudiante');
+        })->count();
+
+        // Total de docentes (rol = Docente)
+        $totalDocentes = User::whereHas('rol', function ($q) {
+            $q->where('nombre', 'Docente');
+        })->count();
+
+        // Total de materias (si existe tabla 'materias')
+        $totalMaterias = Schema::hasTable('materias')
+            ? DB::table('materias')->count()
+            : 0;
+
+        // Total de eventos (si existe tabla 'eventos')
+        $totalEventos = Schema::hasTable('eventos')
+            ? DB::table('eventos')->count()
+            : 0;
+
+        return view('dashboard', [
+            'usuario'          => $usuario,
+            'totalEstudiantes' => $totalEstudiantes,
+            'totalDocentes'    => $totalDocentes,
+            'totalMaterias'    => $totalMaterias,
+            'totalEventos'     => $totalEventos,
+        ]);
     }
 
-    // Procesar logout
+    // ==========================
+    // Logout
+    // ==========================
     public function logout(Request $request)
     {
         Auth::logout();
+
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        
+
         return redirect('/login');
     }
 }

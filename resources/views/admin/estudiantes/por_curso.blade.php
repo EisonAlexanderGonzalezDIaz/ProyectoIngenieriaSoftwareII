@@ -6,63 +6,79 @@
 @include('partials.navbar')
 
 <div class="container py-4">
-    <h1 class="h4 text-primary mb-4">Estudiantes por curso</h1>
 
-    {{-- Filtro por curso --}}
-    <form method="GET" action="{{ route('admin.estudiantes.porCurso') }}" class="row g-2 mb-4">
-        <div class="col-md-8">
-            <select name="curso_id" class="form-select">
-    <option value="">Seleccione un curso</option>
-    @foreach($cursos as $curso)
-        <option value="{{ $curso->id }}"
-            {{ optional($cursoSeleccionado)->id == $curso->id ? 'selected' : '' }}>
-            {{ $curso->nombre }}
-        </option>
-    @endforeach
-</select>
+    <h1 class="h4 text-primary mb-3">Estudiantes por curso</h1>
 
-        </div>
-        <div class="col-md-4">
-            <button class="btn btn-primary w-100" type="submit">
-                Ver estudiantes
-            </button>
-        </div>
-    </form>
-
-    {{-- Tabla --}}
-    @if($cursoSeleccionado)
-        <h2 class="h5 mb-3">
-            Curso: {{ $cursoSeleccionado->nombre ?? 'Curso '.$cursoSeleccionado->id }}
-        </h2>
-
-        @if($estudiantes->isEmpty())
-            <p>No hay estudiantes registrados en este curso.</p>
-        @else
-            <div class="table-responsive">
-                <table class="table table-striped align-middle">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Nombre</th>
-                            <th>Documento</th>
-                            <th>Email</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($estudiantes as $index => $est)
-                            <tr>
-                                <td>{{ $index + 1 }}</td>
-                                <td>{{ $est->nombre ?? ($est->nombres.' '.$est->apellidos) }}</td>
-                                <td>{{ $est->documento ?? 'N/A' }}</td>
-                                <td>{{ $est->email ?? 'N/A' }}</td>
-                            </tr>
+    {{-- Selector de curso --}}
+    <div class="card mb-3">
+        <div class="card-body">
+            <form method="GET" action="{{ route('admin.estudiantes.porCurso') }}" class="row g-2 align-items-end">
+                <div class="col-md-6">
+                    <label class="form-label mb-1">Curso</label>
+                    <select name="curso_id" class="form-select" required>
+                        <option value="">Seleccione un curso</option>
+                        @foreach($cursos as $curso)
+                            <option value="{{ $curso->id }}"
+                                {{ optional($cursoSeleccionado)->id == $curso->id ? 'selected' : '' }}>
+                                {{ $curso->nombre }}
+                            </option>
                         @endforeach
-                    </tbody>
-                </table>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary w-100 mt-3 mt-md-0">
+                        Ver estudiantes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {{-- Si ya se seleccionó un curso, mostramos la tabla --}}
+    @if($cursoSeleccionado)
+        <h2 class="h5 mb-3">Curso: {{ $cursoSeleccionado->nombre }}</h2>
+
+        <div class="card">
+            <div class="card-body">
+                @if($estudiantes->isEmpty())
+                    <p class="text-muted mb-0">
+                        No hay estudiantes registrados en este curso.
+                    </p>
+                @else
+                    <div class="table-responsive">
+                        <table class="table table-striped align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width: 60px;">#</th>
+                                    <th>Nombre</th>
+                                    <th>Documento</th>
+                                    <th>Email</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($estudiantes as $index => $estudiante)
+                                    <tr>
+                                        {{-- Número consecutivo dentro del curso --}}
+                                        <td>{{ $index + 1 }}</td>
+
+                                        {{-- 🔹 OJO: ahora $estudiante ES User, así que usamos ->name directamente --}}
+                                        <td>{{ $estudiante->name ?? 'N/A' }}</td>
+
+                                        {{-- Documento: si tienes columna "documento" en users, se mostrará;
+                                             si no, quedará N/A y no rompe nada --}}
+                                        <td>{{ $estudiante->documento ?? 'N/A' }}</td>
+
+                                        <td>{{ $estudiante->email ?? 'N/A' }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @endif
             </div>
-        @endif
-    @else
-        <p>Selecciona un curso y haz clic en "Ver estudiantes".</p>
+        </div>
     @endif
+
 </div>
 @endsection

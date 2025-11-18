@@ -100,23 +100,130 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($usuarios as $index => $user)
-                            <form method="POST"
-                                  action="{{ route('admin.usuarios.perfil.update', $user->id) }}">
-                                @csrf
-                                @method('PUT')
 
-                                <tr>
-                                    {{-- Número de fila con paginación correcta --}}
-                                    <td>{{ $user->id }}</td> 
+                        {{-- 1) Otros usuarios (sin curso o no Estudiantes) --}}
+                        @if($otrosUsuarios->count())
+                            <tr class="table-secondary">
+                                <td colspan="7">
+                                    <strong>Otros usuarios (sin curso o no estudiantes)</strong>
+                                </td>
+                            </tr>
 
-                                    <td>{{ $user->name }}</td>
+                            @foreach($otrosUsuarios as $user)
+                                <form method="POST"
+                                      action="{{ route('admin.usuarios.perfil.update', $user->id) }}">
+                                    @csrf
+                                    @method('PUT')
 
-                                    <td>{{ $user->email }}</td>
+                                    <tr>
+                                        <td>{{ $user->id }}</td>
+                                        <td>{{ $user->name }}</td>
+                                        <td>{{ $user->email }}</td>
 
-                                    {{-- Curso (solo para Estudiantes) --}}
-                                    <td>
-                                        @if(optional($user->rol)->nombre === 'Estudiante')
+                                        {{-- Curso (solo para estudiantes) --}}
+                                        <td>
+                                            @if(optional($user->rol)->nombre === 'Estudiante')
+                                                <select name="curso_id" class="form-select form-select-sm">
+                                                    <option value="">Sin curso</option>
+                                                    @foreach($cursos as $curso)
+                                                        <option value="{{ $curso->id }}"
+                                                            {{ $user->curso_id == $curso->id ? 'selected' : '' }}>
+                                                            {{ $curso->nombre }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            @else
+                                                <span class="text-muted small">No aplica</span>
+                                            @endif
+                                        </td>
+
+                                        {{-- Rol --}}
+                                        <td>
+                                            <select name="rol_id" class="form-select form-select-sm">
+                                                @foreach($roles as $rol)
+                                                    <option value="{{ $rol->id }}"
+                                                        {{ optional($user->rol)->id == $rol->id ? 'selected' : '' }}>
+                                                        {{ $rol->nombre }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </td>
+
+                                        {{-- Estado --}}
+                                        <td>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <div class="form-check mb-0">
+                                                    <input type="hidden" name="activo" value="0">
+                                                    <input class="form-check-input" type="checkbox" name="activo" value="1"
+                                                        id="activo_{{ $user->id }}"
+                                                        {{ ($user->activo ?? 1) ? 'checked' : '' }}>
+                                                    <label class="form-check-label small" for="activo_{{ $user->id }}">
+                                                        Activo
+                                                    </label>
+                                                </div>
+                                                @if(($user->activo ?? 1))
+                                                    <span class="badge bg-success">Activo</span>
+                                                @else
+                                                    <span class="badge bg-secondary">Inactivo</span>
+                                                @endif
+                                            </div>
+                                        </td>
+
+                                        {{-- Acciones --}}
+                                        <td class="text-center">
+                                            <div class="d-flex flex-column gap-1">
+                                                {{-- Guardar --}}
+                                                <button type="submit" class="btn btn-sm btn-primary w-100">
+                                                    Guardar
+                                                </button>
+
+                                                {{-- Editar datos básicos --}}
+                                                <button type="button"
+                                                        class="btn btn-sm btn-outline-secondary w-100"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#editUserModal_{{ $user->id }}">
+                                                    <i class="fas fa-pen me-1"></i> Editar datos
+                                                </button>
+
+                                                {{-- Acudientes solo para estudiantes --}}
+                                                @if(optional($user->rol)->nombre === 'Estudiante')
+                                                    <a href="{{ route('admin.usuarios.acudientes.edit', ['user' => $user->id]) }}"
+                                                       class="btn btn-sm btn-outline-info w-100">
+                                                        <i class="fas fa-users me-1"></i> Acudientes
+                                                    </a>
+                                                @endif
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </form>
+                            @endforeach
+                        @endif
+
+                        {{-- 2) Estudiantes agrupados por curso --}}
+                        @forelse($estudiantesAgrupados as $cursoId => $lista)
+                            @php
+                                $curso = $cursos->firstWhere('id', $cursoId);
+                            @endphp
+
+                            <tr class="table-primary">
+                                <td colspan="7">
+                                    <strong>Curso: {{ $curso->nombre ?? 'Sin curso' }}</strong>
+                                </td>
+                            </tr>
+
+                            @foreach($lista as $user)
+                                <form method="POST"
+                                      action="{{ route('admin.usuarios.perfil.update', $user->id) }}">
+                                    @csrf
+                                    @method('PUT')
+
+                                    <tr>
+                                        <td>{{ $user->id }}</td>
+                                        <td>{{ $user->name }}</td>
+                                        <td>{{ $user->email }}</td>
+
+                                        {{-- Curso (select) --}}
+                                        <td>
                                             <select name="curso_id" class="form-select form-select-sm">
                                                 <option value="">Sin curso</option>
                                                 @foreach($cursos as $curso)
@@ -126,84 +233,81 @@
                                                     </option>
                                                 @endforeach
                                             </select>
-                                        @else
-                                            <span class="text-muted small">No aplica</span>
-                                        @endif
-                                    </td>
+                                        </td>
 
-                                    {{-- Rol (select editable) --}}
-                                    <td>
-                                        <select name="rol_id" class="form-select form-select-sm">
-                                            @foreach($roles as $rol)
-                                                <option value="{{ $rol->id }}"
-                                                    {{ optional($user->rol)->id == $rol->id ? 'selected' : '' }}>
-                                                    {{ $rol->nombre }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </td>
+                                        {{-- Rol --}}
+                                        <td>
+                                            <select name="rol_id" class="form-select form-select-sm">
+                                                @foreach($roles as $rol)
+                                                    <option value="{{ $rol->id }}"
+                                                        {{ optional($user->rol)->id == $rol->id ? 'selected' : '' }}>
+                                                        {{ $rol->nombre }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </td>
 
-                                    {{-- Estado (checkbox + badge) --}}
-                                    <td>
-                                        <div class="d-flex align-items-center gap-2">
-                                            <div class="form-check mb-0">
-                                                <input type="hidden" name="activo" value="0">
-                                                <input class="form-check-input" type="checkbox" name="activo" value="1"
-                                                    id="activo_{{ $user->id }}"
-                                                    {{ ($user->activo ?? 1) ? 'checked' : '' }}>
-                                                <label class="form-check-label small" for="activo_{{ $user->id }}">
-                                                    Activo
-                                                </label>
+                                        {{-- Estado --}}
+                                        <td>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <div class="form-check mb-0">
+                                                    <input type="hidden" name="activo" value="0">
+                                                    <input class="form-check-input" type="checkbox" name="activo" value="1"
+                                                        id="activo_{{ $user->id }}"
+                                                        {{ ($user->activo ?? 1) ? 'checked' : '' }}>
+                                                    <label class="form-check-label small" for="activo_{{ $user->id }}">
+                                                        Activo
+                                                    </label>
+                                                </div>
+                                                @if(($user->activo ?? 1))
+                                                    <span class="badge bg-success">Activo</span>
+                                                @else
+                                                    <span class="badge bg-secondary">Inactivo</span>
+                                                @endif
                                             </div>
-                                            @if(($user->activo ?? 1))
-                                                <span class="badge bg-success">Activo</span>
-                                            @else
-                                                <span class="badge bg-secondary">Inactivo</span>
-                                            @endif
-                                        </div>
-                                    </td>
+                                        </td>
 
-                                    {{-- Botones de acción --}}
+                                        {{-- Acciones --}}
                                         <td class="text-center">
-                                        <div class="d-flex flex-column gap-1">
-                                        {{-- Guardar rol/estado/curso --}}
-                                        <button type="submit" class="btn btn-sm btn-primary w-100">
-                                        Guardar
-                                        </button>
-                                        {{-- Abrir modal para editar datos básicos --}}
-                                        <button type="button"
-                                        class="btn btn-sm btn-outline-secondary w-100"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#editUserModal_{{ $user->id }}">
-                                        <i class="fas fa-pen me-1"></i> Editar datos
-                                        </button>
-                                        {{-- Gestionar acudientes (solo estudiantes) --}}
-                                        @if(optional($user->rol)->nombre === 'Estudiante')
-                                        <a href="{{ route('admin.estudiantes.acudientes.index', $user->id) }}"
-                                        class="btn btn-sm btn-outline-info w-100">
-                                        <i class="fas fa-users me-1"></i> Acudientes
-                                        </a>
-                                    @endif
-                                </div>
-                            </td>
-                        </td>
-                    </tr>
-                </form>
+                                            <div class="d-flex flex-column gap-1">
+                                                {{-- Guardar --}}
+                                                <button type="submit" class="btn btn-sm btn-primary w-100">
+                                                    Guardar
+                                                </button>
+
+                                                {{-- Editar datos --}}
+                                                <button type="button"
+                                                        class="btn btn-sm btn-outline-secondary w-100"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#editUserModal_{{ $user->id }}">
+                                                    <i class="fas fa-pen me-1"></i> Editar datos
+                                                </button>
+
+                                                {{-- Acudientes --}}
+                                                <a href="{{ route('admin.usuarios.acudientes.edit', ['user' => $user->id]) }}"
+                                                   class="btn btn-sm btn-outline-info w-100">
+                                                    <i class="fas fa-users me-1"></i> Acudientes
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </form>
+                            @endforeach
                         @empty
-                            <tr>
-                                <td colspan="7" class="text-center text-muted py-3">
-                                    No se encontraron usuarios con los filtros aplicados.
-                                </td>
-                            </tr>
+                            @if(!$otrosUsuarios->count())
+                                <tr>
+                                    <td colspan="7" class="text-center text-muted py-3">
+                                        No se encontraron usuarios con los filtros aplicados.
+                                    </td>
+                                </tr>
+                            @endif
                         @endforelse
+
                     </tbody>
                 </table>
             </div>
 
-            {{-- 📄 Paginación --}}
-            <div class="mt-3">
-                {{ $usuarios->links() }}
-            </div>
+            {{-- 🔹 Ya no hay paginación porque estamos agrupando todo en una sola vista --}}
         </div>
     </div>
 

@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
 use App\Models\Curso;
-use App\Models\Estudiante;
+use App\Models\RolesModel;
 
 class AdminEstudiantesController extends Controller
 {
@@ -21,38 +22,37 @@ class AdminEstudiantesController extends Controller
      */
     public function porCurso(Request $request)
     {
-        // 🔹 Traer todos los cursos ordenados de forma lógica:
-        // primero 1A, 1B, luego 2A, 2B, ..., hasta 11A, 11B
-        $cursos = Curso::orderByRaw("
-                CAST(SUBSTRING(nombre, 1, LENGTH(nombre) - 1) AS UNSIGNED),
-                RIGHT(nombre, 1)
-            ")
-            ->get();
+        // Todos los cursos ordenados por nombre (1A, 1B, 2A, ..., 11B)
+        $cursos = Curso::orderByRaw("CAST(SUBSTRING(nombre, 1, LENGTH(nombre) - 1) AS UNSIGNED) ASC")
+               ->orderByRaw("RIGHT(nombre, 1) ASC")
+               ->get();
 
         $cursoSeleccionado = null;
         $estudiantes = collect();
 
         if ($request->filled('curso_id')) {
+
             // 1. Buscar el curso seleccionado
-            $cursoSeleccionado = Curso::findOrFail($request->curso_id);
+            $cursoSeleccionado = Curso::find($request->curso_id);
 
-            // 2. Base de consulta para estudiantes de ese curso
-            $query = Estudiante::where('curso_id', $cursoSeleccionado->id);
+            if ($cursoSeleccionado) {
 
-            // 🔎 (Opcional) filtro de búsqueda por nombre o identificación
-            if ($request->filled('buscar')) {
-                $buscar = trim($request->buscar);
+                // 2. Buscar el rol "Estudiante"
+                $rolEstudiante = RolesModel::where('nombre', 'Estudiante')->first();
 
-                $query->where(function ($q) use ($buscar) {
-                    $q->where('nombre', 'LIKE', "%{$buscar}%")
-                      ->orWhere('identificacion', 'LIKE', "%{$buscar}%");
-                });
+                // Si existe el rol, filtramos por ese rol
+                $query = User::query()
+                    ->where('curso_id', $cursoSeleccionado->id);
+
+                if ($rolEstudiante) {
+                    $query->where('roles_id', $rolEstudiante->id);
+                }
+
+                // 3. Traer estudiantes ordenados por nombre
+                $estudiantes = $query
+                    ->orderBy('name', 'asc')
+                    ->get();
             }
-
-            // 3. Obtener estudiantes ordenados por nombre
-            $estudiantes = $query
-                ->orderBy('nombre', 'asc')
-                ->get();
         }
 
         return view('admin.estudiantes.por_curso', compact(

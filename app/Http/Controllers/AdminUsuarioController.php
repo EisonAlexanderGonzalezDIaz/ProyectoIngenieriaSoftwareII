@@ -14,7 +14,7 @@ class AdminUsuarioController extends Controller
      * Listado para gestionar perfiles de usuario:
      * - Búsqueda
      * - Filtros por rol y estado
-     * - Paginación
+     * - Agrupación de estudiantes por curso
      */
     public function index(Request $request)
     {
@@ -52,19 +52,44 @@ class AdminUsuarioController extends Controller
             }
         }
 
-        // --- Orden y paginación ---
+        // --- Traer todos los usuarios (sin paginar) para poder agrupar por curso ---
         $usuarios = $query
+            ->orderBy('curso_id')
             ->orderBy('name', 'asc')
-            ->paginate(10)               // 10 usuarios por página
-            ->withQueryString();         // Mantener filtros en la paginación
+            ->get();
 
-        // Roles disponibles para el select
+        // Roles disponibles para el select de rol
         $roles = RolesModel::all();
 
-        // Cursos disponibles para asignar a estudiantes
-        $cursos = Curso::orderBy('nombre')->get();
+        // Cursos disponibles (1A, 1B, ..., 11B) ordenados bien
+        $cursos = Curso::orderByRaw("CAST(SUBSTRING(nombre, 1, LENGTH(nombre) - 1) AS UNSIGNED) ASC")
+            ->orderByRaw("RIGHT(nombre, 1) ASC")
+            ->get();
 
-        return view('admin.usuarios.perfiles', compact('usuarios', 'roles', 'cursos'));
+        // ==========================
+        // AGRUPACIÓN
+        // ==========================
+
+        // Estudiantes con curso asignado
+        $estudiantes = $usuarios->filter(function ($u) {
+            return optional($u->rol)->nombre === 'Estudiante' && !is_null($u->curso_id);
+        });
+
+        // Estudiantes agrupados por curso_id
+        $estudiantesAgrupados = $estudiantes->groupBy('curso_id');
+
+        // Otros usuarios (no estudiantes o estudiantes sin curso)
+        $otrosUsuarios = $usuarios->reject(function ($u) {
+            return optional($u->rol)->nombre === 'Estudiante' && !is_null($u->curso_id);
+        });
+
+        return view('admin.usuarios.perfiles', [
+            'usuarios'            => $usuarios,            // para los modales
+            'roles'               => $roles,
+            'cursos'              => $cursos,
+            'estudiantesAgrupados'=> $estudiantesAgrupados,
+            'otrosUsuarios'       => $otrosUsuarios,
+        ]);
     }
 
     /**
@@ -80,7 +105,7 @@ class AdminUsuarioController extends Controller
 
         $user = User::findOrFail($id);
 
-        // Asociar el rol usando la RELACIÓN 'rol'
+        // Asociar el rol usando la RELACIÓN 'rol' (FK: roles_id)
         $user->rol()->associate($request->rol_id);
 
         // Solo intentamos guardar 'activo' si la columna existe
@@ -122,5 +147,63 @@ class AdminUsuarioController extends Controller
         return redirect()
             ->route('admin.usuarios.perfiles')
             ->with('ok', 'Datos básicos del usuario actualizados correctamente.');
+    }
+
+    /**
+     * Mostrar pantalla para gestionar acudientes de un estudiante.
+     */
+    public function editarAcudientes(User $user)
+    {
+        // Solo tiene sentido si el usuario es Estudiante
+        if (optional($user->rol)->nombre !== 'Estudiante') {
+            return redirect()
+                ->route('admin.usuarios.perfiles')
+                ->with('ok', 'Solo se pueden gestionar acudientes para usuarios con rol Estudiante.');
+        }
+
+        // Acudientes disponibles: todos los usuarios con rol "Acudiente"
+        $acudientesDisponibles = User::whereHas('rol', function ($q) {
+                $q->where('nombre', 'Acudiente');
+            })
+            ->orderBy('name', 'asc')
+            ->get();
+
+        // IDs de acudientes ya vinculados a este estudiante (tabla pivote acudiente_estudiante)
+        $acudientesSeleccionados = $user->acudientes()
+            ->pluck('users.id')
+            ->toArray();
+
+        return view('admin.usuarios.acudientes', compact(
+            'user',
+            'acudientesDisponibles',
+            'acudientesSeleccionados'
+        ));
+    }
+
+    /**
+     * Guardar vínculos de acudientes de un estudiante.
+     */
+    public function guardarAcudientes(Request $request, User $user)
+    {
+        // Solo si es Estudiante
+        if (optional($user->rol)->nombre !== 'Estudiante') {
+            return redirect()
+                ->route('admin.usuarios.perfiles')
+                ->with('ok', 'Solo se pueden gestionar acudientes para usuarios con rol Estudiante.');
+        }
+
+        $request->validate([
+            'acudientes'   => 'nullable|array',
+            'acudientes.*' => 'exists:users,id',
+        ]);
+
+        $idsAcudientes = $request->input('acudientes', []);
+
+        // Sincronizar en la tabla pivote acudiente_estudiante
+        $user->acudientes()->sync($idsAcudientes);
+
+        return redirect()
+            ->route('admin.usuarios.perfiles')
+            ->with('ok', 'Acudientes actualizados correctamente para el estudiante ' . $user->name . '.');
     }
 }

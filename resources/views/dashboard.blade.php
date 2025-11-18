@@ -4,6 +4,10 @@
 
 @section('content')
 
+@php
+    $usuario   = Auth::user();
+    $rolNombre = $usuario->rol->nombre ?? '';
+@endphp
 
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
@@ -20,7 +24,7 @@
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                        <i class="fas fa-user-circle me-1"></i>{{ Auth::user()->name }}
+                        <i class="fas fa-user-circle me-1"></i>{{ $usuario->name }}
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end shadow">
                         <li><a class="dropdown-item" href="#"><i class="fas fa-user-graduate me-2"></i>Perfil</a></li>
@@ -48,9 +52,6 @@
                     <h6 class="text-primary text-uppercase fw-bold mb-0">Menú Principal</h6>
                 </div>
                 <nav class="nav flex-column px-3 mt-2">
-                    @php
-                        $rolNombre = Auth::user()->rol->nombre ?? '';
-                    @endphp
 
                     <a class="nav-link active fw-semibold text-primary" href="{{ route('dashboard') }}">
                         <i class="fas fa-home me-2"></i>Inicio
@@ -70,14 +71,17 @@
                         @endif
                     @endif
 
+                    {{-- Aquí separamos claramente las dos opciones --}}
                     @if(in_array($rolNombre, ['AdministradorSistema', 'Rector']))
-                        <a class="nav-link text-dark" href="#">
+                        {{-- Asignar permisos y roles → pantalla de roles --}}
+                        <a class="nav-link text-dark {{ request()->routeIs('roles.*') ? 'active fw-semibold text-primary' : '' }}"
+                           href="{{ route('roles.create') }}">
                             <i class="fas fa-user-shield me-2"></i>Asignar permisos y roles
                         </a>
-                    @endif
 
-                    @if(in_array($rolNombre, ['Rector']))
-                        <a class="nav-link text-dark" href="{{ route('admin.usuarios.perfiles') }}">
+                        {{-- Gestionar perfiles de usuario → pantalla de usuarios --}}
+                        <a class="nav-link text-dark {{ request()->routeIs('admin.usuarios.*') ? 'active fw-semibold text-primary' : '' }}"
+                           href="{{ route('admin.usuarios.perfiles') }}">
                             <i class="fas fa-users-cog me-2"></i>Gestionar perfiles de usuario
                         </a>
                     @endif
@@ -121,48 +125,6 @@
                     @if(in_array($rolNombre, ['Docente', 'Estudiante', 'Acudiente']))
                         <a class="nav-link text-dark" href="{{ $rolNombre === 'Estudiante' ? route('estudiante.consultar_notas') : '#' }}">
                             <i class="fas fa-clipboard-list me-2"></i>Consultar notas
-                        </a>
-                    @endif
-
-                    @if(in_array($rolNombre, ['Docente', 'Estudiante']))
-                        <a class="nav-link text-dark" href="#">
-                            <i class="fas fa-book me-2"></i>Consultar materia
-                        </a>
-                    @endif
-
-                    @if(in_array($rolNombre, ['Docente']))
-                        <a class="nav-link text-dark" href="#">
-                            <i class="fas fa-pen me-2"></i>Registrar notas
-                        </a>
-                    @endif
-
-                    @if(in_array($rolNombre, ['Docente']))
-                        <a class="nav-link text-dark" href="#">
-                            <i class="fas fa-user-check me-2"></i>Consultar asistencia
-                        </a>
-                    @endif
-
-                    @if(in_array($rolNombre, ['Docente', 'Estudiante']))
-                        <a class="nav-link text-dark" href="#">
-                            <i class="fas fa-upload me-2"></i>Subir material academico
-                        </a>
-                    @endif  
-
-                    @if(in_array($rolNombre, ['Docente']))
-                        <a class="nav-link text-dark" href="#">
-                            <i class="fas fa-file-alt me-2"></i>Generar informes curso
-                        </a>
-                    @endif
-
-                    @if(in_array($rolNombre, ['Docente']))
-                        <a class="nav-link text-dark" href="#">
-                            <i class="fas fa-check-circle me-2"></i>Calificar
-                        </a>
-                    @endif
-
-                    @if(in_array($rolNombre, ['Docente', 'Estudiante', 'Acudiente', 'Rector']))
-                        <a class="nav-link text-dark" href="#">
-                            <i class="fas fa-newspaper me-2"></i>Consultar boletines
                         </a>
                     @endif
 
@@ -361,8 +323,17 @@
                 <!-- Welcome Section -->
                 <div class="row mb-4 align-items-center">
                     <div class="col-12">
-                        <h1 class="h3 text-primary fw-bold">¡Bienvenido(a), {{ Auth::user()->name }}!</h1>
-                        <p class="text-muted">Administra y supervisa la gestión académica y administrativa del colegio.</p>
+                        <h1 class="h3 text-primary fw-bold">¡Bienvenido(a), {{ $usuario->name }}!</h1>
+                        <p class="text-muted mb-1">
+                            Rol: <strong>{{ $rolNombre ?: 'Sin rol asignado' }}</strong> · 
+                            Email: <strong>{{ $usuario->email }}</strong>
+                        </p>
+                        <p class="text-muted mb-0">
+                            Fecha y hora actual: {{ now()->format('d/m/Y H:i') }}
+                        </p>
+                        <p class="text-muted">
+                            Administra y supervisa la gestión académica y administrativa del colegio.
+                        </p>
                     </div>
                 </div>
 
@@ -373,7 +344,7 @@
                             <div class="card-body text-center">
                                 <div class="text-primary mb-2"><i class="fas fa-user-graduate fa-2x"></i></div>
                                 <h5 class="card-title">Estudiantes</h5>
-                                <h3 class="text-primary">420</h3>
+                                <h3 class="text-primary">{{ $totalEstudiantes ?? 0 }}</h3>
                                 <small class="text-muted">Registrados en el sistema</small>
                             </div>
                         </div>
@@ -384,7 +355,7 @@
                             <div class="card-body text-center">
                                 <div class="text-success mb-2"><i class="fas fa-user-tie fa-2x"></i></div>
                                 <h5 class="card-title">Docentes</h5>
-                                <h3 class="text-success">35</h3>
+                                <h3 class="text-success">{{ $totalDocentes ?? 0 }}</h3>
                                 <small class="text-muted">Activos actualmente</small>
                             </div>
                         </div>
@@ -395,7 +366,7 @@
                             <div class="card-body text-center">
                                 <div class="text-warning mb-2"><i class="fas fa-book fa-2x"></i></div>
                                 <h5 class="card-title">Materias</h5>
-                                <h3 class="text-warning">52</h3>
+                                <h3 class="text-warning">{{ $totalMaterias ?? 0 }}</h3>
                                 <small class="text-muted">Asignaturas registradas</small>
                             </div>
                         </div>
@@ -406,7 +377,7 @@
                             <div class="card-body text-center">
                                 <div class="text-info mb-2"><i class="fas fa-calendar-check fa-2x"></i></div>
                                 <h5 class="card-title">Eventos</h5>
-                                <h3 class="text-info">5</h3>
+                                <h3 class="text-info">{{ $totalEventos ?? 0 }}</h3>
                                 <small class="text-muted">Programados este mes</small>
                             </div>
                         </div>

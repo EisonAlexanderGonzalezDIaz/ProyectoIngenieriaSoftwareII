@@ -25,9 +25,8 @@ use App\Http\Controllers\AprobacionesNotasController;
 use App\Http\Controllers\PlanAcademicoController;
 use App\Http\Controllers\AdminEstudiantesController;
 use App\Http\Controllers\AdminUsuarioController;
-use App\Models\RolesModel;
 use App\Http\Controllers\AcudienteEstudianteController;
-
+use App\Models\RolesModel;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,7 +53,7 @@ Route::post('/register', [CrearUsuario::class, 'register']);
 
 // Grupo de rutas protegidas por autenticación
 Route::middleware(['auth'])->group(function () {
-    
+
     // ==========================
     // DASHBOARD GENERAL
     // ==========================
@@ -87,10 +86,15 @@ Route::middleware(['auth'])->group(function () {
     | Roles
     |--------------------------------------------------------------------------
     */
-    // Página de creación de roles
+    // Página de creación / asignación de roles y permisos
     Route::get('/roles/create', function () {
-        // Restringir acceso al Administrador del Sistema
-        // if (!auth()->user()->role || auth()->user()->role->nombre !== 'AdministradorSistema') abort(403);
+        $user = auth()->user();
+
+        // Solo Admin del Sistema o Rector
+        if (!$user || !in_array(optional($user->rol)->nombre, ['AdministradorSistema', 'Rector'])) {
+            abort(403, 'Solo el Administrador del Sistema o el Rector pueden gestionar roles.');
+        }
+
         return view('roles.create');
     })->name('roles.create');
 
@@ -101,9 +105,9 @@ Route::middleware(['auth'])->group(function () {
             abort(403, 'No autenticado.');
         }
 
-        // Verificación de rol
-        if (!$user->role || $user->role->nombre !== 'AdministradorSistema') {
-            abort(403, 'Solo el Administrador del Sistema puede crear roles.');
+        $rolNombre = optional($user->rol)->nombre;
+        if (!in_array($rolNombre, ['AdministradorSistema', 'Rector'])) {
+            abort(403, 'Solo el Administrador del Sistema o el Rector pueden crear roles.');
         }
 
         // Validación de datos
@@ -207,7 +211,7 @@ Route::middleware(['auth'])->group(function () {
     | Estudiantes / Acudientes (Legacy)
     |--------------------------------------------------------------------------
     */
-        Route::prefix('estudiantes')->name('estudiantes.')->group(function () {
+    Route::prefix('estudiantes')->name('estudiantes.')->group(function () {
         // Página principal de gestión de estudiantes
         Route::get('/', [EstudianteController::class, 'index'])->name('index');
 
@@ -217,20 +221,19 @@ Route::middleware(['auth'])->group(function () {
         })->name('gestion');
     });
 
-        // ==========================
-    // Admin: Vincular acudientes ↔ estudiantes
     // ==========================
-        Route::get('/admin/estudiantes/{estudiante}/acudientes', [AcudienteEstudianteController::class, 'index'])
+    // Admin: Vincular acudientes ↔ estudiantes (por estudiante)
+    // ==========================
+    Route::get('/admin/estudiantes/{estudiante}/acudientes', [AcudienteEstudianteController::class, 'index'])
         ->name('admin.estudiantes.acudientes.index');
 
-        Route::post('/admin/estudiantes/{estudiante}/acudientes', [AcudienteEstudianteController::class, 'vincular'])
+    Route::post('/admin/estudiantes/{estudiante}/acudientes', [AcudienteEstudianteController::class, 'vincular'])
         ->name('admin.estudiantes.acudientes.vincular');
 
-        Route::delete(
+    Route::delete(
         '/admin/estudiantes/{estudiante}/acudientes/{acudiente}',
         [AcudienteEstudianteController::class, 'desvincular']
     )->name('admin.estudiantes.acudientes.desvincular');
-
 
     /*
     |--------------------------------------------------------------------------
@@ -238,30 +241,30 @@ Route::middleware(['auth'])->group(function () {
     |--------------------------------------------------------------------------
     */
     // Menú de "Consultar Estudiantes" solo para AdministradorSistema (ruta usada en el sidebar)
-        Route::get('/admin/estudiantes/menu', [AdminEstudiantesController::class, 'menu'])
+    Route::get('/admin/estudiantes/menu', [AdminEstudiantesController::class, 'menu'])
         ->name('admin.estudiantes.menu');
 
     // Ver estudiantes por curso (filtro desde el menú)
-        Route::get('/admin/estudiantes/por-curso', [AdminEstudiantesController::class, 'porCurso'])
+    Route::get('/admin/estudiantes/por-curso', [AdminEstudiantesController::class, 'porCurso'])
         ->name('admin.estudiantes.porCurso');
 
     // Gestionar perfiles de usuario
-        Route::get('/admin/usuarios/perfiles', [AdminUsuarioController::class, 'index'])
+    Route::get('/admin/usuarios/perfiles', [AdminUsuarioController::class, 'index'])
         ->name('admin.usuarios.perfiles');
 
     // Actualizar perfil de un usuario (rol, estado, curso)
-        Route::put('/admin/usuarios/{id}/perfil', [AdminUsuarioController::class, 'updatePerfil'])
+    Route::put('/admin/usuarios/{id}/perfil', [AdminUsuarioController::class, 'updatePerfil'])
         ->name('admin.usuarios.perfil.update');
 
     // Actualizar datos básicos (nombre y email)
-        Route::put('/admin/usuarios/{id}/basicos', [AdminUsuarioController::class, 'updateBasicos'])
+    Route::put('/admin/usuarios/{id}/basicos', [AdminUsuarioController::class, 'updateBasicos'])
         ->name('admin.usuarios.basicos.update');
 
-    // 🔹 NUEVAS: Gestionar acudientes de un estudiante
-        Route::get('/admin/usuarios/{user}/acudientes', [AdminUsuarioController::class, 'editarAcudientes'])
+    // 🔹 Gestionar acudientes de un estudiante desde perfiles de usuario
+    Route::get('/admin/usuarios/{user}/acudientes', [AdminUsuarioController::class, 'editarAcudientes'])
         ->name('admin.usuarios.acudientes.edit');
 
-        Route::post('/admin/usuarios/{user}/acudientes', [AdminUsuarioController::class, 'guardarAcudientes'])
+    Route::post('/admin/usuarios/{user}/acudientes', [AdminUsuarioController::class, 'guardarAcudientes'])
         ->name('admin.usuarios.acudientes.store');
 
     /*
@@ -330,7 +333,7 @@ Route::middleware(['auth'])->group(function () {
     |--------------------------------------------------------------------------
     | Información del colegio
     |--------------------------------------------------------------------------
-    */    
+    */
     Route::get('/informacion/gestion', function () {
         return view('informacion.gestion');
     })->name('informacion.gestion');
@@ -360,11 +363,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/reportes/gestion', [ReportesDisciplinariosController::class, 'gestion'])
         ->name('reportes.gestion');
 
-    // Gestión de Docentes 
+    // Gestión de Docentes
     Route::get('/gestiondocentes/gestion', [App\Http\Controllers\GestionDocentesController::class, 'gestion'])
         ->name('gestiondocentes.gestion');
 
-    // Plan Académico 
+    // Plan Académico
     Route::get('/planacademico/gestion', [PlanAcademicoController::class, 'gestion'])
         ->name('planacademico.gestion');
 });
