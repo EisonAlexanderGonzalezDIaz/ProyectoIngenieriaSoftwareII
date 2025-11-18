@@ -26,6 +26,8 @@ use App\Http\Controllers\PlanAcademicoController;
 use App\Http\Controllers\AdminEstudiantesController;
 use App\Http\Controllers\AdminUsuarioController;
 use App\Http\Controllers\AcudienteEstudianteController;
+use App\Http\Controllers\DocenteController;
+use App\Http\Controllers\RectorController;
 use App\Models\RolesModel;
 
 /*
@@ -370,4 +372,99 @@ Route::middleware(['auth'])->group(function () {
     // Plan Académico
     Route::get('/planacademico/gestion', [PlanAcademicoController::class, 'gestion'])
         ->name('planacademico.gestion');
+    
+    /*
+    |--------------------------------------------------------------------------
+    | Acudiente (Padres / Tutores)
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('acudiente')->name('acudiente.')->group(function () {
+        // Notificaciones
+        Route::get('/notificaciones', [App\Http\Controllers\AcudienteController::class, 'viewNotificaciones'])->name('notificaciones');
+        Route::get('/api/notificaciones', [App\Http\Controllers\AcudienteController::class, 'obtenerNotificaciones'])->name('obtener_notificaciones');
+        Route::post('/notificaciones/{id}/leer', [App\Http\Controllers\AcudienteController::class, 'marcarNotificacionLeida'])->name('marcar_notificacion_leida');
+
+        // Boletines
+        Route::get('/boletines', [App\Http\Controllers\AcudienteController::class, 'viewBoletines'])->name('boletines');
+        Route::get('/api/boletines', [App\Http\Controllers\AcudienteController::class, 'obtenerBoletines'])->name('obtener_boletines');
+        Route::get('/boletines/{id}/descargar', [App\Http\Controllers\AcudienteController::class, 'descargarBoletin'])->name('descargar_boletin');
+
+        // Reportes disciplinarios (hijos)
+        Route::get('/reportes-disciplinarios', [App\Http\Controllers\AcudienteController::class, 'viewReportesDisciplinarios'])->name('reportes_disciplinarios');
+        Route::get('/api/reportes-disciplinarios', [App\Http\Controllers\AcudienteController::class, 'obtenerReportesDisciplinarios'])->name('obtener_reportes_disciplinarios');
+
+        // Solicitudes de Paz y Salvo
+        Route::get('/paz-y-salvo/solicitar', [App\Http\Controllers\AcudienteController::class, 'viewSolicitarPaz'])->name('solicitar_paz');
+        Route::post('/paz-y-salvo/solicitar', [App\Http\Controllers\AcudienteController::class, 'crearSolicitudPaz'])->name('crear_solicitud_paz');
+    });
+
+    // API: obtener estudiantes a cargo del acudiente (para formularios AJAX)
+    Route::get('/api/acudiente/estudiantes', [App\Http\Controllers\AcudienteController::class, 'obtenerEstudiantes'])->name('acudiente.api.estudiantes');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Docente - Portal Docente
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('docente')->name('docente.')->group(function () {
+        // Solicitar cita a orientación
+        Route::get('/solicitar-cita', [DocenteController::class, 'viewSolicitarCita'])->name('solicitar_cita');
+        Route::post('/solicitar-cita', [DocenteController::class, 'crearCita'])->name('crear_cita');
+
+        // Consultar y descargar horario
+        Route::get('/horario', [DocenteController::class, 'viewConsultarHorario'])->name('consultar_horario');
+        Route::get('/api/horarios', [DocenteController::class, 'obtenerHorarios'])->name('obtener_horarios');
+        Route::get('/horario/descargar', [DocenteController::class, 'descargarHorario'])->name('descargar_horario');
+
+        // Registrar notas
+        Route::get('/notas', [DocenteController::class, 'viewRegistrarNotas'])->name('registrar_notas');
+        Route::post('/notas/guardar', [DocenteController::class, 'guardarNota'])->name('guardar_nota');
+
+        // Registrar asistencia
+        Route::get('/asistencia', [DocenteController::class, 'viewRegistrarAsistencia'])->name('registrar_asistencia');
+        Route::post('/asistencia/guardar', [DocenteController::class, 'guardarAsistencia'])->name('guardar_asistencia');
+
+        // Subir material académico
+        Route::get('/materiales', [DocenteController::class, 'viewSubirMaterial'])->name('subir_material');
+        Route::post('/materiales/subir', [DocenteController::class, 'subirMaterial'])->name('subir_material_post');
+
+        // Generar informe del curso
+        Route::get('/informe-curso', [DocenteController::class, 'viewGenerarInforme'])->name('generar_informe');
+        Route::post('/informe-curso/generar', [DocenteController::class, 'generarInforme'])->name('generar_informe_post');
+        Route::get('/informe-curso/datos', [DocenteController::class, 'obtenerDatosAutorellenado'])->name('obtener_datos_autorellenado');
+    });
+
+    // API Docente endpoints
+    Route::get('/api/docente/estudiantes-por-curso', [DocenteController::class, 'obtenerEstudiantesPorCurso'])->name('docente.obtener_estudiantes_por_curso');
+    Route::get('/api/docente/materias-por-curso', [DocenteController::class, 'obtenerMateriasXCurso'])->name('docente.materias_por_curso');
+    Route::get('/api/docente/materiales', [DocenteController::class, 'obtenerMateriales'])->name('docente.obtener_materiales');
+    Route::get('/api/docente/informes', [DocenteController::class, 'obtenerInformes'])->name('docente.obtener_informes');
+    Route::get('/api/estudiantes/buscar', [DocenteController::class, 'buscarEstudiantes'])->name('estudiantes.buscar');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Rector
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('rector')->name('rector.')->group(function () {
+        // Solicitudes de beca
+        Route::get('/becas', [RectorController::class, 'becasIndex'])->name('becas.index');
+        Route::get('/becas/{id}/aprobar', [RectorController::class, 'aprobarBeca'])->name('becas.aprobar');
+        Route::get('/becas/{id}/rechazar', [RectorController::class, 'rechazarBeca'])->name('becas.rechazar');
+
+        // Información del colegio
+        Route::get('/info', [RectorController::class, 'infoIndex'])->name('info.index');
+        Route::get('/info/crear', [RectorController::class, 'createInfo'])->name('info.create');
+        Route::post('/info', [RectorController::class, 'storeInfo'])->name('info.store');
+        Route::get('/info/{id}/publicar', [RectorController::class, 'publicarInfo'])->name('info.publicar');
+
+        // Plan anual
+        Route::get('/plan', [RectorController::class, 'planIndex'])->name('plan.index');
+        Route::get('/plan/{id}/aprobar', [RectorController::class, 'aprobarPlan'])->name('plan.aprobar');
+
+        // Matrículas y gestión de personal (básico por ahora)
+        Route::get('/matriculas', [RectorController::class, 'matriculasIndex'])->name('matriculas.index');
+        Route::get('/docentes', [RectorController::class, 'docentesIndex'])->name('docentes.index');
+    });
+
 });

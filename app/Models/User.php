@@ -90,4 +90,48 @@ class User extends Authenticatable
             'estudiante_id'  // este usuario es el estudiante
         );
     }
+
+    /**
+     * Docente → materias que dicta (en relación pivot con cursos).
+     */
+    public function materiasDictadas()
+    {
+        return $this->belongsToMany(
+            Subject::class,
+            'docente_materia_curso',
+            'docente_id',
+            'materia_id'
+        )->withPivot('curso_id')->withTimestamps();
+    }
+
+    /**
+     * Docente → cursos en los que dicta.
+     */
+    public function cursosDictados()
+    {
+        return $this->belongsToMany(
+            Curso::class,
+            'docente_materia_curso',
+            'docente_id',
+            'curso_id'
+        )->withPivot('materia_id')->withTimestamps();
+    }
+
+    /**
+     * Docente → estudiantes en sus cursos.
+     */
+    public function estudiantesEnMisClases()
+    {
+        return $this->hasManyThrough(
+            User::class,
+            Curso::class,
+            'id',
+            'curso_id',
+            'id',
+            'id'
+        )->where('roles_id', function($q) {
+            // Asumir que estudiantes tienen un rol específico
+            $q->select('id')->from('roles_models')->where('nombre', 'Estudiante');
+        });
+    }
 }
