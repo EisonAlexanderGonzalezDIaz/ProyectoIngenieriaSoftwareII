@@ -214,7 +214,7 @@
                         </a>
                     @endif
 
-                    @if(in_array($rolNombre, ['Estudiante', 'Rector',]))
+                    @if(in_array($rolNombre, ['Estudiante', 'Rector']))
                         <a class="nav-link text-dark" href="{{ $rolNombre === 'Estudiante' ? route('estudiante.plan_estudio') : '#' }}">
                             <i class="fas fa-graduation-cap me-2"></i>Consultar plan Academico Anual
                         </a>        
