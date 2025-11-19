@@ -55,7 +55,7 @@
 
             {{-- Tabla de materias --}}
             <div class="table-responsive">
-                <table class="table table-hover align-middle text-center bg-white shadow-sm rounded">
+                <table class="table table-hover align-middle text-center bg-white shadow-sm rounded" id="materiasTable">
                     <thead class="table-primary">
                         <tr>
                             <th>Código</th>
@@ -69,106 +69,44 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>MAT001</td>
-                            <td>Matemáticas</td>
-                            <td>10°</td>
-                            <td>4</td>
-                            <td>4</td>
-                            <td>Prof. García</td>
-                            <td><span class="badge bg-success">Activo</span></td>
-                            <td>
-                                <button class="btn btn-outline-primary btn-sm" onclick="editMateria('MAT001')" title="Editar">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="btn btn-outline-danger btn-sm" onclick="deleteMateria('MAT001')" title="Eliminar">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                                <button class="btn btn-outline-info btn-sm" onclick="viewMateria('MAT001')" title="Ver detalles">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>ESP001</td>
-                            <td>Español</td>
-                            <td>9°</td>
-                            <td>3</td>
-                            <td>3</td>
-                            <td>Prof. López</td>
-                            <td><span class="badge bg-success">Activo</span></td>
-                            <td>
-                                <button class="btn btn-outline-primary btn-sm" onclick="editMateria('ESP001')" title="Editar">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="btn btn-outline-danger btn-sm" onclick="deleteMateria('ESP001')" title="Eliminar">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                                <button class="btn btn-outline-info btn-sm" onclick="viewMateria('ESP001')" title="Ver detalles">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>ING001</td>
-                            <td>Inglés</td>
-                            <td>11°</td>
-                            <td>3</td>
-                            <td>3</td>
-                            <td>Prof. Martínez</td>
-                            <td><span class="badge bg-success">Activo</span></td>
-                            <td>
-                                <button class="btn btn-outline-primary btn-sm" onclick="editMateria('ING001')" title="Editar">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="btn btn-outline-danger btn-sm" onclick="deleteMateria('ING001')" title="Eliminar">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                                <button class="btn btn-outline-info btn-sm" onclick="viewMateria('ING001')" title="Ver detalles">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>CIE001</td>
-                            <td>Ciencias Naturales</td>
-                            <td>10°</td>
-                            <td>4</td>
-                            <td>4</td>
-                            <td>Prof. Rodríguez</td>
-                            <td><span class="badge bg-success">Activo</span></td>
-                            <td>
-                                <button class="btn btn-outline-primary btn-sm" onclick="editMateria('CIE001')" title="Editar">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="btn btn-outline-danger btn-sm" onclick="deleteMateria('CIE001')" title="Eliminar">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                                <button class="btn btn-outline-info btn-sm" onclick="viewMateria('CIE001')" title="Ver detalles">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>SOC001</td>
-                            <td>Sociales</td>
-                            <td>9°</td>
-                            <td>3</td>
-                            <td>3</td>
-                            <td>Prof. Pérez</td>
-                            <td><span class="badge bg-secondary">Inactivo</span></td>
-                            <td>
-                                <button class="btn btn-outline-primary btn-sm" onclick="editMateria('SOC001')" title="Editar">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="btn btn-outline-danger btn-sm" onclick="deleteMateria('SOC001')" title="Eliminar">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                                <button class="btn btn-outline-info btn-sm" onclick="viewMateria('SOC001')" title="Ver detalles">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                            </td>
-                        </tr>
+                        @if($materias->isEmpty())
+                            <tr>
+                                <td colspan="8" class="text-muted py-4">No hay materias registradas.</td>
+                            </tr>
+                        @else
+                            @foreach($materias as $materia)
+                                <tr data-id="{{ $materia->id }}" data-codigo="{{ $materia->codigo }}" 
+                                    data-nombre="{{ $materia->nombre }}" data-grado="{{ $materia->grado }}"
+                                    data-creditos="{{ $materia->creditos }}" data-horas="{{ $materia->horas_semanales }}"
+                                    data-docente="{{ $materia->docente }}" data-descripcion="{{ $materia->descripcion ?? '' }}"
+                                    data-estado="{{ $materia->estado }}">
+                                    <td>{{ $materia->codigo }}</td>
+                                    <td>{{ $materia->nombre }}</td>
+                                    <td>{{ $materia->grado }}</td>
+                                    <td>{{ $materia->creditos }}</td>
+                                    <td>{{ $materia->horas_semanales }}</td>
+                                    <td>{{ $materia->docente }}</td>
+                                    <td>
+                                        @if($materia->estado === 'Activo')
+                                            <span class="badge bg-success">Activo</span>
+                                        @else
+                                            <span class="badge bg-secondary">Inactivo</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-outline-primary btn-sm" onclick="editMateria(this)" title="Editar">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-outline-danger btn-sm" onclick="deleteMateria(this)" title="Eliminar">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                        <button class="btn btn-outline-info btn-sm" onclick="viewMateria(this)" title="Ver detalles">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @endif
                     </tbody>
                 </table>
             </div>
@@ -189,89 +127,72 @@
             ============================================ --}}
             <div id="addMateriaForm" class="card shadow-sm border-0 mt-5" style="display: none;">
                 <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0"><i class="fas fa-plus me-2"></i>Agregar Nueva Materia</h5>
-                    <button type="button" class="btn-close btn-close-white" onclick="toggleAddMateriaForm()"></button>
+                    <h5 class="mb-0"><i class="fas fa-plus me-2"></i><span id="formTitle">Agregar Nueva Materia</span></h5>
+                    <button type="button" class="btn-close btn-close-white" onclick="resetForm()"></button>
                 </div>
                 <div class="card-body bg-light">
                     <form id="materiaForm">
+                        @csrf
+                        <input type="hidden" name="materia_id" id="materiaId" value="">
+                        <input type="hidden" name="_method" id="formMethod" value="POST">
+                        
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label class="form-label text-secondary">Código <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control border-secondary" placeholder="Ej: MAT001" required>
+                                <input type="text" name="codigo" id="codigo" class="form-control border-secondary" placeholder="Ej: MAT001" required>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label text-secondary">Nombre <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control border-secondary" placeholder="Nombre de la materia" required>
+                                <input type="text" name="nombre" id="nombre" class="form-control border-secondary" placeholder="Nombre de la materia" required>
                             </div>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label text-secondary">Descripción</label>
-                            <textarea class="form-control border-secondary" rows="2" placeholder="Descripción de la materia..."></textarea>
+                            <textarea name="descripcion" id="descripcion" class="form-control border-secondary" rows="2" placeholder="Descripción de la materia..."></textarea>
                         </div>
 
                         <div class="row mb-3">
                             <div class="col-md-4">
                                 <label class="form-label text-secondary">Créditos <span class="text-danger">*</span></label>
-                                <input type="number" class="form-control border-secondary" min="1" placeholder="Ej: 3" required>
+                                <input type="number" name="creditos" id="creditos" class="form-control border-secondary" min="1" placeholder="Ej: 3" required>
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label text-secondary">Horas Semanales <span class="text-danger">*</span></label>
-                                <input type="number" class="form-control border-secondary" min="1" placeholder="Ej: 3" required>
+                                <input type="number" name="horas_semanales" id="horas_semanales" class="form-control border-secondary" min="1" placeholder="Ej: 3" required>
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label text-secondary">Grado <span class="text-danger">*</span></label>
-                                <select class="form-select border-secondary" required>
+                                <select name="grado" id="grado" class="form-select border-secondary" required>
                                     <option value="">Seleccionar...</option>
-                                    <option value="6">6°</option>
-                                    <option value="7">7°</option>
-                                    <option value="8">8°</option>
-                                    <option value="9">9°</option>
-                                    <option value="10">10°</option>
-                                    <option value="11">11°</option>
+                                    <option value="6°">6°</option>
+                                    <option value="7°">7°</option>
+                                    <option value="8°">8°</option>
+                                    <option value="9°">9°</option>
+                                    <option value="10°">10°</option>
+                                    <option value="11°">11°</option>
                                 </select>
                             </div>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label text-secondary">Docente <span class="text-danger">*</span></label>
-                            <select class="form-select border-secondary" required>
-                                <option value="">Seleccionar...</option>
-                                <option value="1">Prof. García</option>
-                                <option value="2">Prof. López</option>
-                                <option value="3">Prof. Martínez</option>
-                                <option value="4">Prof. Rodríguez</option>
-                                <option value="5">Prof. Pérez</option>
-                                <option value="6">Prof. Suárez</option>
-                                <option value="7">Prof. Castillo</option>
-                                <option value="8">Prof. Torres</option>
-                                <option value="9">Prof. Herrera</option>
-                                <option value="10">Prof. Rojas</option>
-                                <option value="11">Prof. Medina</option>
-                                <option value="12">Prof. Vargas</option>
-                                <option value="13">Prof. Jiménez</option>
-                                <option value="14">Prof. Rivera</option>
-                                <option value="15">Prof. Delgado</option>
-                                <option value="16">Prof. Castaño</option>
-                                <option value="17">Prof. León</option>
-                                <option value="18">Prof. Rubio</option>
-                                <option value="19">Prof. Gonzalez</option>
-                            </select>
+                            <input type="text" name="docente" id="docente" class="form-control border-secondary" placeholder="Nombre del docente" required>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label text-secondary">Estado</label>
-                            <select class="form-select border-secondary">
-                                <option value="Activo" selected>Activo</option>
+                            <select name="estado" id="estado" class="form-select border-secondary">
+                                <option value="Activo">Activo</option>
                                 <option value="Inactivo">Inactivo</option>
                             </select>
                         </div>
 
                         <div class="text-end">
-                            <button type="button" class="btn btn-primary" onclick="saveMateria()">
-                                <i class="fas fa-save me-2"></i>Guardar Materia
+                            <button type="submit" class="btn btn-primary" id="submitBtn">
+                                <i class="fas fa-save me-2"></i><span id="submitBtnText">Guardar Materia</span>
                             </button>
-                            <button type="button" class="btn btn-secondary" onclick="toggleAddMateriaForm()">
+                            <button type="button" class="btn btn-secondary" onclick="resetForm()">
                                 <i class="fas fa-times me-2"></i>Cancelar
                             </button>
                         </div>
@@ -286,36 +207,95 @@
         SCRIPTS PARA FUNCIONALIDAD
 ===================================== --}}
 <script>
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}';
+
     // Mostrar/Ocultar el formulario
     function toggleAddMateriaForm() {
         const form = document.getElementById('addMateriaForm');
         form.style.display = (form.style.display === 'none' || form.style.display === '') ? 'block' : 'none';
-        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-    }
-
-    // Simulación de guardado
-    function saveMateria() {
-        alert('✅ Materia guardada (simulación). Luego se conectará al backend.');
-        toggleAddMateriaForm();
-        document.getElementById('materiaForm').reset();
-    }
-
-    // Simulación de edición
-    function editMateria(id) {
-        alert('✏️ Editando materia: ' + id);
-        // Aquí se cargará el formulario con los datos de la materia
-    }
-
-    // Simulación de eliminación
-    function deleteMateria(id) {
-        if (confirm('¿Estás seguro de que deseas eliminar esta materia?')) {
-            alert('🗑️ Materia eliminada: ' + id);
+        if (form.style.display === 'block') {
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
         }
     }
 
-    // Simulación de ver detalles
-    function viewMateria(id) {
-        alert('👁️ Viendo detalles de la materia: ' + id);
+    // Resetear formulario
+    function resetForm() {
+        document.getElementById('materiaForm').reset();
+        document.getElementById('materiaId').value = '';
+        document.getElementById('formMethod').value = 'POST';
+        document.getElementById('formTitle').textContent = 'Agregar Nueva Materia';
+        document.getElementById('submitBtnText').textContent = 'Guardar Materia';
+        document.getElementById('codigo').readOnly = false;
+        toggleAddMateriaForm();
+    }
+
+    // Editar materia
+    function editMateria(button) {
+        const row = button.closest('tr');
+        const id = row.dataset.id;
+        const codigo = row.dataset.codigo;
+        const nombre = row.dataset.nombre;
+        const descripcion = row.dataset.descripcion;
+        const creditos = row.dataset.creditos;
+        const horas = row.dataset.horas;
+        const docente = row.dataset.docente;
+        const grado = row.dataset.grado;
+        const estado = row.dataset.estado;
+
+        // Llenar formulario con datos
+        document.getElementById('materiaId').value = id;
+        document.getElementById('codigo').value = codigo;
+        document.getElementById('nombre').value = nombre;
+        document.getElementById('descripcion').value = descripcion;
+        document.getElementById('creditos').value = creditos;
+        document.getElementById('horas_semanales').value = horas;
+        document.getElementById('docente').value = docente;
+        document.getElementById('grado').value = grado;
+        document.getElementById('estado').value = estado;
+
+        document.getElementById('formMethod').value = 'PUT';
+        document.getElementById('formTitle').textContent = 'Editar Materia';
+        document.getElementById('submitBtnText').textContent = 'Actualizar Materia';
+        document.getElementById('codigo').readOnly = true; // Evitar cambio de código único
+
+        toggleAddMateriaForm();
+    }
+
+    // Eliminar materia
+    function deleteMateria(button) {
+        const row = button.closest('tr');
+        const id = row.dataset.id;
+        const nombre = row.dataset.nombre;
+
+        if (confirm(`¿Estás seguro de que deseas eliminar la materia "${nombre}"?`)) {
+            fetch(`/materias/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    alert(data.message);
+                    location.reload(); // Recargar página
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    }
+
+    // Ver detalles
+    function viewMateria(button) {
+        const row = button.closest('tr');
+        const nombre = row.dataset.nombre;
+        const codigo = row.dataset.codigo;
+        const descripcion = row.dataset.descripcion;
+        const docente = row.dataset.docente;
+        const grado = row.dataset.grado;
+
+        alert(`📋 Detalles de la Materia:\n\nCódigo: ${codigo}\nNombre: ${nombre}\nDocente: ${docente}\nGrado: ${grado}\nDescripción: ${descripcion || 'N/A'}`);
     }
 
     // Simulación de exportar
@@ -323,10 +303,52 @@
         alert('📁 Exportación simulada. Aquí podrás generar un archivo Excel o PDF.');
     }
 
+    // Manejar envío del formulario
+    document.getElementById('materiaForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const materiaId = document.getElementById('materiaId').value;
+        const method = document.getElementById('formMethod').value;
+        const url = materiaId && method === 'PUT' ? `/materias/${materiaId}` : '/materias/store';
+
+        const formData = {
+            codigo: document.getElementById('codigo').value,
+            nombre: document.getElementById('nombre').value,
+            descripcion: document.getElementById('descripcion').value || null,
+            creditos: parseInt(document.getElementById('creditos').value),
+            horas_semanales: parseInt(document.getElementById('horas_semanales').value),
+            docente: document.getElementById('docente').value,
+            grado: document.getElementById('grado').value,
+            estado: document.getElementById('estado').value,
+        };
+
+        const fetchOptions = {
+            method: method === 'PUT' ? 'PUT' : 'POST',
+            headers: {
+                'X-CSRF-TOKEN': csrfToken,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+        };
+
+        try {
+            const response = await fetch(url, fetchOptions);
+            const data = await response.json();
+
+            if (data.message) {
+                alert(data.message);
+                location.reload(); // Recargar página
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('❌ Error al guardar la materia.');
+        }
+    });
+
     // Búsqueda en tiempo real
     document.getElementById('searchMaterias').addEventListener('keyup', function(e) {
         const searchValue = e.target.value.toLowerCase();
-        const tableRows = document.querySelectorAll('table tbody tr');
+        const tableRows = document.querySelectorAll('#materiasTable tbody tr');
         
         tableRows.forEach(row => {
             const rowText = row.textContent.toLowerCase();
@@ -346,14 +368,14 @@
     function filterTable() {
         const grado = document.getElementById('filterGrado').value;
         const estado = document.getElementById('filterEstado').value;
-        const tableRows = document.querySelectorAll('table tbody tr');
+        const tableRows = document.querySelectorAll('#materiasTable tbody tr');
 
         tableRows.forEach(row => {
-            const rowGrado = row.cells[2].textContent.trim();
-            const rowEstado = row.cells[6].textContent.trim();
+            const rowGrado = row.dataset.grado;
+            const rowEstado = row.dataset.estado;
 
-            const gradoMatch = !grado || rowGrado === grado + '°';
-            const estadoMatch = !estado || rowEstado.includes(estado);
+            const gradoMatch = !grado || rowGrado === grado;
+            const estadoMatch = !estado || rowEstado === estado;
 
             row.style.display = (gradoMatch && estadoMatch) ? '' : 'none';
         });
