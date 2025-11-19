@@ -4,10 +4,6 @@
 
 @section('content')
 
-@php
-    $usuario   = Auth::user();
-    $rolNombre = $usuario->rol->nombre ?? '';
-@endphp
 
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
@@ -24,7 +20,7 @@
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                        <i class="fas fa-user-circle me-1"></i>{{ $usuario->name }}
+                        <i class="fas fa-user-circle me-1"></i>{{ Auth::user()->name }}
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end shadow">
                         <li><a class="dropdown-item" href="#"><i class="fas fa-user-graduate me-2"></i>Perfil</a></li>
@@ -52,6 +48,9 @@
                     <h6 class="text-primary text-uppercase fw-bold mb-0">Menú Principal</h6>
                 </div>
                 <nav class="nav flex-column px-3 mt-2">
+                    @php
+                        $rolNombre = Auth::user()->rol->nombre ?? '';
+                    @endphp
 
                     <a class="nav-link active fw-semibold text-primary" href="{{ route('dashboard') }}">
                         <i class="fas fa-home me-2"></i>Inicio
@@ -71,17 +70,14 @@
                         @endif
                     @endif
 
-                    {{-- Aquí separamos claramente las dos opciones --}}
                     @if(in_array($rolNombre, ['AdministradorSistema', 'Rector']))
-                        {{-- Asignar permisos y roles → pantalla de roles --}}
-                        <a class="nav-link text-dark {{ request()->routeIs('roles.*') ? 'active fw-semibold text-primary' : '' }}"
-                           href="{{ route('roles.create') }}">
+                        <a class="nav-link text-dark" href="#">
                             <i class="fas fa-user-shield me-2"></i>Asignar permisos y roles
                         </a>
+                    @endif
 
-                        {{-- Gestionar perfiles de usuario → pantalla de usuarios --}}
-                        <a class="nav-link text-dark {{ request()->routeIs('admin.usuarios.*') ? 'active fw-semibold text-primary' : '' }}"
-                           href="{{ route('admin.usuarios.perfiles') }}">
+                    @if(in_array($rolNombre, ['Rector']))
+                        <a class="nav-link text-dark" href="{{ route('admin.usuarios.perfiles') }}">
                             <i class="fas fa-users-cog me-2"></i>Gestionar perfiles de usuario
                         </a>
                     @endif
@@ -125,6 +121,48 @@
                     @if(in_array($rolNombre, ['Docente', 'Estudiante', 'Acudiente']))
                         <a class="nav-link text-dark" href="{{ $rolNombre === 'Estudiante' ? route('estudiante.consultar_notas') : '#' }}">
                             <i class="fas fa-clipboard-list me-2"></i>Consultar notas
+                        </a>
+                    @endif
+
+                    @if(in_array($rolNombre, ['Docente', 'Estudiante']))
+                        <a class="nav-link text-dark" href="#">
+                            <i class="fas fa-book me-2"></i>Consultar materia
+                        </a>
+                    @endif
+
+                    @if(in_array($rolNombre, ['Docente']))
+                        <a class="nav-link text-dark" href="#">
+                            <i class="fas fa-pen me-2"></i>Registrar notas
+                        </a>
+                    @endif
+
+                    @if(in_array($rolNombre, ['Docente']))
+                        <a class="nav-link text-dark" href="#">
+                            <i class="fas fa-user-check me-2"></i>Consultar asistencia
+                        </a>
+                    @endif
+
+                    @if(in_array($rolNombre, ['Docente', 'Estudiante']))
+                        <a class="nav-link text-dark" href="#">
+                            <i class="fas fa-upload me-2"></i>Subir material academico
+                        </a>
+                    @endif  
+
+                    @if(in_array($rolNombre, ['Docente']))
+                        <a class="nav-link text-dark" href="#">
+                            <i class="fas fa-file-alt me-2"></i>Generar informes curso
+                        </a>
+                    @endif
+
+                    @if(in_array($rolNombre, ['Docente']))
+                        <a class="nav-link text-dark" href="#">
+                            <i class="fas fa-check-circle me-2"></i>Calificar
+                        </a>
+                    @endif
+
+                    @if(in_array($rolNombre, ['Docente', 'Estudiante', 'Acudiente', 'Rector']))
+                        <a class="nav-link text-dark" href="#">
+                            <i class="fas fa-newspaper me-2"></i>Consultar boletines
                         </a>
                     @endif
 
@@ -249,9 +287,9 @@
                     @endif
 
                     @if(in_array($rolNombre, ['Orientador']))
-                        <a class="nav-link text-dark" href="{{ route('orientacion.gestion') }}">
-                            <i class="fas fa-book-reader me-2"></i>Gestionar Orientaciones
-                        </a>
+                    <a class="nav-link text-dark" href="{{ route('orientacion.gestion') }}">
+                        <i class="fas fa-book-reader me-2"></i>Gestionar Orientaciones
+                    </a>
                     @endif
 
                     @if(in_array($rolNombre, ['Tesorero']))
@@ -320,101 +358,216 @@
         <!-- Main Content -->
         <div class="col-md-9 col-lg-10">
             <div class="main-content p-4">
-                <!-- Welcome Section -->
+                {{-- =========================
+                     CABECERA SEGÚN EL ROL
+                ========================== --}}
                 <div class="row mb-4 align-items-center">
                     <div class="col-12">
-                        <h1 class="h3 text-primary fw-bold">¡Bienvenido(a), {{ $usuario->name }}!</h1>
-                        <p class="text-muted mb-1">
-                            Rol: <strong>{{ $rolNombre ?: 'Sin rol asignado' }}</strong> · 
-                            Email: <strong>{{ $usuario->email }}</strong>
-                        </p>
-                        <p class="text-muted mb-0">
-                            Fecha y hora actual: {{ now()->format('d/m/Y H:i') }}
-                        </p>
-                        <p class="text-muted">
-                            Administra y supervisa la gestión académica y administrativa del colegio.
-                        </p>
+                        <h1 class="h3 text-primary fw-bold">
+                            ¡Bienvenido(a), {{ Auth::user()->name }}!
+                        </h1>
+
+                        @if($rolNombre === 'AdministradorSistema')
+                            <p class="text-muted">
+                                Administra usuarios, roles y la configuración general del colegio.
+                            </p>
+                        @elseif($rolNombre === 'CoordinadorAcademico')
+                            <p class="text-muted">
+                                Supervisa la gestión académica: docentes, materias, horarios y planes de estudio.
+                            </p>
+                        @elseif($rolNombre === 'Orientador')
+                            <p class="text-muted">
+                                Gestiona procesos de orientación, seguimiento a estudiantes y citas con acudientes.
+                            </p>
+                        @elseif($rolNombre === 'Tesorero')
+                            <p class="text-muted">
+                                Administra pagos, paz y salvo, cartera y reportes financieros.
+                            </p>
+                        @elseif($rolNombre === 'Docente')
+                            <p class="text-muted">
+                                Gestiona tus grupos, calificaciones, recuperaciones y reportes académicos.
+                            </p>
+                        @elseif($rolNombre === 'Acudiente')
+                            <p class="text-muted">
+                                Consulta información académica, disciplinaria y financiera de tus acudidos.
+                            </p>
+                        @elseif($rolNombre === 'Estudiante')
+                            <p class="text-muted">
+                                Revisa tu horario, notas, recuperaciones y comunicaciones del colegio.
+                            </p>
+                        @elseif($rolNombre === 'CoordinadorDisciplinario')
+                            <p class="text-muted">
+                                Supervisa la disciplina estudiantil, casos y reportes disciplinarios.
+                            </p>
+                        @endif
                     </div>
                 </div>
 
-                <!-- Statistics Cards -->
-                <div class="row mb-4">
-                    <div class="col-md-3 mb-3">
-                        <div class="card border-0 shadow-sm h-100">
-                            <div class="card-body text-center">
-                                <div class="text-primary mb-2"><i class="fas fa-user-graduate fa-2x"></i></div>
-                                <h5 class="card-title">Estudiantes</h5>
-                                <h3 class="text-primary">{{ $totalEstudiantes ?? 0 }}</h3>
-                                <small class="text-muted">Registrados en el sistema</small>
+                <!-- Statistics Cards & Quick Actions (role-specific) -->
+                @if($rolNombre === 'Orientador')
+                    @php
+                        $pendientes = \App\Models\Cita::where('orientador_id', auth()->id())->where('estado', 'pendiente')->count();
+                        $programadas = \App\Models\Cita::where('orientador_id', auth()->id())->where('estado', 'programado')->count();
+                        $realizadas = \App\Models\Cita::where('orientador_id', auth()->id())->where('estado', 'realizado')->count();
+                        $estudiantesSeguimiento = \App\Models\Cita::where('orientador_id', auth()->id())->distinct('estudiante_id')->count('estudiante_id');
+                    @endphp
+
+                    <div class="row mb-4">
+                        <div class="col-md-3 mb-3">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-body text-center">
+                                    <div class="text-primary mb-2"><i class="fas fa-hourglass-half fa-2x"></i></div>
+                                    <h5 class="card-title">Pendientes</h5>
+                                    <h3 class="text-primary">{{ $pendientes }}</h3>
+                                    <small class="text-muted">Solicitudes por revisar</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-body text-center">
+                                    <div class="text-success mb-2"><i class="fas fa-calendar-check fa-2x"></i></div>
+                                    <h5 class="card-title">Programadas</h5>
+                                    <h3 class="text-success">{{ $programadas }}</h3>
+                                    <small class="text-muted">Citas por atender</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-body text-center">
+                                    <div class="text-warning mb-2"><i class="fas fa-check fa-2x"></i></div>
+                                    <h5 class="card-title">Realizadas</h5>
+                                    <h3 class="text-warning">{{ $realizadas }}</h3>
+                                    <small class="text-muted">Citas completadas</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-body text-center">
+                                    <div class="text-info mb-2"><i class="fas fa-user-friends fa-2x"></i></div>
+                                    <h5 class="card-title">Estudiantes</h5>
+                                    <h3 class="text-info">{{ $estudiantesSeguimiento }}</h3>
+                                    <small class="text-muted">En seguimiento</small>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-md-3 mb-3">
-                        <div class="card border-0 shadow-sm h-100">
-                            <div class="card-body text-center">
-                                <div class="text-success mb-2"><i class="fas fa-user-tie fa-2x"></i></div>
-                                <h5 class="card-title">Docentes</h5>
-                                <h3 class="text-success">{{ $totalDocentes ?? 0 }}</h3>
-                                <small class="text-muted">Activos actualmente</small>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3 mb-3">
-                        <div class="card border-0 shadow-sm h-100">
-                            <div class="card-body text-center">
-                                <div class="text-warning mb-2"><i class="fas fa-book fa-2x"></i></div>
-                                <h5 class="card-title">Materias</h5>
-                                <h3 class="text-warning">{{ $totalMaterias ?? 0 }}</h3>
-                                <small class="text-muted">Asignaturas registradas</small>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3 mb-3">
-                        <div class="card border-0 shadow-sm h-100">
-                            <div class="card-body text-center">
-                                <div class="text-info mb-2"><i class="fas fa-calendar-check fa-2x"></i></div>
-                                <h5 class="card-title">Eventos</h5>
-                                <h3 class="text-info">{{ $totalEventos ?? 0 }}</h3>
-                                <small class="text-muted">Programados este mes</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Quick Actions -->
-                <div class="row mb-4">
-                    <div class="col-12">
-                        <div class="card border-0 shadow-sm">
-                            <div class="card-header bg-white">
-                                <h5 class="card-title mb-0 text-primary">
-                                    <i class="fas fa-rocket me-2"></i>Acciones Rápidas
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-4 mb-3">
-                                        <a href="#" class="btn btn-primary btn-lg w-100">
-                                            <i class="fas fa-user-plus me-2"></i>Registrar Estudiante
-                                        </a>
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <a href="#" class="btn btn-outline-primary btn-lg w-100">
-                                            <i class="fas fa-book me-2"></i>Agregar Materia
-                                        </a>
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <a href="#" class="btn btn-outline-success btn-lg w-100">
-                                            <i class="fas fa-chart-pie me-2"></i>Ver Reportes
-                                        </a>
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-header bg-white">
+                                    <h5 class="card-title mb-0 text-primary">
+                                        <i class="fas fa-rocket me-2"></i>Acciones Rápidas (Orientador)
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-3 mb-3">
+                                            <a href="{{ route('orientacion.gestion') }}" class="btn btn-primary btn-lg w-100">
+                                                <i class="fas fa-book-reader me-2"></i>Gestionar Orientaciones
+                                            </a>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <a href="#" class="btn btn-outline-success btn-lg w-100">
+                                                <i class="fas fa-file-export me-2"></i>Exportar Citas
+                                            </a>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <a href="#" class="btn btn-outline-info btn-lg w-100">
+                                                <i class="fas fa-plus me-2"></i>Nueva Orientación
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                @else
+                    <!-- default statistics and quick actions for other roles -->
+                    <div class="row mb-4">
+                        <div class="col-md-3 mb-3">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-body text-center">
+                                    <div class="text-primary mb-2"><i class="fas fa-user-graduate fa-2x"></i></div>
+                                    <h5 class="card-title">Estudiantes</h5>
+                                    <h3 class="text-primary">420</h3>
+                                    <small class="text-muted">Registrados en el sistema</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-body text-center">
+                                    <div class="text-success mb-2"><i class="fas fa-user-tie fa-2x"></i></div>
+                                    <h5 class="card-title">Docentes</h5>
+                                    <h3 class="text-success">35</h3>
+                                    <small class="text-muted">Activos actualmente</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-body text-center">
+                                    <div class="text-warning mb-2"><i class="fas fa-book fa-2x"></i></div>
+                                    <h5 class="card-title">Materias</h5>
+                                    <h3 class="text-warning">52</h3>
+                                    <small class="text-muted">Asignaturas registradas</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-body text-center">
+                                    <div class="text-info mb-2"><i class="fas fa-calendar-check fa-2x"></i></div>
+                                    <h5 class="card-title">Eventos</h5>
+                                    <h3 class="text-info">5</h3>
+                                    <small class="text-muted">Programados este mes</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-header bg-white">
+                                    <h5 class="card-title mb-0 text-primary">
+                                        <i class="fas fa-rocket me-2"></i>Acciones Rápidas
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-4 mb-3">
+                                            <a href="#" class="btn btn-primary btn-lg w-100">
+                                                <i class="fas fa-user-plus me-2"></i>Registrar Estudiante
+                                            </a>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <a href="#" class="btn btn-outline-primary btn-lg w-100">
+                                                <i class="fas fa-book me-2"></i>Agregar Materia
+                                            </a>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <a href="#" class="btn btn-outline-success btn-lg w-100">
+                                                <i class="fas fa-chart-pie me-2"></i>Ver Reportes
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
 
                 <!-- Recent Activity -->
                 <div class="row">
