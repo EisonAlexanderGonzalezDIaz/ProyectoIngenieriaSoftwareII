@@ -8,6 +8,13 @@
                 <i class="fas fa-cash-register me-2"></i>Tesorería - Panel Principal
             </h1>
             <p class="text-muted">Gestione pagos, facturas, becas y reportes financieros del colegio</p>
+    {{-- Debug: mostrar URLs generadas --}}
+            <small class="text-info d-block mt-2">
+                URLs generadas: 
+                {{ route('tesoreria.view.pazysalvo') }} | 
+                {{ route('tesoreria.view.factura') }} | 
+                {{ route('tesoreria.view.pagos') }}
+            </small>
         </div>
     </div>
 
@@ -192,4 +199,26 @@
         color: white;
     }
 </style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Dashboard cargado correctamente');
+        
+        // Verificar todos los botones
+        const botones = document.querySelectorAll('a.btn');
+        console.log('Botones encontrados:', botones.length);
+        
+        botones.forEach((btn, idx) => {
+            console.log(`Botón ${idx}:`, btn.href, btn.textContent.trim());
+            
+            // Agregar evento click para debugging
+            btn.addEventListener('click', function(e) {
+                console.log('Click detectado en:', this.href);
+            });
+        });
+        
+        console.log('URL actual:', window.location.href);
+    });
+</script>
+
 @endsection
