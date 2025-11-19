@@ -144,6 +144,19 @@ Route::middleware(['auth'])->group(function () {
     |--------------------------------------------------------------------------
     */
     Route::prefix('tesoreria')->name('tesoreria.')->group(function () {
+        // Vistas (GET)
+        Route::get('/dashboard', [TesoreroController::class, 'dashboard'])->name('dashboard');
+        Route::get('/paz-y-salvo', [TesoreroController::class, 'viewPazYSalvo'])->name('view.pazysalvo');
+        Route::get('/factura', [TesoreroController::class, 'viewFactura'])->name('view.factura');
+        Route::get('/pagos', [TesoreroController::class, 'viewPagos'])->name('view.pagos');
+        Route::get('/devoluciones', [TesoreroController::class, 'viewDevoluciones'])->name('view.devoluciones');
+        Route::get('/cartera-view', [TesoreroController::class, 'viewCartera'])->name('view.cartera');
+        Route::get('/reportes-view', [TesoreroController::class, 'viewReportes'])->name('view.reportes');
+        Route::get('/estado-cuenta-view', [TesoreroController::class, 'viewEstadoCuenta'])->name('view.estado');
+        Route::get('/becas', [TesoreroController::class, 'viewBecas'])->name('view.becas');
+        Route::get('/reporte', [TesoreroController::class, 'viewReporte'])->name('view.reporte');
+
+        // APIs (POST/GET para operaciones)
         Route::get('/paz-y-salvo/{acudiente}', [TesoreroController::class, 'generarPazYSalvo'])->name('pazysalvo');
         Route::post('/factura/matricula', [TesoreroController::class, 'generarFacturaMatricula'])->name('factura.matricula');
         Route::post('/pago/registrar', [TesoreroController::class, 'registrarPagoAcudiente'])->name('pago.registrar');
