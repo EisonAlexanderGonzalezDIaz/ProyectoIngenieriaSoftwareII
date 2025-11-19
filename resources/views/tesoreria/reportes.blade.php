@@ -34,7 +34,7 @@ document.getElementById('form-reportes').addEventListener('submit', async functi
     const params = new URLSearchParams();
     if (form.desde.value) params.set('desde', form.desde.value);
     if (form.hasta.value) params.set('hasta', form.hasta.value);
-    const res = await fetch('/tesoreria/api/reportes' + (params.toString() ? ('?' + params.toString()) : ''), { headers: { 'Accept':'application/json' } });
+    const res = await fetch('/tesoreria/reportes' + (params.toString() ? ('?' + params.toString()) : ''), { headers: { 'Accept':'application/json' } });
     const json = await res.json();
     document.getElementById('result').textContent = JSON.stringify(json, null, 2);
 });

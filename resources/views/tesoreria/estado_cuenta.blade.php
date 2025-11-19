@@ -26,7 +26,7 @@ document.getElementById('form-estado').addEventListener('submit', async function
     e.preventDefault();
     const id = e.target.acudiente_id.value;
     if (!id) return alert('Ingrese ID');
-    const res = await fetch('/tesoreria/api/estado-cuenta/' + encodeURIComponent(id), { headers: { 'Accept':'application/json' } });
+    const res = await fetch('/tesoreria/estado-cuenta/' + encodeURIComponent(id), { headers: { 'Accept':'application/json' } });
     const json = await res.json();
     document.getElementById('result').textContent = JSON.stringify(json, null, 2);
 });

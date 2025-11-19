@@ -38,7 +38,7 @@ document.getElementById('form-beca').addEventListener('submit', async function(e
     e.preventDefault();
     const form = e.target;
     const data = {acudiente_id: form.acudiente_id.value, matricula_id: form.matricula_id.value || null, monto: form.monto.value, descripcion: form.descripcion.value};
-    const res = await fetch('/tesoreria/api/beca', {method: 'POST', headers: {'Content-Type':'application/json','X-CSRF-TOKEN':'{{ csrf_token() }}','Accept':'application/json'}, body: JSON.stringify(data)});
+    const res = await fetch('/tesoreria/beca', {method: 'POST', headers: {'Content-Type':'application/json','X-CSRF-TOKEN':'{{ csrf_token() }}','Accept':'application/json'}, body: JSON.stringify(data)});
     const json = await res.json();
     document.getElementById('result').textContent = JSON.stringify(json, null, 2);
 });

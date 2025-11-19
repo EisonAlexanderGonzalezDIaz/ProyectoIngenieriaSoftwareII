@@ -15,7 +15,7 @@
 
 <script>
 document.getElementById('btn-info').addEventListener('click', async function(){
-    const res = await fetch('/tesoreria/api/info-colegio', { headers: { 'Accept':'application/json' } });
+    const res = await fetch('/tesoreria/info-colegio', { headers: { 'Accept':'application/json' } });
     const json = await res.json();
     document.getElementById('result').textContent = JSON.stringify(json, null, 2);
 });

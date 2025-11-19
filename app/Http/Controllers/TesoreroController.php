@@ -272,4 +272,9 @@ class TesoreroController extends Controller
         return view('tesoreria.info_colegio');
     }
 
+    public function viewAprobarBecas()
+    {
+        return view('tesoreria.aprobar_becas');
+    }
+
 }

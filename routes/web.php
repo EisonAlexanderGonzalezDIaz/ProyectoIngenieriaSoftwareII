@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CrearUsuario;
 use App\Http\Controllers\RolController;
 use App\Http\Controllers\MatriculaAcudienteController;
+use App\Http\Controllers\TesoreroController;
 use App\Models\RolesModel;
 
 // Ruta raíz redirige al login
@@ -72,49 +73,30 @@ Route::middleware(['auth'])->group(function () {
 
     // Rutas de tesorería / Tesorero
     Route::prefix('tesoreria')->name('tesoreria.')->group(function () {
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-        Route::get('/paz-y-salvo/{acudiente}', [\App\Http\Controllers\TesoreroController::class, 'generarPazYSalvo'])->name('pazysalvo');
-        Route::post('/factura/matricula', [\App\Http\Controllers\TesoreroController::class, 'generarFacturaMatricula'])->name('factura.matricula');
-        Route::post('/pago/registrar', [\App\Http\Controllers\TesoreroController::class, 'registrarPagoAcudiente'])->name('pago.registrar');
-        Route::post('/devolucion', [\App\Http\Controllers\TesoreroController::class, 'gestionarDevolucion'])->name('devolucion');
-        Route::get('/cartera', [\App\Http\Controllers\TesoreroController::class, 'gestionarCartera'])->name('cartera');
-        Route::get('/reportes', [\App\Http\Controllers\TesoreroController::class, 'entregarReportes'])->name('reportes');
-        Route::get('/estado-cuenta/{acudiente}', [\App\Http\Controllers\TesoreroController::class, 'consultarEstadoCuenta'])->name('estado.cuenta');
-        Route::post('/beca', [\App\Http\Controllers\TesoreroController::class, 'registrarBecaDescuento'])->name('beca.registrar');
-        Route::get('/reporte-financiero', [\App\Http\Controllers\TesoreroController::class, 'generarReporteFinanciero'])->name('reporte.financiero');
-        Route::get('/info-colegio', [\App\Http\Controllers\TesoreroController::class, 'consultarInformacionColegio'])->name('info.colegio');
-=======
-=======
->>>>>>> Stashed changes
-        // Vistas (páginas) para tesorería
-        Route::get('/paz-y-salvo', [TesoreroController::class, 'viewPazYSalvo'])->name('view.pazysalvo');
-        Route::get('/factura/matricula', [TesoreroController::class, 'viewGenerarFactura'])->name('view.factura.matricula');
-        Route::get('/pago/registrar', [TesoreroController::class, 'viewRegistrarPago'])->name('view.pago.registrar');
-        Route::get('/devolucion', [TesoreroController::class, 'viewDevolucion'])->name('view.devolucion');
-        Route::get('/cartera', [TesoreroController::class, 'viewCartera'])->name('view.cartera');
-        Route::get('/reportes', [TesoreroController::class, 'viewReportes'])->name('view.reportes');
-        Route::get('/estado-cuenta', [TesoreroController::class, 'viewEstadoCuenta'])->name('view.estado.cuenta');
-        Route::get('/beca', [TesoreroController::class, 'viewBeca'])->name('view.beca');
-        Route::get('/reporte-financiero', [TesoreroController::class, 'viewReporteFinanciero'])->name('view.reporte.financiero');
-        Route::get('/info-colegio', [TesoreroController::class, 'viewInfoColegio'])->name('view.info.colegio');
+        // Vistas para tesorería (páginas UI)
+        Route::get('/vista/paz-y-salvo', [TesoreroController::class, 'viewPazYSalvo'])->name('view.pazysalvo');
+        Route::get('/vista/factura-matricula', [TesoreroController::class, 'viewGenerarFactura'])->name('view.factura.matricula');
+        Route::get('/vista/registrar-pago', [TesoreroController::class, 'viewRegistrarPago'])->name('view.pago.registrar');
+        Route::get('/vista/devolucion', [TesoreroController::class, 'viewDevolucion'])->name('view.devolucion');
+        Route::get('/vista/cartera', [TesoreroController::class, 'viewCartera'])->name('view.cartera');
+        Route::get('/vista/reportes', [TesoreroController::class, 'viewReportes'])->name('view.reportes');
+        Route::get('/vista/estado-cuenta', [TesoreroController::class, 'viewEstadoCuenta'])->name('view.estado.cuenta');
+        Route::get('/vista/beca', [TesoreroController::class, 'viewBeca'])->name('view.beca');
+        Route::get('/vista/reporte-financiero', [TesoreroController::class, 'viewReporteFinanciero'])->name('view.reporte.financiero');
+        Route::get('/vista/info-colegio', [TesoreroController::class, 'viewInfoColegio'])->name('view.info.colegio');
+        // Vista para aprobar becas/descuentos
+        Route::get('/vista/aprobar-becas', [TesoreroController::class, 'viewAprobarBecas'])->name('view.aprobar.becas');
 
+        // Rutas API solicitadas por el usuario (solo endpoints JSON)
         Route::get('/paz-y-salvo/{acudiente}', [TesoreroController::class, 'generarPazYSalvo'])->name('pazysalvo');
         Route::post('/factura/matricula', [TesoreroController::class, 'generarFacturaMatricula'])->name('factura.matricula');
         Route::post('/pago/registrar', [TesoreroController::class, 'registrarPagoAcudiente'])->name('pago.registrar');
         Route::post('/devolucion', [TesoreroController::class, 'gestionarDevolucion'])->name('devolucion');
-        // API endpoints bajo /tesoreria/api/* para evitar conflictos con las vistas GET
-        Route::prefix('api')->group(function () {
-            Route::get('/cartera', [TesoreroController::class, 'gestionarCartera'])->name('api.cartera');
-            Route::get('/reportes', [TesoreroController::class, 'entregarReportes'])->name('api.reportes');
-            Route::get('/estado-cuenta/{acudiente}', [TesoreroController::class, 'consultarEstadoCuenta'])->name('api.estado.cuenta');
-            Route::post('/beca', [TesoreroController::class, 'registrarBecaDescuento'])->name('api.beca.registrar');
-            Route::get('/reporte-financiero', [TesoreroController::class, 'generarReporteFinanciero'])->name('api.reporte.financiero');
-            Route::get('/info-colegio', [TesoreroController::class, 'consultarInformacionColegio'])->name('api.info.colegio');
-        });
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+        Route::get('/cartera', [TesoreroController::class, 'gestionarCartera'])->name('cartera');
+        Route::get('/reportes', [TesoreroController::class, 'entregarReportes'])->name('reportes');
+        Route::get('/estado-cuenta/{acudiente}', [TesoreroController::class, 'consultarEstadoCuenta'])->name('estado.cuenta');
+        Route::post('/beca', [TesoreroController::class, 'registrarBecaDescuento'])->name('beca.registrar');
+        Route::get('/reporte-financiero', [TesoreroController::class, 'generarReporteFinanciero'])->name('reporte.financiero');
+        Route::get('/info-colegio', [TesoreroController::class, 'consultarInformacionColegio'])->name('info.colegio');
     });
 });

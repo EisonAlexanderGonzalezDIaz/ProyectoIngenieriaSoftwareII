@@ -15,7 +15,7 @@
 
 <script>
 async function loadCartera(){
-    const res = await fetch('/tesoreria/api/cartera', { headers: { 'Accept':'application/json' } });
+    const res = await fetch('/tesoreria/cartera', { headers: { 'Accept':'application/json' } });
     const json = await res.json();
     document.getElementById('result').textContent = JSON.stringify(json, null, 2);
 }

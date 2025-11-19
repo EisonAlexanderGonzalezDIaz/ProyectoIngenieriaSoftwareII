@@ -141,10 +141,7 @@
                          <i class="fas fa-user-clock me-2"></i>Atender Sesiones
                     </a>
                     @endif
-<<<<<<< Updated upstream
-                    
-                    
-=======
+
                     @if(in_array(Auth::user()->rol->nombre ?? '', ['Tesorero']))
                     <a class="nav-link text-dark" href="{{ route('tesoreria.view.pazysalvo') }}">
                         <i class="fas fa-file-invoice me-2"></i>Generar paz y salvo
@@ -191,11 +188,10 @@
                     </a>
                     @endif
                     @if(in_array(Auth::user()->rol->nombre ?? '', ['Tesorero']))
-                    <a class="nav-link text-dark" href="#">
+                    <a class="nav-link text-dark" href="{{ route('tesoreria.view.aprobar.becas') }}">
                         <i class="fas fa-check-circle me-2"></i>Aprobar becas o descuentos
                     </a>
                     @endif
->>>>>>> Stashed changes
                 </nav>
             </div>
         </div>
@@ -386,7 +382,7 @@
                             break;
                         }
                         case 'gestionarCartera': {
-                            const res = await getJson('/tesoreria/api/cartera');
+                            const res = await getJson('/tesoreria/cartera');
                             jsonAlert('Cartera (pendientes)', res);
                             break;
                         }
@@ -394,13 +390,13 @@
                             const desde = prompt('Fecha desde (YYYY-MM-DD) opcional:');
                             const hasta = prompt('Fecha hasta (YYYY-MM-DD) opcional:');
                             const q = new URLSearchParams(); if (desde) q.set('desde', desde); if (hasta) q.set('hasta', hasta);
-                            const res = await getJson('/tesoreria/api/reportes' + (q.toString() ? ('?' + q.toString()) : ''));
+                            const res = await getJson('/tesoreria/reportes' + (q.toString() ? ('?' + q.toString()) : ''));
                             jsonAlert('Reportes', res);
                             break;
                         }
                         case 'consultarEstadoCuenta': {
                             const id = prompt('Ingrese ID del acudiente para consultar estado de cuenta:'); if (!id) return;
-                            const res = await getJson('/tesoreria/api/estado-cuenta/' + encodeURIComponent(id));
+                            const res = await getJson('/tesoreria/estado-cuenta/' + encodeURIComponent(id));
                             jsonAlert('Estado de cuenta', res);
                             break;
                         }
@@ -409,7 +405,7 @@
                             const monto = prompt('Monto de la beca/descuento (valor positivo):'); if (!monto) return;
                             const matricula_id = prompt('ID matrícula (opcional):');
                             const descripcion = prompt('Descripción (opcional):') || '';
-                            const res = await postJson('/tesoreria/api/beca', {acudiente_id, monto, matricula_id, descripcion});
+                            const res = await postJson('/tesoreria/beca', {acudiente_id, monto, matricula_id, descripcion});
                             jsonAlert('Beca/Descuento registrado', res);
                             break;
                         }
@@ -417,7 +413,7 @@
                             const desde = prompt('Fecha desde (YYYY-MM-DD) opcional:');
                             const hasta = prompt('Fecha hasta (YYYY-MM-DD) opcional:');
                             const q = new URLSearchParams(); if (desde) q.set('desde', desde); if (hasta) q.set('hasta', hasta);
-                            const res = await getJson('/tesoreria/api/reporte-financiero' + (q.toString() ? ('?' + q.toString()) : ''));
+                            const res = await getJson('/tesoreria/reporte-financiero' + (q.toString() ? ('?' + q.toString()) : ''));
                             jsonAlert('Reporte financiero', res);
                             break;
                         }
