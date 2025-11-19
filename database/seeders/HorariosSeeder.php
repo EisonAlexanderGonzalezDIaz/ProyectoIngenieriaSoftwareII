@@ -1,0 +1,163 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+
+class HorariosSeeder extends Seeder
+{
+    public function run(): void
+    {
+        DB::table('horarios')->insert([
+            // Horarios Estudiantes (Grado 10°, Sección A)
+            [
+                'grado' => '10°',
+                'seccion' => 'A',
+                'dia' => 'Lunes',
+                'hora_inicio' => '07:00',
+                'hora_fin' => '08:30',
+                'materia_nombre' => 'Matemáticas',
+                'docente_nombre' => 'Prof. García',
+                'aula' => '101',
+                'estado' => 'Activo',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'grado' => '10°',
+                'seccion' => 'A',
+                'dia' => 'Lunes',
+                'hora_inicio' => '08:45',
+                'hora_fin' => '10:15',
+                'materia_nombre' => 'Español',
+                'docente_nombre' => 'Prof. López',
+                'aula' => '101',
+                'estado' => 'Activo',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'grado' => '10°',
+                'seccion' => 'A',
+                'dia' => 'Lunes',
+                'hora_inicio' => '10:30',
+                'hora_fin' => '12:00',
+                'materia_nombre' => 'Inglés',
+                'docente_nombre' => 'Prof. Martínez',
+                'aula' => '101',
+                'estado' => 'Activo',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            // Horarios Estudiantes (Grado 9°, Sección B)
+            [
+                'grado' => '9°',
+                'seccion' => 'B',
+                'dia' => 'Martes',
+                'hora_inicio' => '07:00',
+                'hora_fin' => '08:30',
+                'materia_nombre' => 'Ciencias Naturales',
+                'docente_nombre' => 'Prof. Rodríguez',
+                'aula' => '102',
+                'estado' => 'Activo',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'grado' => '9°',
+                'seccion' => 'B',
+                'dia' => 'Martes',
+                'hora_inicio' => '08:45',
+                'hora_fin' => '10:15',
+                'materia_nombre' => 'Sociales',
+                'docente_nombre' => 'Prof. Pérez',
+                'aula' => '102',
+                'estado' => 'Activo',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            // Horarios Estudiantes (Grado 11°, Sección C)
+            [
+                'grado' => '11°',
+                'seccion' => 'C',
+                'dia' => 'Miércoles',
+                'hora_inicio' => '07:00',
+                'hora_fin' => '08:30',
+                'materia_nombre' => 'Física',
+                'docente_nombre' => 'Prof. Ramírez',
+                'aula' => '103',
+                'estado' => 'Activo',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'grado' => '11°',
+                'seccion' => 'C',
+                'dia' => 'Miércoles',
+                'hora_inicio' => '08:45',
+                'hora_fin' => '10:15',
+                'materia_nombre' => 'Química',
+                'docente_nombre' => 'Prof. Suárez',
+                'aula' => '103',
+                'estado' => 'Activo',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            // Horarios Estudiantes (Grado 10°, Sección A - más materias)
+            [
+                'grado' => '10°',
+                'seccion' => 'A',
+                'dia' => 'Miércoles',
+                'hora_inicio' => '12:45',
+                'hora_fin' => '14:15',
+                'materia_nombre' => 'Ciencias',
+                'docente_nombre' => 'Prof. García',
+                'aula' => '101',
+                'estado' => 'Inactivo',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            // Horarios Docentes
+            [
+                'grado' => '10°',
+                'seccion' => 'A',
+                'dia' => 'Lunes',
+                'hora_inicio' => '07:00',
+                'hora_fin' => '08:30',
+                'materia_nombre' => 'Matemáticas',
+                'docente_nombre' => 'Prof. García',
+                'aula' => '101',
+                'estado' => 'Activo',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'grado' => '9°',
+                'seccion' => 'B',
+                'dia' => 'Martes',
+                'hora_inicio' => '08:45',
+                'hora_fin' => '10:15',
+                'materia_nombre' => 'Español',
+                'docente_nombre' => 'Prof. López',
+                'aula' => '102',
+                'estado' => 'Activo',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'grado' => '11°',
+                'seccion' => 'C',
+                'dia' => 'Miércoles',
+                'hora_inicio' => '10:30',
+                'hora_fin' => '12:00',
+                'materia_nombre' => 'Inglés',
+                'docente_nombre' => 'Prof. Martínez',
+                'aula' => '103',
+                'estado' => 'Activo',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
+    }
+}

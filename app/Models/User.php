@@ -57,6 +57,35 @@ class User extends Authenticatable
     }
 
     /**
+     * Comprueba si el usuario tiene un rol concreto.
+     * Acepta nombre de rol (string), id de rol (int) o array de nombres/ids.
+     */
+    public function hasRole($role)
+    {
+        if (is_array($role)) {
+            foreach ($role as $r) {
+                if ($this->hasRole($r)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // Si pasan un id numérico
+        if (is_numeric($role)) {
+            return intval($this->roles_id) === intval($role);
+        }
+
+        // Comparamos por nombre (caso-insensible) si el rol está cargado
+        $nombre = $this->role ? $this->role->nombre : null;
+        if ($nombre) {
+            return mb_strtolower($nombre) === mb_strtolower($role);
+        }
+
+        return false;
+    }
+
+    /**
      * Relación con Curso (si el usuario es Estudiante).
      */
     public function curso()
