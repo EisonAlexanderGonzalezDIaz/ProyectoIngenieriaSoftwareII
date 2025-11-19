@@ -377,6 +377,12 @@ Route::middleware(['auth'])->group(function () {
     // Gestión de Docentes
     Route::get('/gestiondocentes/gestion', [App\Http\Controllers\GestionDocentesController::class, 'gestion'])
         ->name('gestiondocentes.gestion');
+    Route::post('/gestiondocentes/store', [App\Http\Controllers\GestionDocentesController::class, 'store'])
+        ->name('gestiondocentes.store');
+    Route::put('/gestiondocentes/{id}', [App\Http\Controllers\GestionDocentesController::class, 'update'])
+        ->name('gestiondocentes.update');
+    Route::delete('/gestiondocentes/{id}', [App\Http\Controllers\GestionDocentesController::class, 'destroy'])
+        ->name('gestiondocentes.destroy');
 
     // Plan Académico
     Route::get('/planacademico/gestion', [PlanAcademicoController::class, 'gestion'])

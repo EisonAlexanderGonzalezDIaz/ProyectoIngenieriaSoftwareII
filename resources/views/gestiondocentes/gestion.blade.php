@@ -129,22 +129,29 @@
             </nav>
 
             {{-- FORMULARIO PARA AGREGAR / EDITAR DOCENTE (MAQUETA) --}}
-            <div id="addDocenteForm" class="card shadow-sm border-0 mt-4" style="display:none;">
+                <div id="addDocenteForm" class="card shadow-sm border-0 mt-4" style="display:none;">
                 <div class="card-header bg-light d-flex justify-content-between align-items-center">
                     <h5 class="mb-0"><i class="fas fa-plus text-primary me-2"></i>Nuevo Docente</h5>
                     <button type="button" class="btn-close" onclick="toggleAddDocenteForm()"></button>
                 </div>
                 <div class="card-body">
-                    <form id="formDocente" action="#" method="POST">
-                        {{-- @csrf --}}
+                    <form id="formDocente" action="{{ route('gestiondocentes.store') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="_method" id="formMethod" value="POST">
+                        <input type="hidden" name="docente_id" id="docenteIdInput" value="">
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label class="form-label">Nombre</label>
                                 <input name="nombre" type="text" class="form-control" required>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Materia</label>
-                                <input name="materia" type="text" class="form-control">
+                                <label class="form-label">Materias (selección múltiple)</label>
+                                <select name="materias[]" id="selectMaterias" class="form-select" multiple>
+                                    @foreach($materias as $m)
+                                        <option value="{{ $m->nombre }}">{{ $m->nombre }}</option>
+                                    @endforeach
+                                </select>
+                                <div class="form-text">Mantén presionada la tecla Ctrl/Cmd para seleccionar varias.</div>
                             </div>
                         </div>
 
@@ -159,8 +166,8 @@
                             </div>
                         </div>
 
-                        <div class="mb-3 text-end">
-                            <button type="button" class="btn btn-primary" onclick="guardarDocenteSimulado()">
+                            <div class="mb-3 text-end">
+                            <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-save me-1"></i> Guardar
                             </button>
                             <button type="button" class="btn btn-secondary" onclick="toggleAddDocenteForm()">Cancelar</button>
@@ -183,10 +190,11 @@
         }
     }
 
+    const csrf = '{{ csrf_token() }}';
+
     function guardarDocenteSimulado() {
-        alert('✅ Docente guardado (simulación). En producción se conectará al backend.');
-        document.getElementById('formDocente').reset();
-        toggleAddDocenteForm();
+        // Se mantiene para compatibilidad; el formulario ahora hace POST real.
+        document.getElementById('formDocente').submit();
     }
 
     function exportDocentes() {
@@ -201,13 +209,62 @@
 
     function editarDocente(btn) {
         const id = btn.dataset.id;
-        alert('✏️ Editar docente ID: ' + id + ' (simulación)');
+        // Rellenar el formulario con los datos de la fila
+        const row = btn.closest('tr');
+        const nombre = row.querySelector('td:nth-child(2)').textContent.trim();
+        const materia = row.querySelector('td:nth-child(3)').textContent.trim();
+        const email = row.querySelector('td:nth-child(4)').textContent.trim();
+        const telefono = row.querySelector('td:nth-child(5)').textContent.trim();
+
+        document.querySelector('#formDocente input[name="nombre"]').value = nombre;
+        // rellenar select multiple de materias (si existe)
+        const select = document.getElementById('selectMaterias');
+        if (select) {
+            // limpiar selección
+            Array.from(select.options).forEach(o => o.selected = false);
+            if (materia && materia !== '-') {
+                const parts = materia.split(',').map(s => s.trim());
+                parts.forEach(p => {
+                    const opt = Array.from(select.options).find(o => o.value.toLowerCase() === p.toLowerCase());
+                    if (opt) opt.selected = true;
+                });
+            }
+        }
+        document.querySelector('#formDocente input[name="email"]').value = (email === '-') ? '' : email;
+        document.querySelector('#formDocente input[name="telefono"]').value = (telefono === '-') ? '' : telefono;
+        document.getElementById('docenteIdInput').value = id;
+
+        // Cambiar acción del formulario para actualizar
+        document.getElementById('formDocente').action = '/gestiondocentes/' + id;
+        document.getElementById('formMethod').value = 'PUT';
+
+        // Mostrar formulario
+        const el = document.getElementById('addDocenteForm');
+        el.style.display = 'block';
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
     }
 
     function eliminarDocente(btn) {
         const id = btn.dataset.id;
         if (confirm('¿Eliminar docente ID: ' + id + '?')) {
-            alert('🗑️ Docente eliminado (simulación).');
+            fetch('/gestiondocentes/' + id, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': csrf,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            }).then(r => r.json()).then(res => {
+                if (res && res.ok) {
+                    alert('🗑️ Docente eliminado');
+                    window.location.reload();
+                } else {
+                    alert('Error al eliminar docente');
+                }
+            }).catch(err => {
+                console.error(err);
+                alert('Error al eliminar docente');
+            });
         }
     }
 
