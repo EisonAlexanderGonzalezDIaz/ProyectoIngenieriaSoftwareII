@@ -24,6 +24,8 @@ class DatabaseSeeder extends Seeder
             DocenteSeeder::class,                    // Usuario docente
             OrientadorSeeder::class,                 // Usuario orientador
             TesoreroSeeder::class,                   // Usuario tesorero
+            MateriasSeeder::class,                   // Materias iniciales
+            HorariosSeeder::class,                   // Horarios de ejemplo
         ]);
 
         // Mensaje final informativo

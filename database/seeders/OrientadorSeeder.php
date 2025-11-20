@@ -67,7 +67,7 @@ class OrientadorSeeder extends Seeder
         // 🧾 Mensajes en consola
         $this->command?->info('✅ Usuario Orientador creado o actualizado correctamente.');
         $this->command?->info('   Email: orientador@colegio.edu.co');
-        $this->command?->info('   Contraseña: orient123');
+        $this->command?->info('   Contraseña: orientador123');
         $this->command?->warn('⚠️ Cambia la contraseña después del primer inicio de sesión.');
     }
 }

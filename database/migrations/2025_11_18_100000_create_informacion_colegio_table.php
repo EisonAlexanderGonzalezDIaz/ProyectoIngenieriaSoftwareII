@@ -1,0 +1,28 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('informacion_colegio', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('titulo');
+            $table->text('contenido');
+            $table->boolean('publicado')->default(false);
+            $table->unsignedBigInteger('autor_id')->nullable();
+            $table->timestamp('published_at')->nullable();
+            $table->timestamps();
+
+            $table->index('autor_id');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('informacion_colegio');
+    }
+};

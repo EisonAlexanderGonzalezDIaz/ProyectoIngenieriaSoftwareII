@@ -2,33 +2,28 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use App\Models\RolesModel;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
     /**
-     * Atributos que se pueden asignar en masa.
-     *
-     * @var list<string>
+     * Atributos asignables en masa.
      */
     protected $fillable = [
         'name',
         'email',
         'password',
-        'roles_id',
+        'roles_id',   // FK al rol
+        'curso_id',   // FK al curso (si aplica)
+        'activo',     // 1 / 0 para estado
     ];
 
     /**
-     * Atributos que deben ocultarse al serializar.
-     *
-     * @var list<string>
+     * Atributos ocultos para arrays / JSON.
      */
     protected $hidden = [
         'password',
@@ -36,68 +31,138 @@ class User extends Authenticatable
     ];
 
     /**
-     * Atributos que deben ser casteados.
-     *
-     * @return array<string, string>
+     * Casts nativos de Laravel.
      */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'activo'            => 'boolean',
+    ];
+
+    // =========================================================
+    //  RELACIONES
+    // =========================================================
 
     /**
-     * Relación con el modelo RolesModel
-     * (cada usuario pertenece a un rol)
+     * Relación con RolesModel usando 'roles_id'.
+     * Esto permite usar tanto $user->role como $user->rol.
      */
+    public function role()
+    {
+        return $this->belongsTo(\App\Models\RolesModel::class, 'roles_id');
+    }
+
     public function rol()
     {
-        return $this->belongsTo(RolesModel::class, 'roles_id');
+        return $this->belongsTo(\App\Models\RolesModel::class, 'roles_id');
     }
 
     /**
-     * Métodos auxiliares para verificar el rol del usuario
+     * Comprueba si el usuario tiene un rol concreto.
+     * Acepta nombre de rol (string), id de rol (int) o array de nombres/ids.
      */
-
-    public function isAdminSistema(): bool
+    public function hasRole($role)
     {
-        return $this->rol && $this->rol->nombre === 'AdministradorSistema';
+        if (is_array($role)) {
+            foreach ($role as $r) {
+                if ($this->hasRole($r)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // Si pasan un id numérico
+        if (is_numeric($role)) {
+            return intval($this->roles_id) === intval($role);
+        }
+
+        // Comparamos por nombre (caso-insensible) si el rol está cargado
+        $nombre = $this->role ? $this->role->nombre : null;
+        if ($nombre) {
+            return mb_strtolower($nombre) === mb_strtolower($role);
+        }
+
+        return false;
     }
 
-    public function isRector(): bool
+    /**
+     * Relación con Curso (si el usuario es Estudiante).
+     */
+    public function curso()
     {
-        return $this->rol && $this->rol->nombre === 'Rector';
+        return $this->belongsTo(\App\Models\Curso::class, 'curso_id');
     }
 
-    public function isCoordinadorAcademico(): bool
+    /**
+     * Estudiante → sus acudientes (padre, madre, tutor...).
+     * Usa la tabla pivote 'acudiente_estudiante'.
+     */
+    public function acudientes()
     {
-        return $this->rol && $this->rol->nombre === 'CoordinadorAcademico';
+        return $this->belongsToMany(
+            self::class,
+            'acudiente_estudiante',
+            'estudiante_id', // este usuario es el estudiante
+            'acudiente_id'   // este usuario es el acudiente
+        );
     }
 
-    public function isDocente(): bool
+    /**
+     * Acudiente → estudiantes a cargo.
+     */
+    public function estudiantesACargo()
     {
-        return $this->rol && $this->rol->nombre === 'Docente';
+        return $this->belongsToMany(
+            self::class,
+            'acudiente_estudiante',
+            'acudiente_id',  // este usuario es el acudiente
+            'estudiante_id'  // este usuario es el estudiante
+        );
     }
 
-    public function isCoordinadorDisciplinario(): bool
+    /**
+     * Docente → materias que dicta (en relación pivot con cursos).
+     */
+    public function materiasDictadas()
     {
-        return $this->rol && $this->rol->nombre === 'CoordinadorDisciplinario';
+        return $this->belongsToMany(
+            Subject::class,
+            'docente_materia_curso',
+            'docente_id',
+            'materia_id'
+        )->withPivot('curso_id')->withTimestamps();
     }
 
-    public function isOrientador(): bool
+    /**
+     * Docente → cursos en los que dicta.
+     */
+    public function cursosDictados()
     {
-        return $this->rol && $this->rol->nombre === 'Orientador';
+        return $this->belongsToMany(
+            Curso::class,
+            'docente_materia_curso',
+            'docente_id',
+            'curso_id'
+        )
+        // Ya no pedimos 'materia_id' en el pivot porque no existe en la tabla
+        ->withTimestamps();
     }
 
-    public function isTesoreria(): bool
+    /**
+     * Docente → estudiantes en sus cursos.
+     */
+    public function estudiantesEnMisClases()
     {
-        return $this->rol && $this->rol->nombre === 'Tesoreria';
-    }
-
-    public function isEstudiante(): bool
-    {
-        return $this->rol && $this->rol->nombre === 'Estudiante';
+        return $this->hasManyThrough(
+            User::class,
+            Curso::class,
+            'id',
+            'curso_id',
+            'id',
+            'id'
+        )->where('roles_id', function($q) {
+            // Asumir que estudiantes tienen un rol específico
+            $q->select('id')->from('roles_models')->where('nombre', 'Estudiante');
+        });
     }
 }
