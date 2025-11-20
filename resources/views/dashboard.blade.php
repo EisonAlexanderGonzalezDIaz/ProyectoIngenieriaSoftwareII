@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Principal - Colegio San Martín</title>
+    <title>Panel Principal - Colegio</title>
 
     {{-- Token CSRF para uso en JavaScript --}}
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -240,10 +240,10 @@
                                 <a class="nav-link text-dark" href="#">
                                     <i class="fas fa-book me-2"></i>Consultar materia (subir material)
                                 </a>
-                                <a class="nav-link text-dark" href="{{ route('docente.registrar_notas') }}">
+                                <a class="nav-link text-dark" href="#">
                                     <i class="fas fa-pen me-2"></i>Registrar notas
                                 </a>
-                                <a class="nav-link text-dark" href="{{ route('docente.registrar_asistencia') }}">
+                                <a class="nav-link text-dark" href="#">
                                     <i class="fas fa-user-check me-2"></i>Registrar asistencia
                                 </a>
                                 <a class="nav-link text-dark" href="#">
@@ -257,6 +257,7 @@
                                 <i class="fas fa-user-graduate me-2"></i>Consultar estudiantes
                             </a>
                         @endif
+
                     @endif
 
                     {{-- =========================================
@@ -331,17 +332,17 @@
                             <i class="fas fa-chevron-down small"></i>
                         </a>
                         <div class="collapse ps-4" id="menuDocenteHorario">
-                            <a class="nav-link text-dark" href="{{ route('docente.consultar_horario') }}">
+                            <a class="nav-link text-dark" href="#">
                                 <i class="fas fa-eye me-2"></i>Ver horario
                             </a>
-                            <a class="nav-link text-dark" href="{{ route('docente.descargar_horario') }}">
+                            <a class="nav-link text-dark" href="#">
                                 <i class="fas fa-download me-2"></i>Descargar horario
                             </a>
                         </div>
                     @endif
 
                     {{-- =========================================
-                         CONSULTAR MATERIAS (solo Estudiante)
+                         CONSULTAR MATERIAS (solo Estudiante aquí)
                     ========================================== --}}
                     @if($rolNombre === 'Estudiante')
                         <a class="nav-link text-dark d-flex justify-content-between align-items-center"
@@ -380,6 +381,26 @@
                                 </a>
                             </div>
 
+                            {{-- Certificados de estudio --}}
+                            <a class="nav-link text-dark d-flex justify-content-between align-items-center"
+                               data-bs-toggle="collapse"
+                               href="#menuEstudianteCertificados"
+                               role="button"
+                               aria-expanded="false"
+                               aria-controls="menuEstudianteCertificados">
+                                <span><i class="fas fa-certificate me-2"></i>Certificados de estudio</span>
+                                <i class="fas fa-chevron-down small"></i>
+                            </a>
+                            <div class="collapse ps-4" id="menuEstudianteCertificados">
+                                <a class="nav-link text-dark" href="{{ route('estudiante.solicitar_certificacion') }}">
+                                    <i class="fas fa-file-alt me-2"></i>Solicitar certificado de estudio
+                                </a>
+                                {{-- IMPORTANTE: NO LLAMAR A LA RUTA CON {id} DESDE AQUÍ --}}
+                                <a class="nav-link text-dark" href="{{ route('estudiante.solicitar_certificacion') }}">
+                                    <i class="fas fa-download me-2"></i>Descargar certificados
+                                </a>
+                            </div>
+
                             <a class="nav-link text-dark" href="{{ route('estudiante.tareas') }}">
                                 <i class="fas fa-folder-open me-2"></i>Material académico (subir/descargar)
                             </a>
@@ -390,6 +411,7 @@
                          INFORMES / REPORTES (Docente)
                     ========================================== --}}
                     @if($rolNombre === 'Docente')
+                        {{-- Generar informes de curso + reportes disciplinarios --}}
                         <a class="nav-link text-dark d-flex justify-content-between align-items-center"
                            data-bs-toggle="collapse"
                            href="#menuDocenteInformes"
@@ -400,7 +422,7 @@
                             <i class="fas fa-chevron-down small"></i>
                         </a>
                         <div class="collapse ps-4" id="menuDocenteInformes">
-                            <a class="nav-link text-dark" href="{{ route('docente.generar_informe') }}">
+                            <a class="nav-link text-dark" href="#">
                                 <i class="fas fa-file-alt me-2"></i>Informes académicos
                             </a>
                             <a class="nav-link text-dark" href="{{ route('reportes.gestion') }}">
@@ -423,23 +445,7 @@
                     ========================================== --}}
                     @if(in_array($rolNombre, ['Estudiante', 'Acudiente']))
                         @if($rolNombre === 'Estudiante')
-                            <a class="nav-link text-dark d-flex justify-content-between align-items-center"
-                               data-bs-toggle="collapse"
-                               href="#menuEstudianteCertificados"
-                               role="button"
-                               aria-expanded="false"
-                               aria-controls="menuEstudianteCertificados">
-                                <span><i class="fas fa-certificate me-2"></i>Certificados de estudio</span>
-                                <i class="fas fa-chevron-down small"></i>
-                            </a>
-                            <div class="collapse ps-4" id="menuEstudianteCertificados">
-                                <a class="nav-link text-dark" href="{{ route('estudiante.solicitar_certificacion') }}">
-                                    <i class="fas fa-file-alt me-2"></i>Solicitar certificado de estudio
-                                </a>
-                                <a class="nav-link text-dark" href="{{ route('estudiante.descargar_certificacion') }}">
-                                    <i class="fas fa-download me-2"></i>Descargar certificados
-                                </a>
-                            </div>
+                            {{-- Ya manejado arriba en el menú de materias/certificados --}}
                         @else
                             <a class="nav-link text-dark" href="#">
                                 <i class="fas fa-percent me-2"></i>Solicitud de becas y descuentos
@@ -576,7 +582,7 @@
                     {{-- =========================================
                          OPCIONES EXTRAS TESORERO
                     ========================================== --}}
-                    @if($rolNombre === 'Tesorero')
+                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Tesorero']))
                         <a class="nav-link text-dark" href="{{ route('tesoreria.view.pazysalvo') }}">
                             <i class="fas fa-file-invoice me-2"></i>Generar paz y salvo
                         </a>
@@ -664,7 +670,7 @@
                     </div>
                 </div>
 
-                <!-- Statistics Cards & Quick Actions (Orientador u otros) -->
+                <!-- Statistics Cards & Quick Actions (role-specific) -->
                 @if($rolNombre === 'Orientador')
                     @php
                         $pendientes = \App\Models\Cita::where('orientador_id', auth()->id())->where('estado', 'pendiente')->count();
@@ -860,6 +866,9 @@
     @csrf
 </form>
 
+<!-- JS de Bootstrap 5 (necesario para dropdowns, colapsables, etc.) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
     (function(){
         const tokenMeta = document.querySelector('meta[name="csrf-token"]');
@@ -977,9 +986,5 @@
         });
     })();
 </script>
-
-<!-- JS de Bootstrap 5 (necesario para dropdowns, colapsables, etc.) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>
