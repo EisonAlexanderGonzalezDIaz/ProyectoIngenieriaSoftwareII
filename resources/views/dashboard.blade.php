@@ -225,19 +225,19 @@
                                 <i class="fas fa-chevron-down small"></i>
                             </a>
                             <div class="collapse ps-4" id="menuDocenteEstudiantes">
-                                <a class="nav-link text-dark" href="#">
+                                <a class="nav-link text-dark" href="{{ route('docente.consultar_notas') }}">
                                     <i class="fas fa-clipboard-list me-2"></i>Consultar notas
                                 </a>
-                                <a class="nav-link text-dark" href="#">
+                                <a class="nav-link text-dark" href="{{ route('docente.subir_material') }}">
                                     <i class="fas fa-book me-2"></i>Consultar materia (subir material)
                                 </a>
-                                <a class="nav-link text-dark" href="#">
+                                <a class="nav-link text-dark" href="{{ route('docente.registrar_notas') }}">
                                     <i class="fas fa-pen me-2"></i>Registrar notas
                                 </a>
-                                <a class="nav-link text-dark" href="#">
+                                <a class="nav-link text-dark" href="{{ route('docente.registrar_asistencia') }}">
                                     <i class="fas fa-user-check me-2"></i>Registrar asistencia
                                 </a>
-                                <a class="nav-link text-dark" href="#">
+                                <a class="nav-link text-dark" href="{{ route('docente.consultar_asistencia') }}">
                                     <i class="fas fa-user-clock me-2"></i>Consultar asistencia
                                 </a>
                             </div>
@@ -299,9 +299,9 @@
                                 $labelCita = 'Solicitar citas orientación';
                             }
 
-                            $hrefCita = $rolNombre === 'Estudiante'
-                                ? route('estudiante.solicitar_cita')
-                                : '#';
+                            $hrefCita = $rolNombre === 'Docente'
+                                ? route('docente.solicitar_cita')
+                                : ($rolNombre === 'Estudiante' ? route('estudiante.solicitar_cita') : ($rolNombre === 'Acudiente' ? route('acudiente.notificaciones') : '#'));
                         @endphp
                         <a class="nav-link text-dark" href="{{ $hrefCita }}">
                             <i class="fas fa-calendar-plus me-2"></i>{{ $labelCita }}
@@ -322,10 +322,10 @@
                             <i class="fas fa-chevron-down small"></i>
                         </a>
                         <div class="collapse ps-4" id="menuDocenteHorario">
-                            <a class="nav-link text-dark" href="#">
+                            <a class="nav-link text-dark" href="{{ route('docente.consultar_horario') }}">
                                 <i class="fas fa-eye me-2"></i>Ver horario
                             </a>
-                            <a class="nav-link text-dark" href="#">
+                            <a class="nav-link text-dark" href="{{ route('docente.descargar_horario') }}">
                                 <i class="fas fa-download me-2"></i>Descargar horario
                             </a>
                         </div>
@@ -392,7 +392,7 @@
                             <i class="fas fa-chevron-down small"></i>
                         </a>
                         <div class="collapse ps-4" id="menuDocenteInformes">
-                            <a class="nav-link text-dark" href="#">
+                            <a class="nav-link text-dark" href="{{ route('docente.generar_informe') }}">
                                 <i class="fas fa-file-alt me-2"></i>Informes académicos
                             </a>
                             <a class="nav-link text-dark" href="{{ route('reportes.gestion') }}">
@@ -401,11 +401,8 @@
                         </div>
                     @endif
 
-                    {{-- =========================================
-                         BOLETINES (Docente / Acudiente)
-                    ========================================== --}}
                     @if(in_array($rolNombre, ['Docente', 'Acudiente']))
-                        <a class="nav-link text-dark" href="#">
+                        <a class="nav-link text-dark" href="{{ $rolNombre === 'Docente' ? route('docente.consultar_boletines') : route('acudiente.boletines') }}">
                             <i class="fas fa-newspaper me-2"></i>Consultar boletines
                         </a>
                     @endif
@@ -671,7 +668,7 @@
                                 <div class="card-body text-center">
                                     <div class="text-primary mb-2"><i class="fas fa-hourglass-half fa-2x"></i></div>
                                     <h5 class="card-title">Pendientes</h5>
-                                    <h3 class="text-primary">{{ $pendientes }}</h3>
+                                    <h3 class="text-primary stat-value" data-stat="citasPendientes">{{ $pendientes }}</h3>
                                     <small class="text-muted">Solicitudes por revisar</small>
                                 </div>
                             </div>
@@ -682,7 +679,7 @@
                                 <div class="card-body text-center">
                                     <div class="text-success mb-2"><i class="fas fa-calendar-check fa-2x"></i></div>
                                     <h5 class="card-title">Programadas</h5>
-                                    <h3 class="text-success">{{ $programadas }}</h3>
+                                    <h3 class="text-success stat-value" data-stat="citasProgramadas">{{ $programadas }}</h3>
                                     <small class="text-muted">Citas por atender</small>
                                 </div>
                             </div>
@@ -693,7 +690,7 @@
                                 <div class="card-body text-center">
                                     <div class="text-warning mb-2"><i class="fas fa-check fa-2x"></i></div>
                                     <h5 class="card-title">Realizadas</h5>
-                                    <h3 class="text-warning">{{ $realizadas }}</h3>
+                                    <h3 class="text-warning stat-value" data-stat="citasRealizadas">{{ $realizadas }}</h3>
                                     <small class="text-muted">Citas completadas</small>
                                 </div>
                             </div>
@@ -704,7 +701,7 @@
                                 <div class="card-body text-center">
                                     <div class="text-info mb-2"><i class="fas fa-user-friends fa-2x"></i></div>
                                     <h5 class="card-title">Estudiantes</h5>
-                                    <h3 class="text-info">{{ $estudiantesSeguimiento }}</h3>
+                                    <h3 class="text-info stat-value" data-stat="estudiantesSeguimiento">{{ $estudiantesSeguimiento }}</h3>
                                     <small class="text-muted">En seguimiento</small>
                                 </div>
                             </div>
@@ -749,7 +746,7 @@
                                 <div class="card-body text-center">
                                     <div class="text-primary mb-2"><i class="fas fa-user-graduate fa-2x"></i></div>
                                     <h5 class="card-title">Estudiantes</h5>
-                                    <h3 class="text-primary">420</h3>
+                                    <h3 class="text-primary stat-value" data-stat="totalEstudiantes">0</h3>
                                     <small class="text-muted">Registrados en el sistema</small>
                                 </div>
                             </div>
@@ -760,7 +757,7 @@
                                 <div class="card-body text-center">
                                     <div class="text-success mb-2"><i class="fas fa-user-tie fa-2x"></i></div>
                                     <h5 class="card-title">Docentes</h5>
-                                    <h3 class="text-success">35</h3>
+                                    <h3 class="text-success stat-value" data-stat="totalDocentes">0</h3>
                                     <small class="text-muted">Activos actualmente</small>
                                 </div>
                             </div>
@@ -771,7 +768,7 @@
                                 <div class="card-body text-center">
                                     <div class="text-warning mb-2"><i class="fas fa-book fa-2x"></i></div>
                                     <h5 class="card-title">Materias</h5>
-                                    <h3 class="text-warning">52</h3>
+                                    <h3 class="text-warning stat-value" data-stat="totalMaterias">0</h3>
                                     <small class="text-muted">Asignaturas registradas</small>
                                 </div>
                             </div>
@@ -782,7 +779,7 @@
                                 <div class="card-body text-center">
                                     <div class="text-info mb-2"><i class="fas fa-calendar-check fa-2x"></i></div>
                                     <h5 class="card-title">Eventos</h5>
-                                    <h3 class="text-info">5</h3>
+                                    <h3 class="text-info stat-value" data-stat="totalEventos">0</h3>
                                     <small class="text-muted">Programados este mes</small>
                                 </div>
                             </div>
@@ -857,6 +854,46 @@
         const tokenMeta = document.querySelector('meta[name="csrf-token"]');
         const csrf = tokenMeta ? tokenMeta.getAttribute('content') : '{{ csrf_token() }}';
 
+        // Auto-actualizar estadísticas cada 30 segundos
+        async function actualizarEstadisticas() {
+            try {
+                const response = await fetch('/api/dashboard/stats', {
+                    headers: { 'Accept': 'application/json' }
+                });
+                
+                if (!response.ok) throw new Error('Error fetching stats');
+                
+                const stats = await response.json();
+                
+                // Actualizar todos los elementos con atributo data-stat
+                Object.keys(stats).forEach(key => {
+                    const elements = document.querySelectorAll(`[data-stat="${key}"]`);
+                    elements.forEach(el => {
+                        const oldValue = el.textContent;
+                        const newValue = stats[key];
+                        
+                        if (oldValue !== newValue.toString()) {
+                            el.textContent = newValue;
+                            // Efecto visual de actualización
+                            el.style.transition = 'color 0.3s';
+                            el.style.color = '#28a745';
+                            setTimeout(() => {
+                                el.style.color = '';
+                            }, 500);
+                        }
+                    });
+                });
+            } catch (error) {
+                console.warn('Error actualizando estadísticas:', error);
+            }
+        }
+
+        // Actualizar inmediatamente al cargar
+        actualizarEstadisticas();
+        
+        // Configurar auto-refresh cada 30 segundos
+        setInterval(actualizarEstadisticas, 30000);
+
         function jsonAlert(title, obj){
             try { window.alert(title + '\n' + JSON.stringify(obj, null, 2)); }
             catch(e){ window.alert(title + '\n' + String(obj)); }
@@ -969,134 +1006,4 @@
         });
     })();
 </script>
-<!-- Logout Form -->
-<form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-    @csrf
-</form>
-
-<!-- JS de Bootstrap 5 (necesario para dropdowns, colapsables, etc.) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-<script>
-    (function(){
-        const tokenMeta = document.querySelector('meta[name="csrf-token"]');
-        const csrf = tokenMeta ? tokenMeta.getAttribute('content') : '{{ csrf_token() }}';
-
-        function jsonAlert(title, obj){
-            try { window.alert(title + '\n' + JSON.stringify(obj, null, 2)); }
-            catch(e){ window.alert(title + '\n' + String(obj)); }
-        }
-
-        async function postJson(url, data){
-            const res = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrf,
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify(data || {})
-            });
-            return res.json();
-        }
-
-        async function getJson(url){
-            const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
-            return res.json();
-        }
-
-        document.querySelectorAll('[data-action]').forEach(function(el){
-            el.addEventListener('click', async function(e){
-                e.preventDefault();
-                const action = el.getAttribute('data-action');
-                try {
-                    switch(action){
-                        case 'generarPazYSalvo': {
-                            const id = prompt('Ingrese ID del acudiente para generar paz y salvo:');
-                            if (!id) return;
-                            const res = await getJson('/tesoreria/paz-y-salvo/' + encodeURIComponent(id));
-                            jsonAlert('Paz y Salvo', res);
-                            break;
-                        }
-                        case 'generarFacturaMatricula': {
-                            const acudiente_id = prompt('ID del acudiente:'); if (!acudiente_id) return;
-                            const matricula_id = prompt('ID de la matrícula (opcional):');
-                            const monto = prompt('Monto de la factura:'); if (!monto) return;
-                            const descripcion = prompt('Descripción (opcional):') || '';
-                            const res = await postJson('/tesoreria/factura/matricula', {acudiente_id, matricula_id, monto, descripcion});
-                            jsonAlert('Factura creada', res);
-                            break;
-                        }
-                        case 'registrarPago': {
-                            const acudiente_id = prompt('ID del acudiente que paga:'); if (!acudiente_id) return;
-                            const monto = prompt('Monto pagado:'); if (!monto) return;
-                            const metodo = prompt('Método de pago (opcional):') || '';
-                            const descripcion = prompt('Descripción (opcional):') || '';
-                            const res = await postJson('/tesoreria/pago/registrar', {acudiente_id, monto, metodo, descripcion});
-                            jsonAlert('Pago registrado', res);
-                            break;
-                        }
-                        case 'gestionarDevolucion': {
-                            const pago_id = prompt('ID del pago a devolver:'); if (!pago_id) return;
-                            const motivo = prompt('Motivo de la devolución (opcional):') || '';
-                            const res = await postJson('/tesoreria/devolucion', {pago_id, motivo});
-                            jsonAlert('Devolución procesada', res);
-                            break;
-                        }
-                        case 'gestionarCartera': {
-                            const res = await getJson('/tesoreria/cartera');
-                            jsonAlert('Cartera (pendientes)', res);
-                            break;
-                        }
-                        case 'entregarReportes': {
-                            const desde = prompt('Fecha desde (YYYY-MM-DD) opcional:');
-                            const hasta = prompt('Fecha hasta (YYYY-MM-DD) opcional:');
-                            const q = new URLSearchParams(); if (desde) q.set('desde', desde); if (hasta) q.set('hasta', hasta);
-                            const res = await getJson('/tesoreria/reportes' + (q.toString() ? ('?' + q.toString()) : ''));
-                            jsonAlert('Reportes', res);
-                            break;
-                        }
-                        case 'consultarEstadoCuenta': {
-                            const id = prompt('Ingrese ID del acudiente para consultar estado de cuenta:'); if (!id) return;
-                            const res = await getJson('/tesoreria/estado-cuenta/' + encodeURIComponent(id));
-                            jsonAlert('Estado de cuenta', res);
-                            break;
-                        }
-                        case 'registrarBecaDescuento': {
-                            const acudiente_id = prompt('ID del acudiente:'); if (!acudiente_id) return;
-                            const monto = prompt('Monto de la beca/descuento (valor positivo):'); if (!monto) return;
-                            const matricula_id = prompt('ID matrícula (opcional):');
-                            const descripcion = prompt('Descripción (opcional):') || '';
-                            const res = await postJson('/tesoreria/beca', {acudiente_id, monto, matricula_id, descripcion});
-                            jsonAlert('Beca/Descuento registrado', res);
-                            break;
-                        }
-                        case 'generarReporteFinanciero': {
-                            const desde = prompt('Fecha desde (YYYY-MM-DD) opcional:');
-                            const hasta = prompt('Fecha hasta (YYYY-MM-DD) opcional:');
-                            const q = new URLSearchParams(); if (desde) q.set('desde', desde); if (hasta) q.set('hasta', hasta);
-                            const res = await getJson('/tesoreria/reporte-financiero' + (q.toString() ? ('?' + q.toString()) : ''));
-                            jsonAlert('Reporte financiero', res);
-                            break;
-                        }
-                        case 'aprobarBecas': {
-                            alert('Función de aprobación no implementada en el backend aún.');
-                            break;
-                        }
-                        default:
-                            console.warn('Acción no manejada:', action);
-                    }
-                } catch(err){
-                    console.error(err);
-                    alert('Error al ejecutar la acción: ' + (err.message || err));
-                }
-            });
-        });
-    })();
-</script>
-</body>
-</html>
-
-{{-- Cierre de body y html al ser una vista completa --}}
-</body>
-</html>
+@endsection

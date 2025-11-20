@@ -129,7 +129,7 @@ class User extends Authenticatable
             Subject::class,
             'docente_materia_curso',
             'docente_id',
-            'materia_id'
+            'subject_id'
         )->withPivot('curso_id')->withTimestamps();
     }
 

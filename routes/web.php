@@ -3,34 +3,12 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
-// Controladores principales
+// Controladores
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CrearUsuario;
 use App\Http\Controllers\RolController;
 use App\Http\Controllers\MatriculaAcudienteController;
 use App\Http\Controllers\TesoreroController;
-
-// Controladores académicos / roles
-use App\Http\Controllers\AdminEstudiantesController;
-use App\Http\Controllers\AdminUsuarioController;
-use App\Http\Controllers\EstudianteController;
-use App\Http\Controllers\RectorEstudianteController;
-use App\Http\Controllers\CoordinadorAcademicoController;
-use App\Http\Controllers\HorariosController;
-use App\Http\Controllers\MateriasController;
-use App\Http\Controllers\CambiosNotasController;
-use App\Http\Controllers\RecuperacionesController;
-use App\Http\Controllers\ReportesAcademicosController;
-use App\Http\Controllers\OrientadorController;
-use App\Http\Controllers\CasosDisciplinariosController;
-use App\Http\Controllers\ReportesDisciplinariosController;
-use App\Http\Controllers\PlanAcademicoController;
-use App\Http\Controllers\DocenteController;
-use App\Http\Controllers\RectorController;
-use App\Http\Controllers\AcudienteEstudianteController;
-use App\Http\Controllers\AcudienteController;
-use App\Http\Controllers\GestionDocentesController;
-
 use App\Models\RolesModel;
 
 /*
@@ -429,7 +407,7 @@ Route::middleware(['auth'])->group(function () {
     */
     Route::get('/planacademico/gestion', [PlanAcademicoController::class, 'gestion'])
         ->name('planacademico.gestion');
-
+    
     /*
     |--------------------------------------------------------------------------
     | Acudiente (Padres / Tutores)
@@ -451,8 +429,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/api/reportes-disciplinarios', [AcudienteController::class, 'obtenerReportesDisciplinarios'])->name('obtener_reportes_disciplinarios');
 
         // Solicitudes de Paz y Salvo
-        Route::get('/paz-y-salvo/solicitar', [AcudienteController::class, 'viewSolicitarPaz'])->name('solicitar_paz');
-        Route::post('/paz-y-salvo/solicitar', [AcudienteController::class, 'crearSolicitudPaz'])->name('crear_solicitud_paz');
+        Route::get('/paz-y-salvo/solicitar', [App\Http\Controllers\AcudienteController::class, 'viewSolicitarPaz'])->name('solicitar_paz');
+        Route::post('/paz-y-salvo/solicitar', [App\Http\Controllers\AcudienteController::class, 'crearSolicitudPaz'])->name('crear_solicitud_paz');
     });
 
     // API: obtener estudiantes a cargo del acudiente (para formularios AJAX)
@@ -468,6 +446,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/solicitar-cita', [DocenteController::class, 'viewSolicitarCita'])->name('solicitar_cita');
         Route::post('/solicitar-cita', [DocenteController::class, 'crearCita'])->name('crear_cita');
 
+        // Consultar notas (ver todas las notas registradas)
+        Route::get('/notas/consultar', [DocenteController::class, 'viewConsultarNotas'])->name('consultar_notas');
+
         // Consultar y descargar horario
         Route::get('/horario', [DocenteController::class, 'viewConsultarHorario'])->name('consultar_horario');
         Route::get('/api/horarios', [DocenteController::class, 'obtenerHorarios'])->name('obtener_horarios');
@@ -481,6 +462,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/asistencia', [DocenteController::class, 'viewRegistrarAsistencia'])->name('registrar_asistencia');
         Route::post('/asistencia/guardar', [DocenteController::class, 'guardarAsistencia'])->name('guardar_asistencia');
 
+        // Consultar asistencia
+        Route::get('/asistencia/consultar', [DocenteController::class, 'viewConsultarAsistencia'])->name('consultar_asistencia');
+
         // Subir material académico
         Route::get('/materiales', [DocenteController::class, 'viewSubirMaterial'])->name('subir_material');
         Route::post('/materiales/subir', [DocenteController::class, 'subirMaterial'])->name('subir_material_post');
@@ -489,6 +473,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/informe-curso', [DocenteController::class, 'viewGenerarInforme'])->name('generar_informe');
         Route::post('/informe-curso/generar', [DocenteController::class, 'generarInforme'])->name('generar_informe_post');
         Route::get('/informe-curso/datos', [DocenteController::class, 'obtenerDatosAutorellenado'])->name('obtener_datos_autorellenado');
+
+        // Consultar boletines
+        Route::get('/boletines', [DocenteController::class, 'viewConsultarBoletines'])->name('consultar_boletines');
     });
 
     // API Docente endpoints
