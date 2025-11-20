@@ -24,8 +24,16 @@
                         <i class="fas fa-user-circle me-1"></i>{{ $usuario->name }}
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end shadow">
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-user-graduate me-2"></i>Perfil</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Configuración</a></li>
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <i class="fas fa-user-graduate me-2"></i>Perfil
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <i class="fas fa-cog me-2"></i>Configuración
+                            </a>
+                        </li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
                             <a class="dropdown-item text-danger" href="{{ route('logout') }}" 
@@ -64,6 +72,7 @@
                         'Rector', 'CoordinadorAcademico', 'CoordinadorDisciplinario',
                         'Orientador', 'Tesorero', 'Docente', 'AdministradorSistema'
                     ]))
+
                         @if($rolNombre === 'AdministradorSistema')
                             {{-- AdminSistema va al menú especial --}}
                             <a class="nav-link text-dark" href="{{ route('admin.estudiantes.menu') }}">
@@ -168,13 +177,13 @@
                                 <i class="fas fa-chevron-down small"></i>
                             </a>
                             <div class="collapse ps-4" id="menuRectorEstudiantes">
-                                <a class="nav-link text-dark" href="#">
+                                <a class="nav-link text-dark" href="{{ route('rector.boletines') }}">
                                     <i class="fas fa-newspaper me-2"></i>Consultar boletines
                                 </a>
-                                <a class="nav-link text-dark" href="#">
+                                <a class="nav-link text-dark" href="{{ route('rector.notas') }}">
                                     <i class="fas fa-clipboard-list me-2"></i>Consultar notas
                                 </a>
-                                <a class="nav-link text-dark" href="#">
+                                <a class="nav-link text-dark" href="{{ route('rector.materias') }}">
                                     <i class="fas fa-book me-2"></i>Consultar materias
                                 </a>
                             </div>
@@ -318,7 +327,7 @@
                     @endif
 
                     {{-- =========================================
-                         CONSULTAR MATERIAS (solo Estudiante aquí)
+                         CONSULTAR MATERIAS (solo Estudiante)
                     ========================================== --}}
                     @if($rolNombre === 'Estudiante')
                         <a class="nav-link text-dark d-flex justify-content-between align-items-center"
@@ -367,7 +376,6 @@
                          INFORMES / REPORTES (Docente)
                     ========================================== --}}
                     @if($rolNombre === 'Docente')
-                        {{-- Generar informes de curso + reportes disciplinarios --}}
                         <a class="nav-link text-dark d-flex justify-content-between align-items-center"
                            data-bs-toggle="collapse"
                            href="#menuDocenteInformes"
@@ -562,7 +570,7 @@
                     {{-- =========================================
                          OPCIONES EXTRAS TESORERO
                     ========================================== --}}
-                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Tesorero']))
+                    @if($rolNombre === 'Tesorero')
                         <a class="nav-link text-dark" href="{{ route('tesoreria.view.pazysalvo') }}">
                             <i class="fas fa-file-invoice me-2"></i>Generar paz y salvo
                         </a>
@@ -650,7 +658,7 @@
                     </div>
                 </div>
 
-                <!-- Statistics Cards & Quick Actions (role-specific) -->
+                <!-- Statistics Cards & Quick Actions (Orientador u otros) -->
                 @if($rolNombre === 'Orientador')
                     @php
                         $pendientes = \App\Models\Cita::where('orientador_id', auth()->id())->where('estado', 'pendiente')->count();
