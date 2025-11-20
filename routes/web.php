@@ -259,9 +259,9 @@ Route::prefix('rector')
         // Página principal de gestión de estudiantes
         Route::get('/', [EstudianteController::class, 'index'])->name('index');
 
-        // Vista estática adicional
+        // Vista estática adicional (reutiliza la vista de administración de estudiantes)
         Route::get('/gestion', function () {
-            return view('estudiantes.gestion');
+            return view('admin.estudiantes.gestion');
         })->name('gestion');
     });
 
