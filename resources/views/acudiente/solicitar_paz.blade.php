@@ -57,7 +57,8 @@ document.getElementById('solicitudForm').addEventListener('submit', function(e) 
   e.preventDefault();
   const form = e.target;
   const formData = new FormData(form);
-  fetch(form.action, { method: 'POST', body: formData, headers: {'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value } })
+  const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+  fetch(form.action, { method: 'POST', body: formData, headers: {'X-CSRF-TOKEN': token } })
     .then(r => r.json())
     .then(json => {
       const msg = document.getElementById('mensaje');

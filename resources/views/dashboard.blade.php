@@ -214,19 +214,19 @@
                                 <i class="fas fa-chevron-down small"></i>
                             </a>
                             <div class="collapse ps-4" id="menuDocenteEstudiantes">
-                                <a class="nav-link text-dark" href="#">
+                                <a class="nav-link text-dark" href="{{ route('docente.registrar_notas') }}">
                                     <i class="fas fa-clipboard-list me-2"></i>Consultar notas
                                 </a>
-                                <a class="nav-link text-dark" href="#">
+                                <a class="nav-link text-dark" href="{{ route('docente.subir_material') }}">
                                     <i class="fas fa-book me-2"></i>Consultar materia (subir material)
                                 </a>
-                                <a class="nav-link text-dark" href="#">
+                                <a class="nav-link text-dark" href="{{ route('docente.registrar_notas') }}">
                                     <i class="fas fa-pen me-2"></i>Registrar notas
                                 </a>
-                                <a class="nav-link text-dark" href="#">
+                                <a class="nav-link text-dark" href="{{ route('docente.registrar_asistencia') }}">
                                     <i class="fas fa-user-check me-2"></i>Registrar asistencia
                                 </a>
-                                <a class="nav-link text-dark" href="#">
+                                <a class="nav-link text-dark" href="{{ route('docente.registrar_asistencia') }}">
                                     <i class="fas fa-user-clock me-2"></i>Consultar asistencia
                                 </a>
                             </div>
@@ -311,10 +311,10 @@
                             <i class="fas fa-chevron-down small"></i>
                         </a>
                         <div class="collapse ps-4" id="menuDocenteHorario">
-                            <a class="nav-link text-dark" href="#">
+                            <a class="nav-link text-dark" href="{{ route('docente.consultar_horario') }}">
                                 <i class="fas fa-eye me-2"></i>Ver horario
                             </a>
-                            <a class="nav-link text-dark" href="#">
+                            <a class="nav-link text-dark" href="{{ route('docente.descargar_horario') }}">
                                 <i class="fas fa-download me-2"></i>Descargar horario
                             </a>
                         </div>
@@ -381,7 +381,7 @@
                             <i class="fas fa-chevron-down small"></i>
                         </a>
                         <div class="collapse ps-4" id="menuDocenteInformes">
-                            <a class="nav-link text-dark" href="#">
+                            <a class="nav-link text-dark" href="{{ route('docente.generar_informe') }}">
                                 <i class="fas fa-file-alt me-2"></i>Informes académicos
                             </a>
                             <a class="nav-link text-dark" href="{{ route('reportes.gestion') }}">
@@ -394,7 +394,7 @@
                          BOLETINES (Docente / Acudiente)
                     ========================================== --}}
                     @if(in_array($rolNombre, ['Docente', 'Acudiente']))
-                        <a class="nav-link text-dark" href="#">
+                        <a class="nav-link text-dark" href="{{ $rolNombre === 'Acudiente' ? route('acudiente.boletines') : '#' }}">
                             <i class="fas fa-newspaper me-2"></i>Consultar boletines
                         </a>
                     @endif
@@ -422,8 +422,8 @@
                                 </a>
                             </div>
                         @else
-                            <a class="nav-link text-dark" href="#">
-                                <i class="fas fa-percent me-2"></i>Solicitud de becas y descuentos
+                            <a class="nav-link text-dark" href="{{ route('acudiente.solicitar_paz') }}">
+                                <i class="fas fa-percent me-2"></i>Solicitud de paz y salvo
                             </a>
                         @endif
                     @endif
@@ -432,13 +432,13 @@
                          REPORTES DISCIPLINARIOS / NOTIFICACIONES
                     ========================================== --}}
                     @if(in_array($rolNombre, ['Estudiante', 'Acudiente']))
-                        <a class="nav-link text-dark" href="{{ $rolNombre === 'Estudiante' ? route('estudiante.reportes_disciplinarios') : '#' }}">
+                        <a class="nav-link text-dark" href="{{ $rolNombre === 'Estudiante' ? route('estudiante.reportes_disciplinarios') : route('acudiente.reportes_disciplinarios') }}">
                             <i class="fas fa-exclamation-circle me-2"></i>Consultar reportes disciplinarios
                         </a>
                     @endif
 
                     @if(in_array($rolNombre, ['Estudiante', 'Acudiente', 'Docente', 'Orientador']))
-                        <a class="nav-link text-dark" href="{{ $rolNombre === 'Estudiante' ? route('estudiante.notificaciones') : '#' }}">
+                        <a class="nav-link text-dark" href="{{ $rolNombre === 'Estudiante' ? route('estudiante.notificaciones') : ($rolNombre === 'Acudiente' ? route('acudiente.notificaciones') : '#') }}">
                             <i class="fas fa-bell me-2"></i>Centro de notificaciones
                         </a>
                     @endif

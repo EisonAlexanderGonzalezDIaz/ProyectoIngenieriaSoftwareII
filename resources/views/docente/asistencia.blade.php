@@ -97,7 +97,7 @@ function cargarEstudiantes() {
         return;
     }
 
-    fetch(`{{ route('docente.obtener_estudiantes_por_curso') }}?curso_id=${cursoId}&materia_id=${materiaId}`)
+    fetch(`{{ route('docente.obtener_estudiantes_por_curso') }}?curso_id=${cursoId}&subject_id=${materiaId}`)
         .then(r => r.json())
         .then(data => {
             const tbody = document.getElementById('estudiantesBody');
@@ -135,15 +135,16 @@ function guardarAsistenciaUno(estudianteId) {
     const estado = fila.querySelector('.estado-select').value;
     const observaciones = fila.querySelector('.obs-input').value;
 
+    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     fetch('{{ route('docente.guardar_asistencia') }}', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+            'X-CSRF-TOKEN': token
         },
         body: JSON.stringify({
             estudiante_id: estudianteId,
-            materia_id: materiaId,
+            subject_id: materiaId,
             fecha: fecha,
             estado: estado,
             observaciones: observaciones
