@@ -33,6 +33,7 @@ use App\Http\Controllers\GestionDocentesController;
 
 use App\Models\RolesModel;
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -65,18 +66,26 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
 
     // ==========================
-    // Rutas Rector - Consultas académicas
-    // ==========================
-    Route::prefix('rector')->name('rector.')->middleware('can:isRector')->group(function () {
+// Rutas Rector - Consultas académicas
+// ==========================
+Route::prefix('rector')
+    ->name('rector.')
+    ->middleware('can:isRector')
+    ->group(function () {
+
+        // Consultar boletines de estudiantes
         Route::get('/boletines', [RectorEstudianteController::class, 'boletines'])
             ->name('boletines');
 
+        // Consultar notas de estudiantes
         Route::get('/notas', [RectorEstudianteController::class, 'notas'])
             ->name('notas');
 
+        // Consultar materias por curso/estudiante
         Route::get('/materias', [RectorEstudianteController::class, 'materias'])
             ->name('materias');
     });
+
 
     /*
     |--------------------------------------------------------------------------

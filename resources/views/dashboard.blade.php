@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Principal - Colegio</title>
+    <title>Panel Principal - Colegio San Martín</title>
 
     {{-- Token CSRF para uso en JavaScript --}}
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -38,8 +38,16 @@
                         <i class="fas fa-user-circle me-1"></i>{{ $usuario->name }}
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end shadow">
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-user-graduate me-2"></i>Perfil</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Configuración</a></li>
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <i class="fas fa-user-graduate me-2"></i>Perfil
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <i class="fas fa-cog me-2"></i>Configuración
+                            </a>
+                        </li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
                             <a class="dropdown-item text-danger" href="{{ route('logout') }}" 
@@ -78,6 +86,7 @@
                         'Rector', 'CoordinadorAcademico', 'CoordinadorDisciplinario',
                         'Orientador', 'Tesorero', 'Docente', 'AdministradorSistema'
                     ]))
+
                         @if($rolNombre === 'AdministradorSistema')
                             {{-- AdminSistema va al menú especial --}}
                             <a class="nav-link text-dark" href="{{ route('admin.estudiantes.menu') }}">
@@ -182,13 +191,13 @@
                                 <i class="fas fa-chevron-down small"></i>
                             </a>
                             <div class="collapse ps-4" id="menuRectorEstudiantes">
-                                <a class="nav-link text-dark" href="#">
+                                <a class="nav-link text-dark" href="{{ route('rector.boletines') }}">
                                     <i class="fas fa-newspaper me-2"></i>Consultar boletines
                                 </a>
-                                <a class="nav-link text-dark" href="#">
+                                <a class="nav-link text-dark" href="{{ route('rector.notas') }}">
                                     <i class="fas fa-clipboard-list me-2"></i>Consultar notas
                                 </a>
-                                <a class="nav-link text-dark" href="#">
+                                <a class="nav-link text-dark" href="{{ route('rector.materias') }}">
                                     <i class="fas fa-book me-2"></i>Consultar materias
                                 </a>
                             </div>
@@ -231,10 +240,10 @@
                                 <a class="nav-link text-dark" href="#">
                                     <i class="fas fa-book me-2"></i>Consultar materia (subir material)
                                 </a>
-                                <a class="nav-link text-dark" href="#">
+                                <a class="nav-link text-dark" href="{{ route('docente.registrar_notas') }}">
                                     <i class="fas fa-pen me-2"></i>Registrar notas
                                 </a>
-                                <a class="nav-link text-dark" href="#">
+                                <a class="nav-link text-dark" href="{{ route('docente.registrar_asistencia') }}">
                                     <i class="fas fa-user-check me-2"></i>Registrar asistencia
                                 </a>
                                 <a class="nav-link text-dark" href="#">
@@ -322,17 +331,17 @@
                             <i class="fas fa-chevron-down small"></i>
                         </a>
                         <div class="collapse ps-4" id="menuDocenteHorario">
-                            <a class="nav-link text-dark" href="#">
+                            <a class="nav-link text-dark" href="{{ route('docente.consultar_horario') }}">
                                 <i class="fas fa-eye me-2"></i>Ver horario
                             </a>
-                            <a class="nav-link text-dark" href="#">
+                            <a class="nav-link text-dark" href="{{ route('docente.descargar_horario') }}">
                                 <i class="fas fa-download me-2"></i>Descargar horario
                             </a>
                         </div>
                     @endif
 
                     {{-- =========================================
-                         CONSULTAR MATERIAS (solo Estudiante aquí)
+                         CONSULTAR MATERIAS (solo Estudiante)
                     ========================================== --}}
                     @if($rolNombre === 'Estudiante')
                         <a class="nav-link text-dark d-flex justify-content-between align-items-center"
@@ -381,7 +390,6 @@
                          INFORMES / REPORTES (Docente)
                     ========================================== --}}
                     @if($rolNombre === 'Docente')
-                        {{-- Generar informes de curso + reportes disciplinarios --}}
                         <a class="nav-link text-dark d-flex justify-content-between align-items-center"
                            data-bs-toggle="collapse"
                            href="#menuDocenteInformes"
@@ -392,7 +400,7 @@
                             <i class="fas fa-chevron-down small"></i>
                         </a>
                         <div class="collapse ps-4" id="menuDocenteInformes">
-                            <a class="nav-link text-dark" href="#">
+                            <a class="nav-link text-dark" href="{{ route('docente.generar_informe') }}">
                                 <i class="fas fa-file-alt me-2"></i>Informes académicos
                             </a>
                             <a class="nav-link text-dark" href="{{ route('reportes.gestion') }}">
@@ -568,7 +576,7 @@
                     {{-- =========================================
                          OPCIONES EXTRAS TESORERO
                     ========================================== --}}
-                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Tesorero']))
+                    @if($rolNombre === 'Tesorero')
                         <a class="nav-link text-dark" href="{{ route('tesoreria.view.pazysalvo') }}">
                             <i class="fas fa-file-invoice me-2"></i>Generar paz y salvo
                         </a>
@@ -656,7 +664,7 @@
                     </div>
                 </div>
 
-                <!-- Statistics Cards & Quick Actions (role-specific) -->
+                <!-- Statistics Cards & Quick Actions (Orientador u otros) -->
                 @if($rolNombre === 'Orientador')
                     @php
                         $pendientes = \App\Models\Cita::where('orientador_id', auth()->id())->where('estado', 'pendiente')->count();
@@ -969,134 +977,9 @@
         });
     })();
 </script>
-<!-- Logout Form -->
-<form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-    @csrf
-</form>
 
 <!-- JS de Bootstrap 5 (necesario para dropdowns, colapsables, etc.) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-<script>
-    (function(){
-        const tokenMeta = document.querySelector('meta[name="csrf-token"]');
-        const csrf = tokenMeta ? tokenMeta.getAttribute('content') : '{{ csrf_token() }}';
-
-        function jsonAlert(title, obj){
-            try { window.alert(title + '\n' + JSON.stringify(obj, null, 2)); }
-            catch(e){ window.alert(title + '\n' + String(obj)); }
-        }
-
-        async function postJson(url, data){
-            const res = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrf,
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify(data || {})
-            });
-            return res.json();
-        }
-
-        async function getJson(url){
-            const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
-            return res.json();
-        }
-
-        document.querySelectorAll('[data-action]').forEach(function(el){
-            el.addEventListener('click', async function(e){
-                e.preventDefault();
-                const action = el.getAttribute('data-action');
-                try {
-                    switch(action){
-                        case 'generarPazYSalvo': {
-                            const id = prompt('Ingrese ID del acudiente para generar paz y salvo:');
-                            if (!id) return;
-                            const res = await getJson('/tesoreria/paz-y-salvo/' + encodeURIComponent(id));
-                            jsonAlert('Paz y Salvo', res);
-                            break;
-                        }
-                        case 'generarFacturaMatricula': {
-                            const acudiente_id = prompt('ID del acudiente:'); if (!acudiente_id) return;
-                            const matricula_id = prompt('ID de la matrícula (opcional):');
-                            const monto = prompt('Monto de la factura:'); if (!monto) return;
-                            const descripcion = prompt('Descripción (opcional):') || '';
-                            const res = await postJson('/tesoreria/factura/matricula', {acudiente_id, matricula_id, monto, descripcion});
-                            jsonAlert('Factura creada', res);
-                            break;
-                        }
-                        case 'registrarPago': {
-                            const acudiente_id = prompt('ID del acudiente que paga:'); if (!acudiente_id) return;
-                            const monto = prompt('Monto pagado:'); if (!monto) return;
-                            const metodo = prompt('Método de pago (opcional):') || '';
-                            const descripcion = prompt('Descripción (opcional):') || '';
-                            const res = await postJson('/tesoreria/pago/registrar', {acudiente_id, monto, metodo, descripcion});
-                            jsonAlert('Pago registrado', res);
-                            break;
-                        }
-                        case 'gestionarDevolucion': {
-                            const pago_id = prompt('ID del pago a devolver:'); if (!pago_id) return;
-                            const motivo = prompt('Motivo de la devolución (opcional):') || '';
-                            const res = await postJson('/tesoreria/devolucion', {pago_id, motivo});
-                            jsonAlert('Devolución procesada', res);
-                            break;
-                        }
-                        case 'gestionarCartera': {
-                            const res = await getJson('/tesoreria/cartera');
-                            jsonAlert('Cartera (pendientes)', res);
-                            break;
-                        }
-                        case 'entregarReportes': {
-                            const desde = prompt('Fecha desde (YYYY-MM-DD) opcional:');
-                            const hasta = prompt('Fecha hasta (YYYY-MM-DD) opcional:');
-                            const q = new URLSearchParams(); if (desde) q.set('desde', desde); if (hasta) q.set('hasta', hasta);
-                            const res = await getJson('/tesoreria/reportes' + (q.toString() ? ('?' + q.toString()) : ''));
-                            jsonAlert('Reportes', res);
-                            break;
-                        }
-                        case 'consultarEstadoCuenta': {
-                            const id = prompt('Ingrese ID del acudiente para consultar estado de cuenta:'); if (!id) return;
-                            const res = await getJson('/tesoreria/estado-cuenta/' + encodeURIComponent(id));
-                            jsonAlert('Estado de cuenta', res);
-                            break;
-                        }
-                        case 'registrarBecaDescuento': {
-                            const acudiente_id = prompt('ID del acudiente:'); if (!acudiente_id) return;
-                            const monto = prompt('Monto de la beca/descuento (valor positivo):'); if (!monto) return;
-                            const matricula_id = prompt('ID matrícula (opcional):');
-                            const descripcion = prompt('Descripción (opcional):') || '';
-                            const res = await postJson('/tesoreria/beca', {acudiente_id, monto, matricula_id, descripcion});
-                            jsonAlert('Beca/Descuento registrado', res);
-                            break;
-                        }
-                        case 'generarReporteFinanciero': {
-                            const desde = prompt('Fecha desde (YYYY-MM-DD) opcional:');
-                            const hasta = prompt('Fecha hasta (YYYY-MM-DD) opcional:');
-                            const q = new URLSearchParams(); if (desde) q.set('desde', desde); if (hasta) q.set('hasta', hasta);
-                            const res = await getJson('/tesoreria/reporte-financiero' + (q.toString() ? ('?' + q.toString()) : ''));
-                            jsonAlert('Reporte financiero', res);
-                            break;
-                        }
-                        case 'aprobarBecas': {
-                            alert('Función de aprobación no implementada en el backend aún.');
-                            break;
-                        }
-                        default:
-                            console.warn('Acción no manejada:', action);
-                    }
-                } catch(err){
-                    console.error(err);
-                    alert('Error al ejecutar la acción: ' + (err.message || err));
-                }
-            });
-        });
-    })();
-</script>
-</body>
-</html>
-
-{{-- Cierre de body y html al ser una vista completa --}}
 </body>
 </html>
