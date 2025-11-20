@@ -1,9 +1,17 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Principal - Colegio</title>
 
-@section('title', 'Panel Principal - Colegio')
+    {{-- Bootstrap --}}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-@section('content)
-
+    {{-- Font Awesome --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
 @php
     $usuario   = Auth::user();
     $rolNombre = $usuario->rol->nombre ?? '';
@@ -171,13 +179,13 @@
                                 <i class="fas fa-chevron-down small"></i>
                             </a>
                             <div class="collapse ps-4" id="menuRectorEstudiantes">
-                                <a class="nav-link text-dark" href="{{ route('rector.boletines') }}">
+                                <a class="nav-link text-dark" href="#">
                                     <i class="fas fa-newspaper me-2"></i>Consultar boletines
                                 </a>
-                                <a class="nav-link text-dark" href="{{ route('rector.notas') }}">
+                                <a class="nav-link text-dark" href="#">
                                     <i class="fas fa-clipboard-list me-2"></i>Consultar notas
                                 </a>
-                                <a class="nav-link text-dark" href="{{ route('rector.materias') }}">
+                                <a class="nav-link text-dark" href="#">
                                     <i class="fas fa-book me-2"></i>Consultar materias
                                 </a>
                             </div>
@@ -214,19 +222,19 @@
                                 <i class="fas fa-chevron-down small"></i>
                             </a>
                             <div class="collapse ps-4" id="menuDocenteEstudiantes">
-                                <a class="nav-link text-dark" href="{{ route('docente.registrar_notas') }}">
+                                <a class="nav-link text-dark" href="#">
                                     <i class="fas fa-clipboard-list me-2"></i>Consultar notas
                                 </a>
-                                <a class="nav-link text-dark" href="{{ route('docente.subir_material') }}">
+                                <a class="nav-link text-dark" href="#">
                                     <i class="fas fa-book me-2"></i>Consultar materia (subir material)
                                 </a>
-                                <a class="nav-link text-dark" href="{{ route('docente.registrar_notas') }}">
+                                <a class="nav-link text-dark" href="#">
                                     <i class="fas fa-pen me-2"></i>Registrar notas
                                 </a>
-                                <a class="nav-link text-dark" href="{{ route('docente.registrar_asistencia') }}">
+                                <a class="nav-link text-dark" href="#">
                                     <i class="fas fa-user-check me-2"></i>Registrar asistencia
                                 </a>
-                                <a class="nav-link text-dark" href="{{ route('docente.registrar_asistencia') }}">
+                                <a class="nav-link text-dark" href="#">
                                     <i class="fas fa-user-clock me-2"></i>Consultar asistencia
                                 </a>
                             </div>
@@ -311,10 +319,10 @@
                             <i class="fas fa-chevron-down small"></i>
                         </a>
                         <div class="collapse ps-4" id="menuDocenteHorario">
-                            <a class="nav-link text-dark" href="{{ route('docente.consultar_horario') }}">
+                            <a class="nav-link text-dark" href="#">
                                 <i class="fas fa-eye me-2"></i>Ver horario
                             </a>
-                            <a class="nav-link text-dark" href="{{ route('docente.descargar_horario') }}">
+                            <a class="nav-link text-dark" href="#">
                                 <i class="fas fa-download me-2"></i>Descargar horario
                             </a>
                         </div>
@@ -381,7 +389,7 @@
                             <i class="fas fa-chevron-down small"></i>
                         </a>
                         <div class="collapse ps-4" id="menuDocenteInformes">
-                            <a class="nav-link text-dark" href="{{ route('docente.generar_informe') }}">
+                            <a class="nav-link text-dark" href="#">
                                 <i class="fas fa-file-alt me-2"></i>Informes académicos
                             </a>
                             <a class="nav-link text-dark" href="{{ route('reportes.gestion') }}">
@@ -394,7 +402,7 @@
                          BOLETINES (Docente / Acudiente)
                     ========================================== --}}
                     @if(in_array($rolNombre, ['Docente', 'Acudiente']))
-                        <a class="nav-link text-dark" href="{{ $rolNombre === 'Acudiente' ? route('acudiente.boletines') : '#' }}">
+                        <a class="nav-link text-dark" href="#">
                             <i class="fas fa-newspaper me-2"></i>Consultar boletines
                         </a>
                     @endif
@@ -422,8 +430,8 @@
                                 </a>
                             </div>
                         @else
-                            <a class="nav-link text-dark" href="{{ route('acudiente.solicitar_paz') }}">
-                                <i class="fas fa-percent me-2"></i>Solicitud de paz y salvo
+                            <a class="nav-link text-dark" href="#">
+                                <i class="fas fa-percent me-2"></i>Solicitud de becas y descuentos
                             </a>
                         @endif
                     @endif
@@ -432,13 +440,13 @@
                          REPORTES DISCIPLINARIOS / NOTIFICACIONES
                     ========================================== --}}
                     @if(in_array($rolNombre, ['Estudiante', 'Acudiente']))
-                        <a class="nav-link text-dark" href="{{ $rolNombre === 'Estudiante' ? route('estudiante.reportes_disciplinarios') : route('acudiente.reportes_disciplinarios') }}">
+                        <a class="nav-link text-dark" href="{{ $rolNombre === 'Estudiante' ? route('estudiante.reportes_disciplinarios') : '#' }}">
                             <i class="fas fa-exclamation-circle me-2"></i>Consultar reportes disciplinarios
                         </a>
                     @endif
 
                     @if(in_array($rolNombre, ['Estudiante', 'Acudiente', 'Docente', 'Orientador']))
-                        <a class="nav-link text-dark" href="{{ $rolNombre === 'Estudiante' ? route('estudiante.notificaciones') : ($rolNombre === 'Acudiente' ? route('acudiente.notificaciones') : '#') }}">
+                        <a class="nav-link text-dark" href="{{ $rolNombre === 'Estudiante' ? route('estudiante.notificaciones') : '#' }}">
                             <i class="fas fa-bell me-2"></i>Centro de notificaciones
                         </a>
                     @endif
@@ -850,6 +858,7 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
@@ -859,4 +868,8 @@
 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
     @csrf
 </form>
-@endsection
+
+{{-- JS Bootstrap --}}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

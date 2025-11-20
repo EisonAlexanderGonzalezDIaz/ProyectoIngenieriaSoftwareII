@@ -143,7 +143,9 @@ class User extends Authenticatable
             'docente_materia_curso',
             'docente_id',
             'curso_id'
-        )->withPivot('materia_id')->withTimestamps();
+        )
+        // Ya no pedimos 'materia_id' en el pivot porque no existe en la tabla
+        ->withTimestamps();
     }
 
     /**
