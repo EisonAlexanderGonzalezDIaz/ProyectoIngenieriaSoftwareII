@@ -222,19 +222,19 @@
                                 <i class="fas fa-chevron-down small"></i>
                             </a>
                             <div class="collapse ps-4" id="menuDocenteEstudiantes">
-                                <a class="nav-link text-dark" href="#">
+                                <a class="nav-link text-dark" href="{{ route('docente.consultar_notas') }}">
                                     <i class="fas fa-clipboard-list me-2"></i>Consultar notas
                                 </a>
-                                <a class="nav-link text-dark" href="#">
+                                <a class="nav-link text-dark" href="{{ route('docente.subir_material') }}">
                                     <i class="fas fa-book me-2"></i>Consultar materia (subir material)
                                 </a>
-                                <a class="nav-link text-dark" href="#">
+                                <a class="nav-link text-dark" href="{{ route('docente.registrar_notas') }}">
                                     <i class="fas fa-pen me-2"></i>Registrar notas
                                 </a>
-                                <a class="nav-link text-dark" href="#">
+                                <a class="nav-link text-dark" href="{{ route('docente.registrar_asistencia') }}">
                                     <i class="fas fa-user-check me-2"></i>Registrar asistencia
                                 </a>
-                                <a class="nav-link text-dark" href="#">
+                                <a class="nav-link text-dark" href="{{ route('docente.consultar_asistencia') }}">
                                     <i class="fas fa-user-clock me-2"></i>Consultar asistencia
                                 </a>
                             </div>
@@ -296,9 +296,9 @@
                                 $labelCita = 'Solicitar citas orientación';
                             }
 
-                            $hrefCita = $rolNombre === 'Estudiante'
-                                ? route('estudiante.solicitar_cita')
-                                : '#';
+                            $hrefCita = $rolNombre === 'Docente'
+                                ? route('docente.solicitar_cita')
+                                : ($rolNombre === 'Estudiante' ? route('estudiante.solicitar_cita') : ($rolNombre === 'Acudiente' ? route('acudiente.notificaciones') : '#'));
                         @endphp
                         <a class="nav-link text-dark" href="{{ $hrefCita }}">
                             <i class="fas fa-calendar-plus me-2"></i>{{ $labelCita }}
@@ -319,10 +319,10 @@
                             <i class="fas fa-chevron-down small"></i>
                         </a>
                         <div class="collapse ps-4" id="menuDocenteHorario">
-                            <a class="nav-link text-dark" href="#">
+                            <a class="nav-link text-dark" href="{{ route('docente.consultar_horario') }}">
                                 <i class="fas fa-eye me-2"></i>Ver horario
                             </a>
-                            <a class="nav-link text-dark" href="#">
+                            <a class="nav-link text-dark" href="{{ route('docente.descargar_horario') }}">
                                 <i class="fas fa-download me-2"></i>Descargar horario
                             </a>
                         </div>
@@ -389,7 +389,7 @@
                             <i class="fas fa-chevron-down small"></i>
                         </a>
                         <div class="collapse ps-4" id="menuDocenteInformes">
-                            <a class="nav-link text-dark" href="#">
+                            <a class="nav-link text-dark" href="{{ route('docente.generar_informe') }}">
                                 <i class="fas fa-file-alt me-2"></i>Informes académicos
                             </a>
                             <a class="nav-link text-dark" href="{{ route('reportes.gestion') }}">
@@ -398,11 +398,8 @@
                         </div>
                     @endif
 
-                    {{-- =========================================
-                         BOLETINES (Docente / Acudiente)
-                    ========================================== --}}
                     @if(in_array($rolNombre, ['Docente', 'Acudiente']))
-                        <a class="nav-link text-dark" href="#">
+                        <a class="nav-link text-dark" href="{{ $rolNombre === 'Docente' ? route('docente.consultar_boletines') : route('acudiente.boletines') }}">
                             <i class="fas fa-newspaper me-2"></i>Consultar boletines
                         </a>
                     @endif
@@ -683,7 +680,7 @@
                                 <div class="card-body text-center">
                                     <div class="text-primary mb-2"><i class="fas fa-hourglass-half fa-2x"></i></div>
                                     <h5 class="card-title">Pendientes</h5>
-                                    <h3 class="text-primary">{{ $pendientes }}</h3>
+                                    <h3 class="text-primary stat-value" data-stat="citasPendientes">{{ $pendientes }}</h3>
                                     <small class="text-muted">Solicitudes por revisar</small>
                                 </div>
                             </div>
@@ -694,7 +691,7 @@
                                 <div class="card-body text-center">
                                     <div class="text-success mb-2"><i class="fas fa-calendar-check fa-2x"></i></div>
                                     <h5 class="card-title">Programadas</h5>
-                                    <h3 class="text-success">{{ $programadas }}</h3>
+                                    <h3 class="text-success stat-value" data-stat="citasProgramadas">{{ $programadas }}</h3>
                                     <small class="text-muted">Citas por atender</small>
                                 </div>
                             </div>
@@ -705,7 +702,7 @@
                                 <div class="card-body text-center">
                                     <div class="text-warning mb-2"><i class="fas fa-check fa-2x"></i></div>
                                     <h5 class="card-title">Realizadas</h5>
-                                    <h3 class="text-warning">{{ $realizadas }}</h3>
+                                    <h3 class="text-warning stat-value" data-stat="citasRealizadas">{{ $realizadas }}</h3>
                                     <small class="text-muted">Citas completadas</small>
                                 </div>
                             </div>
@@ -716,7 +713,7 @@
                                 <div class="card-body text-center">
                                     <div class="text-info mb-2"><i class="fas fa-user-friends fa-2x"></i></div>
                                     <h5 class="card-title">Estudiantes</h5>
-                                    <h3 class="text-info">{{ $estudiantesSeguimiento }}</h3>
+                                    <h3 class="text-info stat-value" data-stat="estudiantesSeguimiento">{{ $estudiantesSeguimiento }}</h3>
                                     <small class="text-muted">En seguimiento</small>
                                 </div>
                             </div>
@@ -761,7 +758,7 @@
                                 <div class="card-body text-center">
                                     <div class="text-primary mb-2"><i class="fas fa-user-graduate fa-2x"></i></div>
                                     <h5 class="card-title">Estudiantes</h5>
-                                    <h3 class="text-primary">420</h3>
+                                    <h3 class="text-primary stat-value" data-stat="totalEstudiantes">0</h3>
                                     <small class="text-muted">Registrados en el sistema</small>
                                 </div>
                             </div>
@@ -772,7 +769,7 @@
                                 <div class="card-body text-center">
                                     <div class="text-success mb-2"><i class="fas fa-user-tie fa-2x"></i></div>
                                     <h5 class="card-title">Docentes</h5>
-                                    <h3 class="text-success">35</h3>
+                                    <h3 class="text-success stat-value" data-stat="totalDocentes">0</h3>
                                     <small class="text-muted">Activos actualmente</small>
                                 </div>
                             </div>
@@ -783,7 +780,7 @@
                                 <div class="card-body text-center">
                                     <div class="text-warning mb-2"><i class="fas fa-book fa-2x"></i></div>
                                     <h5 class="card-title">Materias</h5>
-                                    <h3 class="text-warning">52</h3>
+                                    <h3 class="text-warning stat-value" data-stat="totalMaterias">0</h3>
                                     <small class="text-muted">Asignaturas registradas</small>
                                 </div>
                             </div>
@@ -794,7 +791,7 @@
                                 <div class="card-body text-center">
                                     <div class="text-info mb-2"><i class="fas fa-calendar-check fa-2x"></i></div>
                                     <h5 class="card-title">Eventos</h5>
-                                    <h3 class="text-info">5</h3>
+                                    <h3 class="text-info stat-value" data-stat="totalEventos">0</h3>
                                     <small class="text-muted">Programados este mes</small>
                                 </div>
                             </div>
@@ -868,6 +865,46 @@
     (function(){
         const tokenMeta = document.querySelector('meta[name="csrf-token"]');
         const csrf = tokenMeta ? tokenMeta.getAttribute('content') : '{{ csrf_token() }}';
+
+        // Auto-actualizar estadísticas cada 30 segundos
+        async function actualizarEstadisticas() {
+            try {
+                const response = await fetch('/api/dashboard/stats', {
+                    headers: { 'Accept': 'application/json' }
+                });
+                
+                if (!response.ok) throw new Error('Error fetching stats');
+                
+                const stats = await response.json();
+                
+                // Actualizar todos los elementos con atributo data-stat
+                Object.keys(stats).forEach(key => {
+                    const elements = document.querySelectorAll(`[data-stat="${key}"]`);
+                    elements.forEach(el => {
+                        const oldValue = el.textContent;
+                        const newValue = stats[key];
+                        
+                        if (oldValue !== newValue.toString()) {
+                            el.textContent = newValue;
+                            // Efecto visual de actualización
+                            el.style.transition = 'color 0.3s';
+                            el.style.color = '#28a745';
+                            setTimeout(() => {
+                                el.style.color = '';
+                            }, 500);
+                        }
+                    });
+                });
+            } catch (error) {
+                console.warn('Error actualizando estadísticas:', error);
+            }
+        }
+
+        // Actualizar inmediatamente al cargar
+        actualizarEstadisticas();
+        
+        // Configurar auto-refresh cada 30 segundos
+        setInterval(actualizarEstadisticas, 30000);
 
         function jsonAlert(title, obj){
             try { window.alert(title + '\n' + JSON.stringify(obj, null, 2)); }
@@ -981,4 +1018,8 @@
         });
     })();
 </script>
-@endsection
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

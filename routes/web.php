@@ -4,11 +4,34 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
 // Controladores
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\CrearUsuario;
-use App\Http\Controllers\RolController;
-use App\Http\Controllers\MatriculaAcudienteController;
-use App\Http\Controllers\TesoreroController;
+use App\Http\Controllers\{
+    AuthController,
+    CrearUsuario,
+    RolController,
+    MatriculaAcudienteController,
+    TesoreroController,
+    RectorEstudianteController,
+    AcudienteController,
+    AcudienteEstudianteController,
+    AdminEstudiantesController,
+    AdminUsuarioController,
+    CambiosNotasController,
+    CasosDisciplinariosController,
+    CitarAcudienteController,
+    CoordinadorAcademicoController,
+    DocenteController,
+    EstudianteController,
+    GestionDocentesController,
+    HorariosController,
+    InformacionColegioController,
+    MateriasController,
+    OrientadorController,
+    PlanAcademicoController,
+    RectorController,
+    RecuperacionesController,
+    ReportesAcademicosController,
+    ReportesDisciplinariosController
+};
 use App\Models\RolesModel;
 
 /*
@@ -396,6 +419,100 @@ use App\Models\RolesModel;
     // Plan Académico
     Route::get('/planacademico/gestion', [PlanAcademicoController::class, 'gestion'])
         ->name('planacademico.gestion');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Dashboard API - Estadísticas Dinámicas
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/api/dashboard/stats', function () {
+        $usuario = auth()->user();
+        $rolNombre = $usuario->rol->nombre ?? '';
+
+        // Estadísticas generales según el rol
+        $stats = [];
+
+        if (in_array($rolNombre, ['AdministradorSistema', 'Rector', 'CoordinadorAcademico', 'Tesorero'])) {
+            // Datos para administradores y coordinadores
+            $stats['totalEstudiantes'] = \App\Models\User::whereHas('rol', function ($query) {
+                $query->where('nombre', 'Estudiante');
+            })->count();
+
+            $stats['totalDocentes'] = \App\Models\User::whereHas('rol', function ($query) {
+                $query->where('nombre', 'Docente');
+            })->count();
+
+            $stats['totalMaterias'] = \App\Models\Curso::count();
+
+            $stats['totalEventos'] = \App\Models\User::whereMonth('created_at', now()->month)
+                ->whereYear('created_at', now()->year)
+                ->count();
+        } elseif ($rolNombre === 'Orientador') {
+            // Datos específicos para Orientador
+            $stats['citasPendientes'] = \App\Models\Cita::where('orientador_id', $usuario->id)
+                ->where('estado', 'pendiente')
+                ->count();
+
+            $stats['citasProgramadas'] = \App\Models\Cita::where('orientador_id', $usuario->id)
+                ->where('estado', 'programado')
+                ->count();
+
+            $stats['citasRealizadas'] = \App\Models\Cita::where('orientador_id', $usuario->id)
+                ->where('estado', 'realizado')
+                ->count();
+
+            $stats['estudiantesSeguimiento'] = \App\Models\Cita::where('orientador_id', $usuario->id)
+                ->distinct('estudiante_id')
+                ->count('estudiante_id');
+        } elseif ($rolNombre === 'Docente') {
+            // Datos específicos para Docente
+            $stats['grupos'] = \App\Models\Horario::where('docente_id', $usuario->id)
+                ->distinct('curso_id')
+                ->count('curso_id');
+
+            $stats['estudiantes'] = \App\Models\Nota::where('docente_id', $usuario->id)
+                ->distinct('estudiante_id')
+                ->count('estudiante_id');
+
+            $stats['tareas'] = \App\Models\Tarea::where('docente_id', $usuario->id)->count();
+
+            $stats['materiales'] = \App\Models\MaterialAcademico::where('docente_id', $usuario->id)->count();
+        } elseif ($rolNombre === 'Acudiente') {
+            // Datos específicos para Acudiente
+            $stats['estudiantes'] = \App\Models\User::where('acudiente_id', $usuario->id)->count();
+
+            $stats['notificaciones'] = \App\Models\Notificacion::where('acudiente_id', $usuario->id)
+                ->where('leido', false)
+                ->count();
+
+            $stats['reportes'] = \App\Models\ReporteDisciplinario::whereIn('estudiante_id', function ($query) use ($usuario) {
+                $query->select('id')->from('users')->where('acudiente_id', $usuario->id);
+            })->count();
+
+            $stats['pagosVencidos'] = \App\Models\Pago::where('acudiente_id', $usuario->id)
+                ->where('estado', 'pendiente')
+                ->where('fecha_vencimiento', '<', now())
+                ->count();
+        } elseif ($rolNombre === 'Estudiante') {
+            // Datos específicos para Estudiante
+            $stats['materias'] = \App\Models\Nota::where('estudiante_id', $usuario->id)
+                ->distinct('subject_id')
+                ->count('subject_id');
+
+            $stats['tareasPendientes'] = \App\Models\Entrega::where('estudiante_id', $usuario->id)
+                ->where('estado', 'pendiente')
+                ->count();
+
+            $stats['notificaciones'] = \App\Models\Notificacion::where('estudiante_id', $usuario->id)
+                ->where('leido', false)
+                ->count();
+
+            $stats['promedioGeneral'] = \App\Models\Nota::where('estudiante_id', $usuario->id)
+                ->avg('calificacion') ?? 0;
+        }
+
+        return response()->json($stats);
+    })->name('api.dashboard.stats');
     
     /*
     |--------------------------------------------------------------------------
@@ -420,6 +537,10 @@ use App\Models\RolesModel;
         // Solicitudes de Paz y Salvo
         Route::get('/paz-y-salvo/solicitar', [App\Http\Controllers\AcudienteController::class, 'viewSolicitarPaz'])->name('solicitar_paz');
         Route::post('/paz-y-salvo/solicitar', [App\Http\Controllers\AcudienteController::class, 'crearSolicitudPaz'])->name('crear_solicitud_paz');
+
+        // Solicitud de becas / descuentos (simple UI)
+        Route::get('/becas/solicitar', [App\Http\Controllers\AcudienteController::class, 'viewSolicitarBeca'])->name('solicitar_beca');
+        Route::post('/becas/solicitar', [App\Http\Controllers\AcudienteController::class, 'crearSolicitudBeca'])->name('crear_solicitud_beca');
     });
 
     // API: obtener estudiantes a cargo del acudiente (para formularios AJAX)
@@ -435,6 +556,9 @@ use App\Models\RolesModel;
         Route::get('/solicitar-cita', [DocenteController::class, 'viewSolicitarCita'])->name('solicitar_cita');
         Route::post('/solicitar-cita', [DocenteController::class, 'crearCita'])->name('crear_cita');
 
+        // Consultar notas (ver todas las notas registradas)
+        Route::get('/notas/consultar', [DocenteController::class, 'viewConsultarNotas'])->name('consultar_notas');
+
         // Consultar y descargar horario
         Route::get('/horario', [DocenteController::class, 'viewConsultarHorario'])->name('consultar_horario');
         Route::get('/api/horarios', [DocenteController::class, 'obtenerHorarios'])->name('obtener_horarios');
@@ -448,6 +572,9 @@ use App\Models\RolesModel;
         Route::get('/asistencia', [DocenteController::class, 'viewRegistrarAsistencia'])->name('registrar_asistencia');
         Route::post('/asistencia/guardar', [DocenteController::class, 'guardarAsistencia'])->name('guardar_asistencia');
 
+        // Consultar asistencia
+        Route::get('/asistencia/consultar', [DocenteController::class, 'viewConsultarAsistencia'])->name('consultar_asistencia');
+
         // Subir material académico
         Route::get('/materiales', [DocenteController::class, 'viewSubirMaterial'])->name('subir_material');
         Route::post('/materiales/subir', [DocenteController::class, 'subirMaterial'])->name('subir_material_post');
@@ -456,6 +583,9 @@ use App\Models\RolesModel;
         Route::get('/informe-curso', [DocenteController::class, 'viewGenerarInforme'])->name('generar_informe');
         Route::post('/informe-curso/generar', [DocenteController::class, 'generarInforme'])->name('generar_informe_post');
         Route::get('/informe-curso/datos', [DocenteController::class, 'obtenerDatosAutorellenado'])->name('obtener_datos_autorellenado');
+
+        // Consultar boletines
+        Route::get('/boletines', [DocenteController::class, 'viewConsultarBoletines'])->name('consultar_boletines');
     });
 
     // API Docente endpoints

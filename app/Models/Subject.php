@@ -10,6 +10,11 @@ class Subject extends Model
     use HasFactory;
 
     /**
+     * Table name (migrations use Spanish `materias`).
+     */
+    protected $table = 'materias';
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
@@ -26,6 +31,6 @@ class Subject extends Model
      */
     public function teachers()
     {
-        return $this->belongsToMany(Teacher::class);
+        return $this->belongsToMany(Teacher::class, 'docente_materia_curso', 'subject_id', 'docente_id');
     }
 }

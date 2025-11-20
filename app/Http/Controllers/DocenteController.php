@@ -112,6 +112,13 @@ class DocenteController extends Controller
      * ==================== NOTAS ====================
      */
 
+    public function viewConsultarNotas()
+    {
+        $docente = auth()->user();
+        $cursos = $docente->cursosDictados()->get();
+        return view('docente.notas', compact('cursos'));
+    }
+
     public function viewRegistrarNotas()
     {
         $docente = auth()->user();
@@ -174,6 +181,13 @@ class DocenteController extends Controller
     /**
      * ==================== ASISTENCIA ====================
      */
+
+    public function viewConsultarAsistencia()
+    {
+        $docente = auth()->user();
+        $cursos = $docente->cursosDictados()->get();
+        return view('docente.asistencia_consulta', compact('cursos'));
+    }
 
     public function viewRegistrarAsistencia()
     {
@@ -398,5 +412,16 @@ class DocenteController extends Controller
             ->whereHas('role', function ($q) { $q->where('nombre', 'Estudiante'); })
             ->limit(10)->select('id', 'name', 'email')->get();
         return response()->json(['estudiantes' => $estudiantes], 200);
+    }
+
+    /**
+     * ==================== BOLETINES ====================
+     */
+
+    public function viewConsultarBoletines()
+    {
+        $docente = auth()->user();
+        $cursos = $docente->cursosDictados()->get();
+        return view('docente.boletines', compact('cursos'));
     }
 }

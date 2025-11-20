@@ -141,4 +141,29 @@ class AcudienteController extends Controller
 
         return response()->json(['solicitud' => $sol], 201);
     }
+
+    // =========================
+    // Solicitud de becas / descuentos
+    // =========================
+    public function viewSolicitarBeca()
+    {
+        $acudiente = auth()->user();
+        $estudiantes = $acudiente->estudiantesACargo()->get();
+        return view('acudiente.solicitar_beca', compact('estudiantes'));
+    }
+
+    public function crearSolicitudBeca(Request $request)
+    {
+        $data = $request->validate([
+            'estudiante_id' => 'nullable|exists:users,id',
+            'tipo' => 'required|string',
+            'monto_estimado' => 'nullable|numeric',
+            'detalle' => 'nullable|string',
+        ]);
+
+        // Actualmente guardamos temporalmente en sesión o devolvemos success.
+        // Implementación con persistencia se puede agregar luego.
+
+        return response()->json(['success' => true, 'message' => 'Solicitud de beca recibida', 'data' => $data], 201);
+    }
 }
