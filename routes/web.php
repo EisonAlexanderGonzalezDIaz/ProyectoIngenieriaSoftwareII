@@ -187,6 +187,13 @@ use App\Models\RolesModel;
         Route::post('/beca', [TesoreroController::class, 'registrarBecaDescuento'])->name('beca.registrar');
         Route::get('/reporte-financiero', [TesoreroController::class, 'generarReporteFinanciero'])->name('reporte.financiero');
         Route::get('/info-colegio', [TesoreroController::class, 'consultarInformacionColegio'])->name('info.colegio');
+
+        // Rutas para gestión de solicitudes de beca
+        Route::get('/vista/solicitudes-beca', [TesoreroController::class, 'viewSolicitudesBeca'])->name('view.solicitudes.beca');
+        Route::get('/api/solicitudes-beca', [TesoreroController::class, 'obtenerSolicitudesBeca'])->name('api.solicitudes.beca');
+        Route::post('/solicitudes-beca/{id}/aprobar', [TesoreroController::class, 'aprobarSolicitud'])->name('solicitud.aprobar');
+        Route::post('/solicitudes-beca/{id}/rechazar', [TesoreroController::class, 'rechazarSolicitud'])->name('solicitud.rechazar');
+        Route::post('/solicitudes-beca/{id}/en-revision', [TesoreroController::class, 'marcarEnRevision'])->name('solicitud.en_revision');
     });
 
     /*
@@ -447,6 +454,12 @@ use App\Models\RolesModel;
             $stats['totalEventos'] = \App\Models\User::whereMonth('created_at', now()->month)
                 ->whereYear('created_at', now()->year)
                 ->count();
+
+            // Estadísticas de becas
+            $stats['becasSolicitadas'] = \App\Models\BecaSolicitud::where('estado', 'solicitado')->count();
+            $stats['becasEnRevision'] = \App\Models\BecaSolicitud::where('estado', 'en_revision')->count();
+            $stats['becasAprobadas'] = \App\Models\BecaSolicitud::where('estado', 'aprobado')->count();
+            $stats['becasRechazadas'] = \App\Models\BecaSolicitud::where('estado', 'rechazado')->count();
         } elseif ($rolNombre === 'Orientador') {
             // Datos específicos para Orientador
             $stats['citasPendientes'] = \App\Models\Cita::where('orientador_id', $usuario->id)
@@ -492,6 +505,14 @@ use App\Models\RolesModel;
             $stats['pagosVencidos'] = \App\Models\Pago::where('acudiente_id', $usuario->id)
                 ->where('estado', 'pendiente')
                 ->where('fecha_vencimiento', '<', now())
+                ->count();
+
+            // Estadísticas de becas solicitadas
+            $stats['becasSolicitadas'] = \App\Models\BecaSolicitud::where('acudiente_id', $usuario->id)
+                ->where('estado', 'solicitado')
+                ->count();
+            $stats['becasAprobadas'] = \App\Models\BecaSolicitud::where('acudiente_id', $usuario->id)
+                ->where('estado', 'aprobado')
                 ->count();
         } elseif ($rolNombre === 'Estudiante') {
             // Datos específicos para Estudiante

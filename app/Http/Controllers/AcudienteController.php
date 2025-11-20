@@ -7,6 +7,7 @@ use App\Models\Notificacion;
 use App\Models\Boletin;
 use App\Models\ReporteDisciplinario;
 use App\Models\SolicitudPaz;
+use App\Models\BecaSolicitud;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 
@@ -148,7 +149,13 @@ class AcudienteController extends Controller
     public function viewSolicitarBeca()
     {
         $acudiente = auth()->user();
-        $estudiantes = $acudiente->estudiantesACargo()->get();
+        if ($acudiente) {
+            $estudiantes = $acudiente->estudiantesACargo()->get();
+        } else {
+            // In unauthenticated/debug contexts return a small sample set of users
+            $estudiantes = User::take(5)->get();
+        }
+
         return view('acudiente.solicitar_beca', compact('estudiantes'));
     }
 
@@ -161,9 +168,43 @@ class AcudienteController extends Controller
             'detalle' => 'nullable|string',
         ]);
 
-        // Actualmente guardamos temporalmente en sesión o devolvemos success.
-        // Implementación con persistencia se puede agregar luego.
+        // Determine acudiente_id: use auth user if available, otherwise find first valid user
+        $acudienteId = auth()->id();
+        if (!$acudienteId) {
+            // For debug routes: find the first user in the DB (fallback for testing)
+            $primerusuario = User::first();
+            if (!$primerusuario) {
+                return response()->json(['error' => 'No users in database'], 400);
+            }
+            $acudienteId = $primerusuario->id;
+        }
 
-        return response()->json(['success' => true, 'message' => 'Solicitud de beca recibida', 'data' => $data], 201);
+        // Get estudiante_id safely with null coalescing
+        $estudianteId = $data['estudiante_id'] ?? null;
+        
+        // Validate that the estudiante_id exists if provided
+        if ($estudianteId) {
+            $estudiante = User::find($estudianteId);
+            if (!$estudiante) {
+                return response()->json(['error' => 'Estudiante no encontrado'], 422);
+            }
+        }
+
+        // Save the scholarship request to the database
+        $solicitud = BecaSolicitud::create([
+            'acudiente_id' => $acudienteId,
+            'estudiante_id' => $estudianteId,
+            'tipo' => $data['tipo'],
+            'monto_estimado' => $data['monto_estimado'] ?? null,
+            'detalle' => $data['detalle'] ?? null,
+            'estado' => 'solicitado',
+            'fecha_solicitud' => now(),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Solicitud de beca recibida y guardada',
+            'solicitud' => $solicitud
+        ], 201);
     }
 }

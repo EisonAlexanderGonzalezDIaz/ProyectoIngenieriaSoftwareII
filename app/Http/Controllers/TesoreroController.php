@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Pago;
 use App\Models\MatriculaAcudiente;
 use App\Models\User;
+use App\Models\BecaSolicitud;
+use App\Models\Notificacion;
 use Illuminate\Support\Facades\DB;
 
 class TesoreroController extends Controller
@@ -277,4 +279,147 @@ class TesoreroController extends Controller
         return view('tesoreria.aprobar_becas');
     }
 
+    // ===========================
+    // Gestión de Solicitudes de Beca
+    // ===========================
+
+    /**
+     * Ver lista de solicitudes de beca pendientes
+     */
+    public function viewSolicitudesBeca()
+    {
+        return view('tesoreria.solicitudes_beca');
+    }
+
+    /**
+     * API: Obtener solicitudes de beca (filtradas por estado)
+     */
+    public function obtenerSolicitudesBeca(Request $request)
+    {
+        $data = $request->validate([
+            'estado' => 'nullable|string|in:solicitado,en_revision,aprobado,rechazado',
+            'page' => 'nullable|integer|min:1',
+            'per_page' => 'nullable|integer|min:1|max:100',
+        ]);
+
+        $query = BecaSolicitud::with(['acudiente', 'estudiante'])
+            ->orderByDesc('fecha_solicitud');
+
+        if ($data['estado'] ?? false) {
+            $query->where('estado', $data['estado']);
+        }
+
+        $solicitudes = $query->paginate($data['per_page'] ?? 15);
+
+        return response()->json(['solicitudes' => $solicitudes], 200);
+    }
+
+    /**
+     * Aprobar una solicitud de beca
+     */
+    public function aprobarSolicitud(Request $request, $solicitudId)
+    {
+        $data = $request->validate([
+            'motivo' => 'nullable|string',
+        ]);
+
+        $solicitud = BecaSolicitud::findOrFail($solicitudId);
+
+        DB::beginTransaction();
+        try {
+            // Actualizar estado a aprobado
+            $solicitud->update([
+                'estado' => 'aprobado',
+                'fecha_resolucion' => now(),
+            ]);
+
+            // Si hay monto, crear pago negativo (beca/descuento)
+            if ($solicitud->monto_estimado) {
+                Pago::create([
+                    'acudiente_id' => $solicitud->acudiente_id,
+                    'monto' => -1 * abs($solicitud->monto_estimado),
+                    'tipo' => 'beca',
+                    'estado' => 'pagado',
+                    'descripcion' => 'Beca aprobada: ' . $solicitud->tipo . ' - ' . ($data['motivo'] ?? ''),
+                ]);
+            }
+
+            // Crear notificación para el acudiente
+            Notificacion::create([
+                'user_id' => $solicitud->acudiente_id,
+                'titulo' => 'Solicitud de Beca Aprobada',
+                'contenido' => 'Tu solicitud de ' . $solicitud->tipo . ' ha sido aprobada. Monto: $' . $solicitud->monto_estimado,
+                'tipo' => 'beca',
+                'leida' => false,
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Solicitud de beca aprobada correctamente',
+                'solicitud' => $solicitud
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => 'Error al aprobar solicitud', 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Rechazar una solicitud de beca
+     */
+    public function rechazarSolicitud(Request $request, $solicitudId)
+    {
+        $data = $request->validate([
+            'motivo' => 'required|string',
+        ]);
+
+        $solicitud = BecaSolicitud::findOrFail($solicitudId);
+
+        DB::beginTransaction();
+        try {
+            // Actualizar estado a rechazado
+            $solicitud->update([
+                'estado' => 'rechazado',
+                'fecha_resolucion' => now(),
+            ]);
+
+            // Crear notificación para el acudiente
+            Notificacion::create([
+                'user_id' => $solicitud->acudiente_id,
+                'titulo' => 'Solicitud de Beca Rechazada',
+                'contenido' => 'Tu solicitud de ' . $solicitud->tipo . ' ha sido rechazada. Motivo: ' . $data['motivo'],
+                'tipo' => 'beca',
+                'leida' => false,
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Solicitud de beca rechazada correctamente',
+                'solicitud' => $solicitud
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => 'Error al rechazar solicitud', 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Cambiar solicitud a "en revisión"
+     */
+    public function marcarEnRevision(Request $request, $solicitudId)
+    {
+        $solicitud = BecaSolicitud::findOrFail($solicitudId);
+
+        $solicitud->update(['estado' => 'en_revision']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Solicitud marcada en revisión',
+            'solicitud' => $solicitud
+        ], 200);
+    }
 }

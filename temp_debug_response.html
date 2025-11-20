@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="oA061Q6bFg8TxL54FQriycSRhSzm9dqHrNLlfLvs">
+    <title>Colegio</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        .login-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navbar-brand {
+            font-weight: bold;
+            color: #2c3e50 !important;
+        }
+        
+        .sidebar {
+            background: #2c3e50;
+            min-height: calc(100vh - 56px);
+        }
+        
+        .sidebar .nav-link {
+            color: #ecf0f1;
+            padding: 12px 20px;
+            border-radius: 5px;
+            margin: 2px 0;
+        }
+        
+        .sidebar .nav-link:hover {
+            background: #34495e;
+            color: #fff;
+        }
+        
+        .sidebar .nav-link.active {
+            background: #3498db;
+            color: #fff;
+        }
+        
+        .main-content {
+            background: #f8f9fa;
+            min-height: calc(100vh - 56px);
+        }
+    </style>
+    
+    </head>
+<body>
+    <div class="container mt-4">
+    <h3>Solicitar beca / descuento</h3>
+
+    <form id="becaForm">
+        <div class="mb-3">
+            <label for="estudiante_id" class="form-label">Estudiante</label>
+            <select class="form-select" id="estudiante_id" name="estudiante_id">
+                <option value="">-- Seleccionar (opcional) --</option>
+                                    <option value="1">Rector del Colegio</option>
+                                    <option value="2">Administrador del Sistema</option>
+                                    <option value="3">Coordinador Académico</option>
+                                    <option value="4">Coordinador Disciplinario</option>
+                                    <option value="5">Acudiente</option>
+                            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="tipo" class="form-label">Tipo de beca</label>
+            <input class="form-control" id="tipo" name="tipo" required />
+        </div>
+
+        <div class="mb-3">
+            <label for="monto_estimado" class="form-label">Monto estimado</label>
+            <input class="form-control" id="monto_estimado" name="monto_estimado" type="number" step="0.01" />
+        </div>
+
+        <div class="mb-3">
+            <label for="detalle" class="form-label">Detalle</label>
+            <textarea class="form-control" id="detalle" name="detalle" rows="4"></textarea>
+        </div>
+
+        <button class="btn btn-primary" type="submit">Enviar solicitud</button>
+    </form>
+
+    <div id="becaResult" class="mt-3" style="display:none"></div>
+</div>
+
+
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+document.getElementById('becaForm').addEventListener('submit', async function(e){
+    e.preventDefault();
+    const form = e.target;
+    const data = new FormData(form);
+    const body = {};
+    data.forEach((v,k)=> body[k]=v);
+
+    const res = await fetch("http://127.0.0.1:8000/acudiente/becas/solicitar", {
+        method: 'POST',
+        headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'), 'Accept': 'application/json' },
+        body: new URLSearchParams(body)
+    });
+    const json = await res.json();
+    const div = document.getElementById('becaResult');
+    div.style.display = 'block';
+    if(res.ok){
+        div.className = 'alert alert-success';
+        div.innerText = json.message || 'Solicitud enviada';
+        form.reset();
+    } else {
+        div.className = 'alert alert-danger';
+        div.innerText = (json.message || 'Error al enviar') + '\n' + (JSON.stringify(json.errors || {}));
+    }
+});
+</script>
+</body>
+</html>

@@ -94,15 +94,15 @@
                             </a>
 
                             <div class="collapse ps-4" id="menuTesoreriaEstudiantes">
-                                <a class="nav-link text-dark" href="#">
+                                <a class="nav-link text-dark" href="{{ route('estudiantes.gestion') }}">
                                     <i class="fas fa-list me-2"></i>Listado de estudiantes
                                 </a>
 
                                 {{-- Registrar pagos y devoluciones --}}
-                                <a class="nav-link text-dark" href="#">
+                                <a class="nav-link text-dark" href="{{ route('tesoreria.view.pago.registrar') }}">
                                     <i class="fas fa-credit-card me-2"></i>Registrar pagos estudiantes
                                 </a>
-                                <a class="nav-link text-dark" href="#">
+                                <a class="nav-link text-dark" href="{{ route('tesoreria.view.devolucion') }}">
                                     <i class="fas fa-undo-alt me-2"></i>Gestionar devoluciones
                                 </a>
 
@@ -118,7 +118,7 @@
                                 </a>
 
                                 <div class="collapse ps-4" id="menuTesoreriaFinanciera">
-                                    <a class="nav-link text-dark" href="#">
+                                    <a class="nav-link text-dark" href="{{ route('tesoreria.view.estado.cuenta') }}">
                                         <i class="fas fa-wallet me-2"></i>Estado de cuenta
                                     </a>
 
@@ -133,10 +133,10 @@
                                         <i class="fas fa-chevron-down small"></i>
                                     </a>
                                     <div class="collapse ps-4" id="menuTesoreriaPazSalvo">
-                                        <a class="nav-link text-dark" href="#">
+                                        <a class="nav-link text-dark" href="{{ route('tesoreria.view.pazysalvo') }}">
                                             <i class="fas fa-eye me-2"></i>Consultar paz y salvos
                                         </a>
-                                        <a class="nav-link text-dark" href="#">
+                                        <a class="nav-link text-dark" href="{{ route('tesoreria.view.pazysalvo') }}">
                                             <i class="fas fa-file-signature me-2"></i>Generar paz y salvo
                                         </a>
                                     </div>
@@ -152,16 +152,16 @@
                                         <i class="fas fa-chevron-down small"></i>
                                     </a>
                                     <div class="collapse ps-4" id="menuTesoreriaRecibos">
-                                        <a class="nav-link text-dark" href="#">
+                                        <a class="nav-link text-dark" href="{{ route('tesoreria.view.factura.matricula') }}">
                                             <i class="fas fa-eye me-2"></i>Consultar recibos
                                         </a>
-                                        <a class="nav-link text-dark" href="#">
+                                        <a class="nav-link text-dark" href="{{ route('tesoreria.view.factura.matricula') }}">
                                             <i class="fas fa-file-invoice-dollar me-2"></i>Generar recibos
                                         </a>
                                     </div>
 
                                     {{-- Gestionar cartera --}}
-                                    <a class="nav-link text-dark" href="#">
+                                    <a class="nav-link text-dark" href="{{ route('tesoreria.view.cartera') }}">
                                         <i class="fas fa-wallet me-2"></i>Gestionar cartera
                                     </a>
                                 </div>
@@ -205,7 +205,7 @@
                                 <a class="nav-link text-dark" href="{{ route('estudiantes.gestion') }}">
                                     <i class="fas fa-list me-2"></i>Listado de estudiantes
                                 </a>
-                                <a class="nav-link text-dark" href="#">
+                                <a class="nav-link text-dark" href="{{ route('recuperaciones.gestion') }}">
                                     <i class="fas fa-sync-alt me-2"></i>Gestionar recuperaciones
                                 </a>
                             </div>
@@ -278,7 +278,7 @@
                             <i class="fas fa-calendar-alt me-2"></i>Gestionar horarios (estudiantes y docentes)
                         </a>
 
-                        <a class="nav-link text-dark" href="#">
+                        <a class="nav-link text-dark" href="{{ route('planacademico.gestion') }}">
                             <i class="fas fa-graduation-cap me-2"></i>Consultar plan académico anual
                         </a>
                     @endif
@@ -427,7 +427,7 @@
                                 </a>
                             </div>
                         @else
-                            <a class="nav-link text-dark" href="#">
+                            <a class="nav-link text-dark" href="{{ route('acudiente.solicitar_beca') }}">
                                 <i class="fas fa-percent me-2"></i>Solicitud de becas y descuentos
                             </a>
                         @endif
@@ -437,13 +437,24 @@
                          REPORTES DISCIPLINARIOS / NOTIFICACIONES
                     ========================================== --}}
                     @if(in_array($rolNombre, ['Estudiante', 'Acudiente']))
-                        <a class="nav-link text-dark" href="{{ $rolNombre === 'Estudiante' ? route('estudiante.reportes_disciplinarios') : '#' }}">
+                        <a class="nav-link text-dark" href="{{ $rolNombre === 'Estudiante' ? route('estudiante.reportes_disciplinarios') : route('acudiente.reportes_disciplinarios') }}">
                             <i class="fas fa-exclamation-circle me-2"></i>Consultar reportes disciplinarios
                         </a>
                     @endif
 
                     @if(in_array($rolNombre, ['Estudiante', 'Acudiente', 'Docente', 'Orientador']))
-                        <a class="nav-link text-dark" href="{{ $rolNombre === 'Estudiante' ? route('estudiante.notificaciones') : '#' }}">
+                        @php
+                            if ($rolNombre === 'Estudiante') {
+                                $hrefNotificaciones = route('estudiante.notificaciones');
+                            } elseif ($rolNombre === 'Acudiente') {
+                                $hrefNotificaciones = route('acudiente.notificaciones');
+                            } elseif ($rolNombre === 'Docente') {
+                                $hrefNotificaciones = route('docente.consultar_boletines');
+                            } else {
+                                $hrefNotificaciones = route('orientacion.gestion');
+                            }
+                        @endphp
+                        <a class="nav-link text-dark" href="{{ $hrefNotificaciones }}">
                             <i class="fas fa-bell me-2"></i>Centro de notificaciones
                         </a>
                     @endif
@@ -513,14 +524,14 @@
                             <span><i class="fas fa-exclamation-triangle me-2"></i>Casos disciplinarios</span>
                             <i class="fas fa-chevron-down small"></i>
                         </a>
-                        <div class="collapse ps-4" id="menuCoordDisciplinarioCasos">
+                            <div class="collapse ps-4" id="menuCoordDisciplinarioCasos">
                             <a class="nav-link text-dark" href="{{ route('casos.gestion') }}">
                                 <i class="fas fa-inbox me-2"></i>Recibir y reportar casos
                             </a>
-                            <a class="nav-link text-dark" href="#">
+                            <a class="nav-link text-dark" href="{{ route('casos.gestion') }}">
                                 <i class="fas fa-radiation me-2"></i>Revisar casos graves
                             </a>
-                            <a class="nav-link text-dark" href="#">
+                            <a class="nav-link text-dark" href="{{ route('casos.gestion') }}">
                                 <i class="fas fa-gavel me-2"></i>Asignar sanciones
                             </a>
                         </div>
@@ -547,13 +558,13 @@
                             <a class="nav-link text-dark" href="{{ route('orientacion.gestion') }}">
                                 <i class="fas fa-inbox me-2"></i>Recibir / registrar orientaciones
                             </a>
-                            <a class="nav-link text-dark" href="#">
+                            <a class="nav-link text-dark" href="{{ route('orientacion.gestion') }}">
                                 <i class="fas fa-radiation me-2"></i>Revisar casos graves
                             </a>
-                            <a class="nav-link text-dark" href="#">
+                            <a class="nav-link text-dark" href="{{ route('orientacion.gestion') }}">
                                 <i class="fas fa-user-clock me-2"></i>Realizar seguimiento
                             </a>
-                            <a class="nav-link text-dark" href="#">
+                            <a class="nav-link text-dark" href="{{ route('orientacion.gestion') }}">
                                 <i class="fas fa-user-friends me-2"></i>Atender sesiones
                             </a>
                         </div>
@@ -736,12 +747,12 @@
                                             </a>
                                         </div>
                                         <div class="col-md-3 mb-3">
-                                            <a href="#" class="btn btn-outline-success btn-lg w-100">
+                                            <a href="{{ route('orientacion.gestion') }}" class="btn btn-outline-success btn-lg w-100">
                                                 <i class="fas fa-file-export me-2"></i>Exportar citas
                                             </a>
                                         </div>
                                         <div class="col-md-3 mb-3">
-                                            <a href="#" class="btn btn-outline-info btn-lg w-100">
+                                            <a href="{{ route('orientacion.gestion') }}" class="btn btn-outline-info btn-lg w-100">
                                                 <i class="fas fa-plus me-2"></i>Nueva orientación
                                             </a>
                                         </div>
@@ -810,17 +821,17 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-md-4 mb-3">
-                                            <a href="#" class="btn btn-primary btn-lg w-100">
+                                            <a href="{{ route('register') }}" class="btn btn-primary btn-lg w-100">
                                                 <i class="fas fa-user-plus me-2"></i>Registrar estudiante
                                             </a>
                                         </div>
                                         <div class="col-md-4 mb-3">
-                                            <a href="#" class="btn btn-outline-primary btn-lg w-100">
+                                            <a href="{{ route('materias.gestion') }}" class="btn btn-outline-primary btn-lg w-100">
                                                 <i class="fas fa-book me-2"></i>Agregar materia
                                             </a>
                                         </div>
                                         <div class="col-md-4 mb-3">
-                                            <a href="#" class="btn btn-outline-success btn-lg w-100">
+                                            <a href="{{ route('reportes.gestion') }}" class="btn btn-outline-success btn-lg w-100">
                                                 <i class="fas fa-chart-pie me-2"></i>Ver reportes
                                             </a>
                                         </div>
