@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Principal - Colegio</title>
 
+    {{-- Token CSRF para uso en JavaScript --}}
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     {{-- Bootstrap --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -559,55 +562,40 @@
                         </div>
                     @endif
 
+                    {{-- =========================================
+                         OPCIONES EXTRAS TESORERO
+                    ========================================== --}}
                     @if(in_array(Auth::user()->rol->nombre ?? '', ['Tesorero']))
-                    <a class="nav-link text-dark" href="{{ route('tesoreria.view.pazysalvo') }}">
-                        <i class="fas fa-file-invoice me-2"></i>Generar paz y salvo
-                    </a>
-                    @endif
-                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Tesorero']))
-                    <a class="nav-link text-dark" href="{{ route('tesoreria.view.factura.matricula') }}">
-                        <i class="fas fa-receipt me-2"></i>Generar recibos de matricula
-                    </a>
-                    @endif
-                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Tesorero']))
-                    <a class="nav-link text-dark" href="{{ route('tesoreria.view.pago.registrar') }}">
-                        <i class="fas fa-credit-card me-2"></i>Registrar pagos estudiantes
-                    </a>
-                    @endif
-                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Tesorero']))
-                    <a class="nav-link text-dark" href="{{ route('tesoreria.view.devolucion') }}">
-                        <i class="fas fa-undo-alt me-2"></i>Gestionar devoluciones
-                    </a>
-                    @endif
-                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Tesorero']))
-                    <a class="nav-link text-dark" href="{{ route('tesoreria.view.cartera') }}">
-                        <i class="fas fa-wallet me-2"></i>Gestionar carteras
-                    </a>
-                    @endif
-                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Tesorero']))
-                    <a class="nav-link text-dark" href="{{ route('tesoreria.view.reportes') }}">
-                        <i class="fas fa-paper-plane me-2"></i>Enviar reportes
-                    </a>
-                    @endif
-                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Tesorero']))
-                    <a class="nav-link text-dark" href="{{ route('tesoreria.view.estado.cuenta') }}">
-                        <i class="fas fa-wallet me-2"></i>Consultar estado de cuenta
-                    </a>
-                    @endif
-                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Tesorero']))
-                    <a class="nav-link text-dark" href="{{ route('tesoreria.view.beca') }}">
-                        <i class="fas fa-percent me-2"></i>Registrar becas y descuentos
-                    </a>
-                    @endif
-                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Tesorero']))
-                    <a class="nav-link text-dark" href="{{ route('tesoreria.view.reporte.financiero') }}">
-                        <i class="fas fa-chart-pie me-2"></i>Generar reportes financieros
-                    </a>
-                    @endif
-                    @if(in_array(Auth::user()->rol->nombre ?? '', ['Tesorero']))
-                    <a class="nav-link text-dark" href="{{ route('tesoreria.view.aprobar.becas') }}">
-                        <i class="fas fa-check-circle me-2"></i>Aprobar becas o descuentos
-                    </a>
+                        <a class="nav-link text-dark" href="{{ route('tesoreria.view.pazysalvo') }}">
+                            <i class="fas fa-file-invoice me-2"></i>Generar paz y salvo
+                        </a>
+                        <a class="nav-link text-dark" href="{{ route('tesoreria.view.factura.matricula') }}">
+                            <i class="fas fa-receipt me-2"></i>Generar recibos de matricula
+                        </a>
+                        <a class="nav-link text-dark" href="{{ route('tesoreria.view.pago.registrar') }}">
+                            <i class="fas fa-credit-card me-2"></i>Registrar pagos estudiantes
+                        </a>
+                        <a class="nav-link text-dark" href="{{ route('tesoreria.view.devolucion') }}">
+                            <i class="fas fa-undo-alt me-2"></i>Gestionar devoluciones
+                        </a>
+                        <a class="nav-link text-dark" href="{{ route('tesoreria.view.cartera') }}">
+                            <i class="fas fa-wallet me-2"></i>Gestionar carteras
+                        </a>
+                        <a class="nav-link text-dark" href="{{ route('tesoreria.view.reportes') }}">
+                            <i class="fas fa-paper-plane me-2"></i>Enviar reportes
+                        </a>
+                        <a class="nav-link text-dark" href="{{ route('tesoreria.view.estado.cuenta') }}">
+                            <i class="fas fa-wallet me-2"></i>Consultar estado de cuenta
+                        </a>
+                        <a class="nav-link text-dark" href="{{ route('tesoreria.view.beca') }}">
+                            <i class="fas fa-percent me-2"></i>Registrar becas y descuentos
+                        </a>
+                        <a class="nav-link text-dark" href="{{ route('tesoreria.view.reporte.financiero') }}">
+                            <i class="fas fa-chart-pie me-2"></i>Generar reportes financieros
+                        </a>
+                        <a class="nav-link text-dark" href="{{ route('tesoreria.view.aprobar.becas') }}">
+                            <i class="fas fa-check-circle me-2"></i>Aprobar becas o descuentos
+                        </a>
                     @endif
                 </nav>
             </div>
@@ -1018,8 +1006,4 @@
         });
     })();
 </script>
-
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+@endsection

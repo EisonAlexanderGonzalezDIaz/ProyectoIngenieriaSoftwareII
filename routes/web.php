@@ -4,34 +4,11 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
 // Controladores
-use App\Http\Controllers\{
-    AuthController,
-    CrearUsuario,
-    RolController,
-    MatriculaAcudienteController,
-    TesoreroController,
-    RectorEstudianteController,
-    AcudienteController,
-    AcudienteEstudianteController,
-    AdminEstudiantesController,
-    AdminUsuarioController,
-    CambiosNotasController,
-    CasosDisciplinariosController,
-    CitarAcudienteController,
-    CoordinadorAcademicoController,
-    DocenteController,
-    EstudianteController,
-    GestionDocentesController,
-    HorariosController,
-    InformacionColegioController,
-    MateriasController,
-    OrientadorController,
-    PlanAcademicoController,
-    RectorController,
-    RecuperacionesController,
-    ReportesAcademicosController,
-    ReportesDisciplinariosController
-};
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CrearUsuario;
+use App\Http\Controllers\RolController;
+use App\Http\Controllers\MatriculaAcudienteController;
+use App\Http\Controllers\TesoreroController;
 use App\Models\RolesModel;
 
 /*
@@ -44,21 +21,22 @@ use App\Models\RolesModel;
 */
 
 // Ruta raíz → redirige al login
-    Route::get('/', function () {
+Route::get('/', function () {
     return redirect('/login');
-    });
+});
 
-    // Rutas de autenticación
-    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [AuthController::class, 'login']);
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+// Rutas de autenticación
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    // Rutas de registro de usuarios
-    Route::get('/register', [CrearUsuario::class, 'showRegistrationForm'])->name('register');
-    Route::post('/register', [CrearUsuario::class, 'register']);
+// Rutas de registro de usuarios
+Route::get('/register', [CrearUsuario::class, 'showRegistrationForm'])->name('register');
+Route::post('/register', [CrearUsuario::class, 'register']);
 
-    // Grupo de rutas protegidas por autenticación
-    Route::middleware(['auth'])->group(function () {
+// Grupo de rutas protegidas por autenticación
+Route::middleware(['auth'])->group(function () {
+
     // ==========================
     // DASHBOARD GENERAL
     // ==========================
@@ -78,7 +56,6 @@ use App\Models\RolesModel;
             ->name('materias');
     });
 
-
     /*
     |--------------------------------------------------------------------------
     | Coordinador Académico
@@ -89,7 +66,8 @@ use App\Models\RolesModel;
         Route::get('/', [CoordinadorAcademicoController::class, 'dashboard'])->name('dashboard');
 
         // Gestión de docentes
-        Route::get('/gestion-docentes', [CoordinadorAcademicoController::class, 'gestionDocentes'])->name('gestion-docentes');
+        Route::get('/gestion-docentes', [CoordinadorAcademicoController::class, 'gestionDocentes'])
+            ->name('gestion-docentes');
 
         // Rutas AJAX (consultas, actualizaciones, asignaciones, evaluaciones)
         Route::get('/docentes/{id}', [CoordinadorAcademicoController::class, 'getTeacherData']);
@@ -132,25 +110,25 @@ use App\Models\RolesModel;
 
         // Validación de datos
         $data = $request->validate([
-            'nombre' => ['required', 'string', 'max:100', 'unique:roles,nombre'],
+            'nombre'    => ['required', 'string', 'max:100', 'unique:roles,nombre'],
             'descripcion' => ['required', 'string', 'max:500'],
-            'permisos' => ['nullable', 'string'], // CSV desde la vista
+            'permisos'  => ['nullable', 'string'], // CSV desde la vista
         ]);
 
         // Convertir CSV → Array
         $permisosArray = [];
         if (!empty($data['permisos'])) {
             $permisosArray = collect(explode(',', $data['permisos']))
-                ->map(fn($p) => trim($p))
+                ->map(fn ($p) => trim($p))
                 ->filter()
                 ->values()
                 ->all();
         }
 
         RolesModel::create([
-            'nombre' => $data['nombre'],
+            'nombre'    => $data['nombre'],
             'descripcion' => $data['descripcion'],
-            'permisos' => $permisosArray ?: null,
+            'permisos'  => $permisosArray ?: null,
         ]);
 
         return redirect()->route('roles.create')->with('ok', 'Rol creado: ' . $data['nombre']);
@@ -176,7 +154,7 @@ use App\Models\RolesModel;
         // Vista para aprobar becas/descuentos
         Route::get('/vista/aprobar-becas', [TesoreroController::class, 'viewAprobarBecas'])->name('view.aprobar.becas');
 
-        // Rutas API solicitadas por el usuario (solo endpoints JSON)
+        // Rutas API (JSON)
         Route::get('/paz-y-salvo/{acudiente}', [TesoreroController::class, 'generarPazYSalvo'])->name('pazysalvo');
         Route::post('/factura/matricula', [TesoreroController::class, 'generarFacturaMatricula'])->name('factura.matricula');
         Route::post('/pago/registrar', [TesoreroController::class, 'registrarPagoAcudiente'])->name('pago.registrar');
@@ -275,11 +253,11 @@ use App\Models\RolesModel;
     | Admin Sistema - Consultar Estudiantes y Perfiles de Usuario
     |--------------------------------------------------------------------------
     */
-    // Menú de "Consultar Estudiantes" solo para AdministradorSistema (ruta usada en el sidebar)
+    // Menú / vista de "Consultar Estudiantes" (usa porCurso internamente)
     Route::get('/admin/estudiantes/menu', [AdminEstudiantesController::class, 'menu'])
         ->name('admin.estudiantes.menu');
 
-    // Ver estudiantes por curso (filtro desde el menú)
+    // Ver estudiantes por curso (ruta directa, útil para formularios / filtros)
     Route::get('/admin/estudiantes/por-curso', [AdminEstudiantesController::class, 'porCurso'])
         ->name('admin.estudiantes.porCurso');
 
@@ -295,7 +273,7 @@ use App\Models\RolesModel;
     Route::put('/admin/usuarios/{id}/basicos', [AdminUsuarioController::class, 'updateBasicos'])
         ->name('admin.usuarios.basicos.update');
 
-    // 🔹 Gestionar acudientes de un estudiante desde perfiles de usuario
+    // Gestionar acudientes de un usuario desde perfiles de usuario
     Route::get('/admin/usuarios/{user}/acudientes', [AdminUsuarioController::class, 'editarAcudientes'])
         ->name('admin.usuarios.acudientes.edit');
 
@@ -363,6 +341,7 @@ use App\Models\RolesModel;
     */
     Route::get('/orientador/gestion', [OrientadorController::class, 'dashboard'])
         ->name('orientacion.gestion');
+
     // API endpoints para Orientador
     Route::get('/api/orientador/casos', [OrientadorController::class, 'apiCasos'])->name('orientador.api.casos');
     Route::post('/api/orientador/agendar', [OrientadorController::class, 'apiAgendarSesion'])->name('orientador.api.agendar');
@@ -393,6 +372,7 @@ use App\Models\RolesModel;
     */
     Route::get('/casos/gestion', [CasosDisciplinariosController::class, 'gestion'])
         ->name('casos.gestion');
+
     // API para casos disciplinarios
     Route::get('/api/casos', [CasosDisciplinariosController::class, 'apiList'])->name('api.casos.list');
     Route::post('/api/casos', [CasosDisciplinariosController::class, 'apiCreate'])->name('api.casos.create');
@@ -406,113 +386,27 @@ use App\Models\RolesModel;
     Route::get('/reportes/gestion', [ReportesDisciplinariosController::class, 'gestion'])
         ->name('reportes.gestion');
 
-    // Gestión de Docentes
-    Route::get('/gestiondocentes/gestion', [App\Http\Controllers\GestionDocentesController::class, 'gestion'])
+    /*
+    |--------------------------------------------------------------------------
+    | Gestión de Docentes
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/gestiondocentes/gestion', [GestionDocentesController::class, 'gestion'])
         ->name('gestiondocentes.gestion');
-    Route::post('/gestiondocentes/store', [App\Http\Controllers\GestionDocentesController::class, 'store'])
+    Route::post('/gestiondocentes/store', [GestionDocentesController::class, 'store'])
         ->name('gestiondocentes.store');
-    Route::put('/gestiondocentes/{id}', [App\Http\Controllers\GestionDocentesController::class, 'update'])
+    Route::put('/gestiondocentes/{id}', [GestionDocentesController::class, 'update'])
         ->name('gestiondocentes.update');
-    Route::delete('/gestiondocentes/{id}', [App\Http\Controllers\GestionDocentesController::class, 'destroy'])
+    Route::delete('/gestiondocentes/{id}', [GestionDocentesController::class, 'destroy'])
         ->name('gestiondocentes.destroy');
-
-    // Plan Académico
-    Route::get('/planacademico/gestion', [PlanAcademicoController::class, 'gestion'])
-        ->name('planacademico.gestion');
 
     /*
     |--------------------------------------------------------------------------
-    | Dashboard API - Estadísticas Dinámicas
+    | Plan Académico
     |--------------------------------------------------------------------------
     */
-    Route::get('/api/dashboard/stats', function () {
-        $usuario = auth()->user();
-        $rolNombre = $usuario->rol->nombre ?? '';
-
-        // Estadísticas generales según el rol
-        $stats = [];
-
-        if (in_array($rolNombre, ['AdministradorSistema', 'Rector', 'CoordinadorAcademico', 'Tesorero'])) {
-            // Datos para administradores y coordinadores
-            $stats['totalEstudiantes'] = \App\Models\User::whereHas('rol', function ($query) {
-                $query->where('nombre', 'Estudiante');
-            })->count();
-
-            $stats['totalDocentes'] = \App\Models\User::whereHas('rol', function ($query) {
-                $query->where('nombre', 'Docente');
-            })->count();
-
-            $stats['totalMaterias'] = \App\Models\Curso::count();
-
-            $stats['totalEventos'] = \App\Models\User::whereMonth('created_at', now()->month)
-                ->whereYear('created_at', now()->year)
-                ->count();
-        } elseif ($rolNombre === 'Orientador') {
-            // Datos específicos para Orientador
-            $stats['citasPendientes'] = \App\Models\Cita::where('orientador_id', $usuario->id)
-                ->where('estado', 'pendiente')
-                ->count();
-
-            $stats['citasProgramadas'] = \App\Models\Cita::where('orientador_id', $usuario->id)
-                ->where('estado', 'programado')
-                ->count();
-
-            $stats['citasRealizadas'] = \App\Models\Cita::where('orientador_id', $usuario->id)
-                ->where('estado', 'realizado')
-                ->count();
-
-            $stats['estudiantesSeguimiento'] = \App\Models\Cita::where('orientador_id', $usuario->id)
-                ->distinct('estudiante_id')
-                ->count('estudiante_id');
-        } elseif ($rolNombre === 'Docente') {
-            // Datos específicos para Docente
-            $stats['grupos'] = \App\Models\Horario::where('docente_id', $usuario->id)
-                ->distinct('curso_id')
-                ->count('curso_id');
-
-            $stats['estudiantes'] = \App\Models\Nota::where('docente_id', $usuario->id)
-                ->distinct('estudiante_id')
-                ->count('estudiante_id');
-
-            $stats['tareas'] = \App\Models\Tarea::where('docente_id', $usuario->id)->count();
-
-            $stats['materiales'] = \App\Models\MaterialAcademico::where('docente_id', $usuario->id)->count();
-        } elseif ($rolNombre === 'Acudiente') {
-            // Datos específicos para Acudiente
-            $stats['estudiantes'] = \App\Models\User::where('acudiente_id', $usuario->id)->count();
-
-            $stats['notificaciones'] = \App\Models\Notificacion::where('acudiente_id', $usuario->id)
-                ->where('leido', false)
-                ->count();
-
-            $stats['reportes'] = \App\Models\ReporteDisciplinario::whereIn('estudiante_id', function ($query) use ($usuario) {
-                $query->select('id')->from('users')->where('acudiente_id', $usuario->id);
-            })->count();
-
-            $stats['pagosVencidos'] = \App\Models\Pago::where('acudiente_id', $usuario->id)
-                ->where('estado', 'pendiente')
-                ->where('fecha_vencimiento', '<', now())
-                ->count();
-        } elseif ($rolNombre === 'Estudiante') {
-            // Datos específicos para Estudiante
-            $stats['materias'] = \App\Models\Nota::where('estudiante_id', $usuario->id)
-                ->distinct('subject_id')
-                ->count('subject_id');
-
-            $stats['tareasPendientes'] = \App\Models\Entrega::where('estudiante_id', $usuario->id)
-                ->where('estado', 'pendiente')
-                ->count();
-
-            $stats['notificaciones'] = \App\Models\Notificacion::where('estudiante_id', $usuario->id)
-                ->where('leido', false)
-                ->count();
-
-            $stats['promedioGeneral'] = \App\Models\Nota::where('estudiante_id', $usuario->id)
-                ->avg('calificacion') ?? 0;
-        }
-
-        return response()->json($stats);
-    })->name('api.dashboard.stats');
+    Route::get('/planacademico/gestion', [PlanAcademicoController::class, 'gestion'])
+        ->name('planacademico.gestion');
     
     /*
     |--------------------------------------------------------------------------
@@ -521,30 +415,26 @@ use App\Models\RolesModel;
     */
     Route::prefix('acudiente')->name('acudiente.')->group(function () {
         // Notificaciones
-        Route::get('/notificaciones', [App\Http\Controllers\AcudienteController::class, 'viewNotificaciones'])->name('notificaciones');
-        Route::get('/api/notificaciones', [App\Http\Controllers\AcudienteController::class, 'obtenerNotificaciones'])->name('obtener_notificaciones');
-        Route::post('/notificaciones/{id}/leer', [App\Http\Controllers\AcudienteController::class, 'marcarNotificacionLeida'])->name('marcar_notificacion_leida');
+        Route::get('/notificaciones', [AcudienteController::class, 'viewNotificaciones'])->name('notificaciones');
+        Route::get('/api/notificaciones', [AcudienteController::class, 'obtenerNotificaciones'])->name('obtener_notificaciones');
+        Route::post('/notificaciones/{id}/leer', [AcudienteController::class, 'marcarNotificacionLeida'])->name('marcar_notificacion_leida');
 
         // Boletines
-        Route::get('/boletines', [App\Http\Controllers\AcudienteController::class, 'viewBoletines'])->name('boletines');
-        Route::get('/api/boletines', [App\Http\Controllers\AcudienteController::class, 'obtenerBoletines'])->name('obtener_boletines');
-        Route::get('/boletines/{id}/descargar', [App\Http\Controllers\AcudienteController::class, 'descargarBoletin'])->name('descargar_boletin');
+        Route::get('/boletines', [AcudienteController::class, 'viewBoletines'])->name('boletines');
+        Route::get('/api/boletines', [AcudienteController::class, 'obtenerBoletines'])->name('obtener_boletines');
+        Route::get('/boletines/{id}/descargar', [AcudienteController::class, 'descargarBoletin'])->name('descargar_boletin');
 
         // Reportes disciplinarios (hijos)
-        Route::get('/reportes-disciplinarios', [App\Http\Controllers\AcudienteController::class, 'viewReportesDisciplinarios'])->name('reportes_disciplinarios');
-        Route::get('/api/reportes-disciplinarios', [App\Http\Controllers\AcudienteController::class, 'obtenerReportesDisciplinarios'])->name('obtener_reportes_disciplinarios');
+        Route::get('/reportes-disciplinarios', [AcudienteController::class, 'viewReportesDisciplinarios'])->name('reportes_disciplinarios');
+        Route::get('/api/reportes-disciplinarios', [AcudienteController::class, 'obtenerReportesDisciplinarios'])->name('obtener_reportes_disciplinarios');
 
         // Solicitudes de Paz y Salvo
         Route::get('/paz-y-salvo/solicitar', [App\Http\Controllers\AcudienteController::class, 'viewSolicitarPaz'])->name('solicitar_paz');
         Route::post('/paz-y-salvo/solicitar', [App\Http\Controllers\AcudienteController::class, 'crearSolicitudPaz'])->name('crear_solicitud_paz');
-
-        // Solicitud de becas / descuentos (simple UI)
-        Route::get('/becas/solicitar', [App\Http\Controllers\AcudienteController::class, 'viewSolicitarBeca'])->name('solicitar_beca');
-        Route::post('/becas/solicitar', [App\Http\Controllers\AcudienteController::class, 'crearSolicitudBeca'])->name('crear_solicitud_beca');
     });
 
     // API: obtener estudiantes a cargo del acudiente (para formularios AJAX)
-    Route::get('/api/acudiente/estudiantes', [App\Http\Controllers\AcudienteController::class, 'obtenerEstudiantes'])->name('acudiente.api.estudiantes');
+    Route::get('/api/acudiente/estudiantes', [AcudienteController::class, 'obtenerEstudiantes'])->name('acudiente.api.estudiantes');
 
     /*
     |--------------------------------------------------------------------------
@@ -597,7 +487,7 @@ use App\Models\RolesModel;
 
     /*
     |--------------------------------------------------------------------------
-    | Rector
+    | Rector (módulo adicional)
     |--------------------------------------------------------------------------
     */
     Route::prefix('rector')->name('rector.')->group(function () {
@@ -616,7 +506,7 @@ use App\Models\RolesModel;
         Route::get('/plan', [RectorController::class, 'planIndex'])->name('plan.index');
         Route::get('/plan/{id}/aprobar', [RectorController::class, 'aprobarPlan'])->name('plan.aprobar');
 
-        // Matrículas y gestión de personal (básico por ahora)
+        // Matrículas y gestión de personal
         Route::get('/matriculas', [RectorController::class, 'matriculasIndex'])->name('matriculas.index');
         Route::get('/docentes', [RectorController::class, 'docentesIndex'])->name('docentes.index');
     });
