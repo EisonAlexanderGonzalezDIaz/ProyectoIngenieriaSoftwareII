@@ -73,7 +73,8 @@ document.getElementById('estudianteInput').addEventListener('keyup', function() 
 document.getElementById('citaForm').addEventListener('submit', function(e) {
     e.preventDefault();
     const formData = new FormData(this);
-    fetch(this.action, { method: 'POST', body: formData, headers: {'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value } })
+    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    fetch(this.action, { method: 'POST', body: formData, headers: {'X-CSRF-TOKEN': token } })
         .then(r => r.json())
         .then(json => {
             const msg = document.getElementById('mensaje');

@@ -10,7 +10,7 @@
 
             <div class="card">
                 <div class="card-body">
-                    <form id="informeForm" method="POST" action="{{ route('docente.generar_informe') }}">
+                    <form id="informeForm" method="POST" action="{{ route('docente.generar_informe_post') }}">
                         @csrf
                         <div class="row mb-3">
                             <div class="col-md-6">
@@ -24,7 +24,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Materia</label>
-                                <select id="materiaSelect" name="materia_id" class="form-control" required onchange="cargarDatos()">
+                                <select id="materiaSelect" name="subject_id" class="form-control" required onchange="cargarDatos()">
                                     <option value="">Seleccionar materia...</option>
                                 </select>
                             </div>
@@ -155,7 +155,7 @@ function cargarDatos() {
 
     if (!cursoId || !materiaId) return;
 
-    fetch(`{{ route('docente.obtener_datos_autorellenado') }}?curso_id=${cursoId}&materia_id=${materiaId}`)
+    fetch(`{{ route('docente.obtener_datos_autorellenado') }}?curso_id=${cursoId}&subject_id=${materiaId}`)
         .then(r => r.json())
         .then(data => {
             document.getElementById('totalEstudiantes').textContent = data.estudiantes_total || 0;
@@ -195,7 +195,8 @@ function cargarInformes() {
 document.getElementById('informeForm').addEventListener('submit', function(e) {
     e.preventDefault();
     const formData = new FormData(this);
-    fetch(this.action, { method: 'POST', body: formData, headers: {'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value } })
+    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    fetch(this.action, { method: 'POST', body: formData, headers: {'X-CSRF-TOKEN': token } })
         .then(r => r.json())
         .then(json => {
             const msg = document.getElementById('mensaje');

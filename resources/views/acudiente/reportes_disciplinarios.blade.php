@@ -19,7 +19,7 @@
 
 <script>
 function cargarReportes() {
-  fetch('{{ route('acudiente.obtener_reportes') }}')
+  fetch('{{ route('acudiente.obtener_reportes_disciplinarios') }}')
     .then(r => r.json())
     .then(data => {
       const items = data.reportes || [];

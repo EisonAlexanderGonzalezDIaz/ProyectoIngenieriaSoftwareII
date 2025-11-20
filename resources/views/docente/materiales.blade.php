@@ -10,11 +10,11 @@
 
             <div class="card">
                 <div class="card-body">
-                    <form id="materialForm" enctype="multipart/form-data" method="POST" action="{{ route('docente.subir_material') }}">
+                    <form id="materialForm" enctype="multipart/form-data" method="POST" action="{{ route('docente.subir_material_post') }}">
                         @csrf
                         <div class="mb-3">
                             <label class="form-label">Materia</label>
-                            <select name="materia_id" class="form-control" required>
+                            <select name="subject_id" class="form-control" required>
                                 <option value="">Seleccionar materia...</option>
                                 @foreach($materias as $m)
                                     <option value="{{ $m->id }}">{{ $m->name }}</option>
@@ -120,7 +120,8 @@ function cargarMateriales() {
 document.getElementById('materialForm').addEventListener('submit', function(e) {
     e.preventDefault();
     const formData = new FormData(this);
-    fetch(this.action, { method: 'POST', body: formData, headers: {'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value } })
+    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    fetch(this.action, { method: 'POST', body: formData, headers: {'X-CSRF-TOKEN': token } })
         .then(r => r.json())
         .then(json => {
             const msg = document.getElementById('mensaje');

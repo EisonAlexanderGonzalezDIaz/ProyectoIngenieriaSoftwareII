@@ -29,7 +29,7 @@ function cargar() {
     fetch(url)
         .then(r => r.json())
         .then(data => {
-            const items = data.notificaciones.data || [];
+            const items = (data.notificaciones && data.notificaciones.data) ? data.notificaciones.data : data.notificaciones || [];
             if (items.length === 0 && pagina === 1) {
                 document.getElementById('notificacionesList').innerHTML = '<div class="alert alert-info">No tienes notificaciones.</div>';
                 return;
@@ -69,7 +69,8 @@ function append(items) {
 }
 
 function marcar(id) {
-    fetch(`{{ route('acudiente.marcar_notificacion_leida', '') }}/${id}`, { method: 'POST', headers: {'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value }})
+    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    fetch(`{{ route('acudiente.marcar_notificacion_leida', '') }}/${id}`, { method: 'POST', headers: {'X-CSRF-TOKEN': token }})
         .then(r => r.json()).then(() => cargar());
 }
 

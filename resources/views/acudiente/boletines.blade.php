@@ -22,7 +22,7 @@ function cargarBoletines() {
   fetch('{{ route('acudiente.obtener_boletines') }}')
     .then(r => r.json())
     .then(data => {
-      const items = data.boletines.data || [];
+      const items = data.boletines || [];
       if (items.length === 0) {
         document.getElementById('boletinesList').innerHTML = '<div class="alert alert-info">No hay boletines publicados.</div>';
         return;
@@ -30,9 +30,9 @@ function cargarBoletines() {
       let html = '';
       items.forEach(b => {
         html += `<div class="mb-3">
-          <h5>${b.titulo}</h5>
-          <p class="text-muted">${new Date(b.created_at).toLocaleDateString()}</p>
-          <p>${b.resumen || ''}</p>
+          <h5>${b.titulo || 'Boletín'}</h5>
+          <p class="text-muted">${new Date(b.fecha_emision || b.created_at).toLocaleDateString()}</p>
+          <p>${b.resumen || b.descripcion || ''}</p>
           <a class="btn btn-sm btn-outline-primary" href="${b.archivo_url ? '/storage/' + b.archivo_url : '#'}" target="_blank">Ver/Descargar</a>
         </div>`;
       });

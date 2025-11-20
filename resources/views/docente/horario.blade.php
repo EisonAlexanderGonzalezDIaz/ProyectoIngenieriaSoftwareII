@@ -57,7 +57,7 @@
 function cargarHorarios() {
     const materiaId = document.getElementById('materiaSelect').value;
     const url = new URL('{{ route('docente.obtener_horarios') }}', window.location.origin);
-    if (materiaId) url.searchParams.append('materia_id', materiaId);
+    if (materiaId) url.searchParams.append('subject_id', materiaId);
 
     fetch(url)
         .then(r => r.json())
@@ -88,7 +88,7 @@ function cargarHorarios() {
 function descargarHorario() {
     const materiaId = document.getElementById('materiaSelect').value;
     const url = new URL('{{ route('docente.descargar_horario') }}', window.location.origin);
-    if (materiaId) url.searchParams.append('materia_id', materiaId);
+    if (materiaId) url.searchParams.append('subject_id', materiaId);
     window.location.href = url.toString();
 }
 
