@@ -28,6 +28,7 @@ use App\Http\Controllers\AdminUsuarioController;
 use App\Http\Controllers\AcudienteEstudianteController;
 use App\Http\Controllers\DocenteController;
 use App\Http\Controllers\RectorController;
+use App\Http\Controllers\RectorEstudianteController;
 use App\Models\RolesModel;
 
 /*
@@ -40,26 +41,40 @@ use App\Models\RolesModel;
 */
 
 // Ruta raíz → redirige al login
-Route::get('/', function () {
+    Route::get('/', function () {
     return redirect('/login');
-});
+    });
 
-// Rutas de autenticación
-Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    // Rutas de autenticación
+    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Rutas de registro de usuarios
-Route::get('/register', [CrearUsuario::class, 'showRegistrationForm'])->name('register');
-Route::post('/register', [CrearUsuario::class, 'register']);
+    // Rutas de registro de usuarios
+    Route::get('/register', [CrearUsuario::class, 'showRegistrationForm'])->name('register');
+    Route::post('/register', [CrearUsuario::class, 'register']);
 
-// Grupo de rutas protegidas por autenticación
-Route::middleware(['auth'])->group(function () {
-
+    // Grupo de rutas protegidas por autenticación
+    Route::middleware(['auth'])->group(function () {
     // ==========================
     // DASHBOARD GENERAL
     // ==========================
     Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
+
+    // ==========================
+    // Rutas Rector - Consultas académicas
+    // ==========================
+    Route::prefix('rector')->name('rector.')->middleware('can:isRector')->group(function () {
+        Route::get('/boletines', [RectorEstudianteController::class, 'boletines'])
+            ->name('boletines');
+
+        Route::get('/notas', [RectorEstudianteController::class, 'notas'])
+            ->name('notas');
+
+        Route::get('/materias', [RectorEstudianteController::class, 'materias'])
+            ->name('materias');
+    });
+
 
     /*
     |--------------------------------------------------------------------------

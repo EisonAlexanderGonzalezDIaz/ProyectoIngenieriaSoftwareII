@@ -2,7 +2,7 @@
 
 @section('title', 'Panel Principal - Colegio')
 
-@section('content)
+@section('content')
 
 @php
     $usuario   = Auth::user();
@@ -171,13 +171,13 @@
                                 <i class="fas fa-chevron-down small"></i>
                             </a>
                             <div class="collapse ps-4" id="menuRectorEstudiantes">
-                                <a class="nav-link text-dark" href="{{ route('rector.boletines') }}">
+                                <a class="nav-link text-dark" href="{{ route('rector.consultar_boletines') }}">
                                     <i class="fas fa-newspaper me-2"></i>Consultar boletines
                                 </a>
-                                <a class="nav-link text-dark" href="{{ route('rector.notas') }}">
+                                <a class="nav-link text-dark" href="{{ route('rector.consultar_notas') }}">
                                     <i class="fas fa-clipboard-list me-2"></i>Consultar notas
                                 </a>
-                                <a class="nav-link text-dark" href="{{ route('rector.materias') }}">
+                                <a class="nav-link text-dark" href="{{ route('rector.consultar_materias') }}">
                                     <i class="fas fa-book me-2"></i>Consultar materias
                                 </a>
                             </div>

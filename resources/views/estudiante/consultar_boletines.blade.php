@@ -1,72 +1,29 @@
 @extends('layouts.app')
 
-@section('title', 'Consultar Boletines')
+@section('title', 'Boletines')
 
 @section('content')
-<div class="container mt-5">
-    <div class="row">
-        <div class="col-md-10 mx-auto">
-            <h1 class="mb-4">Mis Boletines</h1>
-
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Boletines por Período</h5>
-                </div>
-                <div class="card-body">
-                    <div id="boletinesTable">
-                        <p class="text-muted text-center">Cargando boletines...</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+<div class="container py-4">
+    <h2 class="mb-3"><i class="fas fa-newspaper me-2"></i>Boletines</h2>
+    <div id="boletines-area">Cargando...</div>
 </div>
 
+@section('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    cargarBoletines();
-});
-
-function cargarBoletines() {
-    fetch('{{ route("estudiante.obtener_boletines") }}')
-        .then(response => response.json())
-        .then(data => {
-            if (data.boletines && data.boletines.length > 0) {
-                renderizarTabla(data.boletines);
-            } else {
-                document.getElementById('boletinesTable').innerHTML = `
-                    <div class="alert alert-info">No hay boletines disponibles.</div>
-                `;
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            document.getElementById('boletinesTable').innerHTML = `
-                <div class="alert alert-danger">Error al cargar los boletines.</div>
-            `;
+document.addEventListener('DOMContentLoaded', function(){
+    fetch("{{ route('estudiante.boletines.obtener') }}")
+        .then(r=>r.json()).then(data=>{
+            const rows = data.boletines || [];
+            if(!rows.length){ document.getElementById('boletines-area').innerText='No hay boletines.'; return; }
+            let html = '<ul class="list-group">';
+            rows.forEach(b=>{
+                html += `<li class="list-group-item d-flex justify-content-between align-items-center">
+                    ${b.periodo} <a href="{{ url('estudiante/boletines') }}/${b.id}/descargar" class="btn btn-sm btn-outline-primary">Descargar</a>
+                </li>`;
+            });
+            html += '</ul>';
+            document.getElementById('boletines-area').innerHTML = html;
         });
-}
-
-function renderizarTabla(boletines) {
-    let html = '<table class="table table-striped table-hover">';
-    html += '<thead class="table-primary"><tr><th>Período</th><th>Fecha de Emisión</th><th>Acciones</th></tr></thead>';
-    html += '<tbody>';
-
-    boletines.forEach(boletin => {
-        const fechaEmision = new Date(boletin.fecha_emision).toLocaleDateString('es-ES');
-        html += `<tr>
-            <td><strong>${boletin.periodo}</strong></td>
-            <td>${fechaEmision}</td>
-            <td>
-                <a href="{{ route('estudiante.descargar_boletin', '') }}/${boletin.id}" class="btn btn-sm btn-success">
-                    <i class="fas fa-download"></i> Descargar
-                </a>
-            </td>
-        </tr>`;
-    });
-
-    html += '</tbody></table>';
-    document.getElementById('boletinesTable').innerHTML = html;
-}
+});
 </script>
 @endsection
