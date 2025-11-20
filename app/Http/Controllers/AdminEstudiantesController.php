@@ -10,11 +10,15 @@ use App\Models\RolesModel;
 class AdminEstudiantesController extends Controller
 {
     /**
-     * Menú principal de "Consultar Estudiantes"
+     * Menú principal de "Consultar Estudiantes".
+     *
+     * Para simplificar, usamos la misma lógica de porCurso()
+     * para que el AdministradorSistema vea directamente
+     * el filtro por curso + listado de estudiantes.
      */
-    public function menu()
+    public function menu(Request $request)
     {
-        return view('admin.estudiantes.menu');
+        return $this->porCurso($request);
     }
 
     /**
@@ -24,8 +28,8 @@ class AdminEstudiantesController extends Controller
     {
         // Todos los cursos ordenados por nombre (1A, 1B, 2A, ..., 11B)
         $cursos = Curso::orderByRaw("CAST(SUBSTRING(nombre, 1, LENGTH(nombre) - 1) AS UNSIGNED) ASC")
-               ->orderByRaw("RIGHT(nombre, 1) ASC")
-               ->get();
+            ->orderByRaw("RIGHT(nombre, 1) ASC")
+            ->get();
 
         $cursoSeleccionado = null;
         $estudiantes = collect();
@@ -40,15 +44,16 @@ class AdminEstudiantesController extends Controller
                 // 2. Buscar el rol "Estudiante"
                 $rolEstudiante = RolesModel::where('nombre', 'Estudiante')->first();
 
-                // Si existe el rol, filtramos por ese rol
+                // 3. Query base por curso
                 $query = User::query()
                     ->where('curso_id', $cursoSeleccionado->id);
 
+                // Si existe el rol, filtramos por ese rol
                 if ($rolEstudiante) {
                     $query->where('roles_id', $rolEstudiante->id);
                 }
 
-                // 3. Traer estudiantes ordenados por nombre
+                // 4. Traer estudiantes ordenados por nombre
                 $estudiantes = $query
                     ->orderBy('name', 'asc')
                     ->get();
