@@ -1,20 +1,6 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Principal - Colegio</title>
+@extends('layouts.app')
 
-    {{-- Token CSRF para uso en JavaScript --}}
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-
-    {{-- Bootstrap --}}
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    {{-- Font Awesome --}}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-</head>
-<body>
+@section('content')
 @php
     $usuario   = Auth::user();
     $rolNombre = $usuario->rol->nombre ?? '';
@@ -604,7 +590,7 @@
                         <a class="nav-link text-dark" href="{{ route('tesoreria.view.reporte.financiero') }}">
                             <i class="fas fa-chart-pie me-2"></i>Generar reportes financieros
                         </a>
-                        <a class="nav-link text-dark" href="{{ route('tesoreria.view.aprobar.becas') }}">
+                        <a class="nav-link text-dark" href="{{ route('tesoreria.view.solicitudes.beca') }}">
                             <i class="fas fa-check-circle me-2"></i>Aprobar becas o descuentos
                         </a>
                     @endif

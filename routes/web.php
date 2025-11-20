@@ -9,6 +9,27 @@ use App\Http\Controllers\CrearUsuario;
 use App\Http\Controllers\RolController;
 use App\Http\Controllers\MatriculaAcudienteController;
 use App\Http\Controllers\TesoreroController;
+use App\Http\Controllers\RectorEstudianteController;
+use App\Http\Controllers\DocenteController;
+use App\Http\Controllers\EstudianteController;
+use App\Http\Controllers\AcudienteController;
+use App\Http\Controllers\AcudienteEstudianteController;
+use App\Http\Controllers\AdminEstudiantesController;
+use App\Http\Controllers\AdminUsuarioController;
+use App\Http\Controllers\CoordinadorAcademicoController;
+use App\Http\Controllers\OrientadorController;
+use App\Http\Controllers\ReportesDisciplinariosController;
+use App\Http\Controllers\GestionDocentesController;
+use App\Http\Controllers\MateriasController;
+use App\Http\Controllers\HorariosController;
+use App\Http\Controllers\PlanAcademicoController;
+use App\Http\Controllers\RectorController;
+use App\Http\Controllers\CasosDisciplinariosController;
+use App\Http\Controllers\CitarAcudienteController;
+use App\Http\Controllers\InformacionColegioController;
+use App\Http\Controllers\CambiosNotasController;
+use App\Http\Controllers\ReportesAcademicosController;
+use App\Http\Controllers\RecuperacionesController;
 use App\Models\RolesModel;
 
 /*
@@ -524,6 +545,10 @@ Route::middleware(['auth'])->group(function () {
         // Solicitudes de Paz y Salvo
         Route::get('/paz-y-salvo/solicitar', [App\Http\Controllers\AcudienteController::class, 'viewSolicitarPaz'])->name('solicitar_paz');
         Route::post('/paz-y-salvo/solicitar', [App\Http\Controllers\AcudienteController::class, 'crearSolicitudPaz'])->name('crear_solicitud_paz');
+
+        // Solicitudes de Beca (Acudiente)
+        Route::get('/solicitar-beca', [AcudienteController::class, 'viewSolicitarBeca'])->name('solicitar_beca');
+        Route::post('/solicitar-beca', [AcudienteController::class, 'crearSolicitudBeca'])->name('crear_solicitud_beca');
     });
 
     // API: obtener estudiantes a cargo del acudiente (para formularios AJAX)
@@ -605,3 +630,4 @@ Route::middleware(['auth'])->group(function () {
     });
 
 });
+
